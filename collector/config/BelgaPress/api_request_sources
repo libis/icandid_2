@@ -1,0 +1,838 @@
+{
+    "data": [
+        {
+            "id": 348,
+            "name": "BELGA ALERT",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93712816:thumbnail?v=632df306&m=mlopmbdo",
+            "country": "BE",
+            "language": "zz",
+            "publisher": "Belga",
+            "sourceGroupId": 5,
+            "sourceGroup": "NEWS AGENCIES",
+            "subSourceGroups": [
+                {
+                    "id": 844,
+                    "mediumTypeGroupId": 4,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": false
+        },
+        {
+            "id": 342,
+            "name": "BELGA AUDIO",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93712816:thumbnail?v=632df306&m=mlopmbdo",
+            "country": "BE",
+            "language": "zz",
+            "publisher": "Belga",
+            "sourceGroupId": 5,
+            "sourceGroup": "NEWS AGENCIES",
+            "subSourceGroups": [
+                {
+                    "id": 837,
+                    "mediumTypeGroupId": 5,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": false
+        },
+        {
+            "id": 345,
+            "name": "BELGA IMAGE",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93712816:thumbnail?v=632df306&m=mlopmbdo",
+            "country": "BE",
+            "language": "zz",
+            "publisher": "Belga",
+            "sourceGroupId": 5,
+            "sourceGroup": "NEWS AGENCIES",
+            "subSourceGroups": [
+                {
+                    "id": 840,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 841,
+                    "mediumTypeGroupId": 5,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": false
+        },
+        {
+            "id": 346,
+            "name": "BELGA ONLINE",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93712816:thumbnail?v=632df306&m=mlopmbdo",
+            "country": "BE",
+            "language": "zz",
+            "publisher": "Belga",
+            "sourceGroupId": 5,
+            "sourceGroup": "NEWS AGENCIES",
+            "subSourceGroups": [
+                {
+                    "id": 973,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 842,
+                    "mediumTypeGroupId": 4,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": false
+        },
+        {
+            "id": 343,
+            "name": "BELGA VIDEO",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93712816:thumbnail?v=632df306&m=mlopmbdo",
+            "country": "BE",
+            "language": "zz",
+            "publisher": "Belga",
+            "sourceGroupId": 5,
+            "sourceGroup": "NEWS AGENCIES",
+            "subSourceGroups": [
+                {
+                    "id": 838,
+                    "mediumTypeGroupId": 5,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": false
+        },
+        {
+            "id": 1,
+            "name": "De Morgen",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:95186918:thumbnail?v=632df306&m=lgbcphil",
+            "country": "BE",
+            "language": "nl",
+            "publisher": "DPG Media",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 1,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 451,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 450,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        },
+        {
+            "id": 2,
+            "name": "De Standaard",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93712803:thumbnail?v=632df306&m=knijbeld",
+            "country": "BE",
+            "language": "nl",
+            "publisher": "Mediahuis",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 2,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 449,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 448,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 974,
+                    "mediumTypeGroupId": 5,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        },
+        {
+            "id": 3,
+            "name": "De Tijd",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:95186920:thumbnail?v=632df306&m=akocmbok",
+            "country": "BE",
+            "language": "nl",
+            "publisher": "Mediafin",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 3,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 447,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 446,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 850,
+                    "mediumTypeGroupId": 5,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        },
+        {
+            "id": 4,
+            "name": "Gazet van Antwerpen",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:95186923:thumbnail?v=632df306&m=hafpaond",
+            "country": "BE",
+            "language": "nl",
+            "publisher": "Mediahuis",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 4,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 435,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 434,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        },
+        {
+            "id": 26,
+            "name": "Grenz Echo",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93752647:thumbnail?v=632df306&m=iffpbadn",
+            "country": "BE",
+            "language": "de",
+            "publisher": "Rossel",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 26,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 411,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 507,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        },
+        {
+            "id": 5,
+            "name": "Het Belang van Limburg",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93712811:thumbnail?v=632df306&m=caidjlkg",
+            "country": "BE",
+            "language": "nl",
+            "publisher": "Mediahuis",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 5,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 431,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 477,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        },
+        {
+            "id": 6,
+            "name": "Het Laatste Nieuws",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:95186922:thumbnail?v=632df306&m=lhpfmbkb",
+            "country": "BE",
+            "language": "nl",
+            "publisher": "DPG Media",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 6,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 427,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 430,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        },
+        {
+            "id": 7,
+            "name": "Het Nieuwsblad",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93712799:thumbnail?v=632df306&m=gkdccipn",
+            "country": "BE",
+            "language": "nl",
+            "publisher": "Mediahuis",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 7,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 403,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 402,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 848,
+                    "mediumTypeGroupId": 5,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        },
+        {
+            "id": 14,
+            "name": "L'Avenir",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93712824:thumbnail?v=632df306&m=nphjecgm",
+            "country": "BE",
+            "language": "fr",
+            "publisher": "L'Avenir",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 14,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 417,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 416,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        },
+        {
+            "id": 15,
+            "name": "L'Echo",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:95186917:thumbnail?v=632df306&m=pkkcaaie",
+            "country": "BE",
+            "language": "fr",
+            "publisher": "Mediafin",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 15,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 413,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 412,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 845,
+                    "mediumTypeGroupId": 5,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        },
+        {
+            "id": 20,
+            "name": "La Capitale",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:188466023:thumbnail?v=632df306&m=lmeeojaj",
+            "country": "BE",
+            "language": "fr",
+            "publisher": "Sudinfo",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 20,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 468,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 503,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": false
+        },
+        {
+            "id": 16,
+            "name": "La Dernière Heure",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93712814:thumbnail?v=632df306&m=jnflflik",
+            "country": "BE",
+            "language": "fr",
+            "publisher": "IPM",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 16,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 445,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 501,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        },
+        {
+            "id": 17,
+            "name": "La Libre Belgique",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93712801:thumbnail?v=632df306&m=epedmfbh",
+            "country": "BE",
+            "language": "fr",
+            "publisher": "IPM",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 17,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 419,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 418,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        },
+        {
+            "id": 21,
+            "name": "La Meuse",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:188466023:thumbnail?v=632df306&m=lmeeojaj",
+            "country": "BE",
+            "language": "fr",
+            "publisher": "Sudinfo",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 21,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 462,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 478,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": false
+        },
+        {
+            "id": 22,
+            "name": "La Nouvelle Gazette",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:188466023:thumbnail?v=632df306&m=lmeeojaj",
+            "country": "BE",
+            "language": "fr",
+            "publisher": "Sudinfo",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 22,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 463,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 504,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": false
+        },
+        {
+            "id": 23,
+            "name": "La Province",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:188466023:thumbnail?v=632df306&m=lmeeojaj",
+            "country": "BE",
+            "language": "fr",
+            "publisher": "Sudinfo",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 23,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 464,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 505,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": false
+        },
+        {
+            "id": 18,
+            "name": "Le Soir",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93712807:thumbnail?v=632df306&m=eidcnnjm",
+            "country": "BE",
+            "language": "fr",
+            "publisher": "Rossel",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 18,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 414,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 415,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        },
+        {
+            "id": 19,
+            "name": "Metro FR",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93712808:thumbnail?v=632df306&m=eigbnama",
+            "country": "BE",
+            "language": "fr",
+            "publisher": "MassTransitMedia",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 19,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 465,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 502,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": false
+        },
+        {
+            "id": 8,
+            "name": "Metro NL",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93712810:thumbnail?v=632df306&m=lbjmgnhn",
+            "country": "BE",
+            "language": "nl",
+            "publisher": "MassTransitMedia",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 8,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 466,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 495,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": false
+        },
+        {
+            "id": 24,
+            "name": "Nord Eclair",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:188466023:thumbnail?v=632df306&m=lmeeojaj",
+            "country": "BE",
+            "language": "fr",
+            "publisher": "Sudinfo",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 24,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 467,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 490,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": false
+        },
+        {
+            "id": 354,
+            "name": "PR PRO",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:93712816:thumbnail?v=632df306&m=mlopmbdo",
+            "country": "BE",
+            "language": "zz",
+            "publisher": "Belga",
+            "sourceGroupId": 5,
+            "sourceGroup": "NEWS AGENCIES",
+            "subSourceGroups": [
+                {
+                    "id": 962,
+                    "mediumTypeGroupId": 6,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": false
+        },
+        {
+            "id": 224,
+            "name": "RTBF",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:138259759:thumbnail?v=632df306&m=aleclaed",
+            "country": "BE",
+            "language": "fr",
+            "publisher": "RTBF",
+            "sourceGroupId": 4,
+            "sourceGroup": "TELEVISION",
+            "subSourceGroups": [
+                {
+                    "id": 1539,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 784,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 279,
+                    "mediumTypeGroupId": 5,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": false
+        },
+        {
+            "id": 362,
+            "name": "RTL info",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:160555028:thumbnail?v=632df306&m=dpjdbfjl",
+            "country": "BE",
+            "language": "fr",
+            "publisher": "RTL",
+            "sourceGroupId": 10,
+            "sourceGroup": "DIGITAL NEWSBRANDS",
+            "subSourceGroups": [
+                {
+                    "id": 978,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        },
+        {
+            "id": 25,
+            "name": "Sudinfo",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:188466023:thumbnail?v=632df306&m=lmeeojaj",
+            "country": "BE",
+            "language": "fr",
+            "publisher": "Sudinfo",
+            "sourceGroupId": 1,
+            "sourceGroup": "NEWSPAPERS",
+            "subSourceGroups": [
+                {
+                    "id": 25,
+                    "mediumTypeGroupId": 1,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 506,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 480,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        },
+        {
+            "id": 316,
+            "name": "VRT",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:138262660:thumbnail?v=632df306&m=cfgjjhgb",
+            "country": "BE",
+            "language": "nl",
+            "publisher": "VRT",
+            "sourceGroupId": 4,
+            "sourceGroup": "TELEVISION",
+            "subSourceGroups": [
+                {
+                    "id": 384,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 385,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 383,
+                    "mediumTypeGroupId": 5,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": false
+        },
+        {
+            "id": 361,
+            "name": "VRT NWS",
+            "logo": "https://picturepackcdn-h33aaywmsq-ew.a.run.app/belgaimage:138262660:thumbnail?v=632df306&m=cfgjjhgb",
+            "country": "BE",
+            "language": "nl",
+            "publisher": "VRT",
+            "sourceGroupId": 10,
+            "sourceGroup": "DIGITAL NEWSBRANDS",
+            "subSourceGroups": [
+                {
+                    "id": 975,
+                    "mediumTypeGroupId": 2,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 976,
+                    "mediumTypeGroupId": 3,
+                    "nrSubSources": 0
+                },
+                {
+                    "id": 977,
+                    "mediumTypeGroupId": 5,
+                    "nrSubSources": 0
+                }
+            ],
+            "mainSource": true
+        }
+    ],
+    "_links": {
+        "self": "https://capi.belga.press/belgapress/api/sources"
+    },
+    "_meta": {
+        "total": 31
+    }
+}

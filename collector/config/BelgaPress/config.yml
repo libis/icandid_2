@@ -1,0 +1,23 @@
+---
+:auth:
+  :login_url: https://sso.ssl.belga.be/auth/realms/belga/protocol/openid-connect/token
+  :login_request_body: grant_type=client_credentials&client_id={{consumer_key}}&client_secret={{consumer_secret}}
+  :consumer_key: 
+  :consumer_secret: 
+  :bearer_token: 
+  :access_token: 
+  :refresh_token: 
+:base_url: https://capi.belga.press/belgapress/api
+:testing: true
+:save_raw_data: true
+:source_records_dir: "/source_records/BelgaPress/{{query_id}}/{{date}}/"
+:records_dir: "/records/BelgaPress/{{query_id}}/new/{{date}}/"
+:source_file_name_pattern: "*.json"
+:dir_based_on_datePublished: false
+:override_parsed_records: true
+:rule_set: RULE_SET_v1_0
+:recent_url: "{{base_url}}/newsobjects?&order=PUBLISHDATE&count={{COUNT}}&start={{start_date}}&end={{end_date}}&{{query}}"
+:backlog_url: "{{base_url}}/newsobjects?&order=PUBLISHDATE&count={{COUNT}}&start={{start_date}}&end={{end_date}}&{{query}}"
+:record_url: "{{base_url}}/newsobjects/{{uuid}}"
+:encode_query_value: false
+:status: ready

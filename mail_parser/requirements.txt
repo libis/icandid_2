@@ -1,0 +1,9 @@
+###### Requirements without Version Specifiers ######
+setuptools==58.2.0
+python-dateutil
+# beautifulsoup4
+lxml
+redis == 4.4.0
+pyyaml 
+pdfkit
+requests

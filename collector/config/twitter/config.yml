@@ -1,0 +1,28 @@
+---
+:twitter_api_version: v2
+:base_url: https://api.twitter.com/2/tweets/search
+:auth:
+  :consumer_key: 
+  :consumer_secret: 
+  :bearer_token: 
+  :dev_environment: dev
+:testing: true
+:save_raw_data: true
+:source_records_dir: "/source_records/Twitter/{{query_id}}/{{date}}"
+:records_dir: "/records/Twitter/{{query_id}}/new/{{date}}"
+:source_file_name_pattern: twitter*.json
+:dir_based_on_datePublished: false
+:override_parsed_records: true
+:recent_url: "{{base_url}}/recent?query={{query}}&start_time={{start_time}}&{{next_token}}&expansions={{query_expansions}}&tweet.fields={{query_tweet_fields}}&media.fields={{query_media_fields}}&user.fields={{query_user_fields}}&place.fields={{query_place_fields}}&poll.fields={{query_poll_fields}}&max_results={{query_max_results}}"
+:backlog_url: "{{base_url}}/all?query={{query}}&start_time={{start_time}}&end_time={{end_time}}&{{next_token}}&expansions={{query_expansions}}&tweet.fields={{query_tweet_fields}}&media.fields={{query_media_fields}}&user.fields={{query_user_fields}}&place.fields={{query_place_fields}}&poll.fields={{query_poll_fields}}&max_results={{query_max_results}}"
+:encode_query_value: true
+:api_request_params:
+  :expansions: author_id,referenced_tweets.id,in_reply_to_user_id,attachments.media_keys,attachments.poll_ids,geo.place_id,entities.mentions.username,referenced_tweets.id.author_id
+  :tweet_fields: attachments,author_id,context_annotations,conversation_id,created_at,entities,geo,id,in_reply_to_user_id,lang,possibly_sensitive,referenced_tweets,reply_settings,source,text,withheld
+  :media_fields: duration_ms,height,media_key,preview_image_url,type,url,width,public_metrics
+  :place_fields: contained_within,country,country_code,full_name,geo,id,name,place_type
+  :poll_fields: voting_status
+  :user_fields: created_at,description,entities,id,location,name,pinned_tweet_id,profile_image_url,protected,url,username,verified,withheld
+  :max_results: 100
+:rule_set: RULE_SET_v2_4
+:status: downloading

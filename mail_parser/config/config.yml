@@ -1,0 +1,7 @@
+SOURCE_MAILBOX: /source_records/mail.mbox
+RECORDS_DIR: /records/
+DEBUG: true
+REDIS:
+  HOST: mailbox_redis
+  PORT: 6379
+  DB: 1

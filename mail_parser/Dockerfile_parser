@@ -1,0 +1,52 @@
+#The base image for the container 
+
+FROM surnet/alpine-wkhtmltopdf:3.16.2-0.12.6-full as wkhtmltopdf
+FROM python:3.11.1-alpine3.17
+
+
+# RUN apk add build-base
+
+# Install dependencies for wkhtmltopdf
+RUN apk add --no-cache \
+    libstdc++ \
+    libx11 \
+    libxrender \
+    libxext \
+    libssl1.1 \
+    ca-certificates \
+    fontconfig \
+    freetype \
+    ttf-dejavu \
+    ttf-droid \
+    ttf-freefont \
+    ttf-liberation \
+    # more fonts
+  && apk add --no-cache --virtual .build-deps \
+    msttcorefonts-installer \
+  # Install microsoft fonts
+  && update-ms-fonts \
+  && fc-cache -f \
+  # Clean up when done
+  && rm -rf /tmp/* \
+  && apk del .build-deps
+
+# Copy wkhtmltopdf files from docker-wkhtmltopdf image
+COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
+COPY --from=wkhtmltopdf /bin/wkhtmltoimage /bin/wkhtmltoimage
+COPY --from=wkhtmltopdf /bin/libwkhtmltox* /bin/
+
+# Keeps Python from generating .pyc files in the container 
+ENV PYTHONDONTWRITEBYTECODE=1 
+ 
+# Turns off buffering for easier container logging 
+ENV PYTHONUNBUFFERED=1 
+ 
+# Copy python requirements to the docker container and install
+COPY requirements.txt . 
+
+RUN pip install -r requirements.txt
+
+COPY src /app/src
+
+#create a non root user to access the container 
+# RUN adduser -u 5678 —-disabled-password --gecos "" vscode

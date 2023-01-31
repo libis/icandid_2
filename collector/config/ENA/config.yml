@@ -1,0 +1,12 @@
+---
+:testing: true
+:save_raw_data: true
+:source_records_dir: "/source_records/ENA/"
+:records_dir: "/records/ENA/periode_{{query_id}}/new/{{date}}/"
+:source_file_name_pattern: "*.csv"
+:dir_based_on_datePublished: false
+:override_parsed_records: true
+:rule_set: RULE_SET_v1_0
+:themavariabelen: TV_CODEBOEK_THEMAVARIABELEN.csv
+:IPTCMediaTopic: IPTC-MediaTopic-NewsCodes.csv
+:status: ready

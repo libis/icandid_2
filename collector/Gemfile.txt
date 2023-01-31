@@ -1,0 +1,14 @@
+source "https://rubygems.org"
+
+gem 'nokogiri'
+gem 'nori'
+gem 'json'
+gem 'jsonpath', ' 1.0.4'
+#gem 'minitar'
+#gem 'minitar-cli'
+gem 'oai'
+gem 'iso639'
+gem "iso8601"
+gem 'unicode'
+gem "unicode-scripts"
+

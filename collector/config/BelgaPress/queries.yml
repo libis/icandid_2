@@ -1,0 +1,544 @@
+---
+:queries:
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=14"
+    :id: belgapress_query_00001
+    :name: L'Avenir
+    :desc: Newpaper L'Avenir
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: '2022-03-31'
+    :url: 
+    :completed: false
+    :last_run_update: '2022-06-07T02:00:06Z'
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=15"
+    :id: belgapress_query_00002
+    :name: L'Echo
+    :desc: NewpaperL'Echo
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: '2022-03-31'
+    :url: 
+    :completed: false
+    :last_run_update: '2022-06-07T02:00:06Z'
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=16"
+    :id: belgapress_query_00003
+    :name: La Dernière Heure
+    :desc: Newpaper La Dernière Heure
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: '2022-03-31'
+    :completed: false
+    :url: 
+    :last_run_update: '2022-06-10T02:00:04Z'
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=17"
+    :id: belgapress_query_00004
+    :name: La Libre Belgique
+    :desc: Newpaper La Libre Belgique
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: '2022-03-31'
+    :completed: false
+    :url: 
+    :last_run_update: '2022-06-12T02:00:05Z'
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=18"
+    :id: belgapress_query_00005
+    :name: Le Soir
+    :desc: Newpaper Le Soir
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: '2022-03-31'
+    :completed: false
+    :url: 
+    :last_run_update: '2022-06-13T02:00:04Z'
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=19"
+    :id: belgapress_query_00006
+    :name: Metro FR
+    :desc: Newpaper Metro FR
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: '2022-03-31'
+    :completed: false
+    :url: 
+    :last_run_update: '2022-06-13T02:00:04Z'
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=20"
+    :id: belgapress_query_00007
+    :name: La Capitale
+    :desc: Newpaper La Capitale
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: '2022-03-31'
+    :completed: false
+    :url: 
+    :last_run_update: '2022-06-14T02:00:06Z'
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=21"
+    :id: belgapress_query_00008
+    :name: La Meuse
+    :desc: Newpaper La Meuse
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: '2022-04-30'
+    :completed: false
+    :url: https://capi.belga.press/belgapress/api/newsobjects?&order=PUBLISHDATE&count=100&start=2022-04-01&end=2022-04-30&&mediumtypegroup=0&sourceid=21&offset=3700
+    :last_run_update: '2022-06-01T02:05:05Z'
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=22"
+    :id: belgapress_query_00009
+    :name: La Nouvelle Gazette
+    :desc: Newpaper La Nouvelle Gazette
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: '2022-04-30'
+    :completed: false
+    :url: 
+    :last_run_update: '2022-06-01T02:05:05Z'
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=23"
+    :id: belgapress_query_00010
+    :name: La Province
+    :desc: Newpaper La Province
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: '2022-04-30'
+    :completed: false
+    :url: 
+    :last_run_update: '2022-06-03T02:00:04Z'
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=24"
+    :id: belgapress_query_00011
+    :name: Nord Eclair
+    :desc: Newpaper Nord Eclair
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: '2022-04-30'
+    :completed: false
+    :url: 
+    :last_run_update: '2022-06-04T02:00:05Z'
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=25"
+    :id: belgapress_query_00012
+    :name: Sud Presse
+    :desc: Newpaper Sud Presse
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: '2022-04-30'
+    :completed: false
+    :url: 
+    :last_run_update: '2022-06-04T02:00:05Z'
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=1"
+    :id: belgapress_query_00013
+    :name: De Morgen
+    :desc: Newpaper De Morgen
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=2"
+    :id: belgapress_query_00014
+    :name: De Standaard
+    :desc: Newpaper De Standaard
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=3"
+    :id: belgapress_query_00015
+    :name: De Tijd
+    :desc: Newpaper De Tijd
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=4"
+    :id: belgapress_query_00016
+    :name: Gazet van Antwerpen
+    :desc: Newpaper Gazet van Antwerpen
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=5"
+    :id: belgapress_query_00017
+    :name: Het Belang van Limburg
+    :desc: Newpaper Het Belang van Limburg
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=6"
+    :id: belgapress_query_00018
+    :name: Het Laatste Nieuws
+    :desc: Newpaper Het Laatste Nieuws
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=7"
+    :id: belgapress_query_00019
+    :name: Het Nieuwsblad
+    :desc: Newpaper Het Nieuwsblad
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=8"
+    :id: belgapress_query_00020
+    :name: Metro NL
+    :desc: Newpaper Metro NL
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&sourceid=348"
+    :id: belgapress_query_00021
+    :name: BELGA ALERT
+    :desc: NEWS AGENCIES BELGA ALERT
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&sourceid=342"
+    :id: belgapress_query_00022
+    :name: BELGA AUDIO
+    :desc: NEWS AGENCIES BELGA AUDIO
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&sourceid=345"
+    :id: belgapress_query_00023
+    :name: BELGA IMAGE
+    :desc: NEWS AGENCIES BELGA IMAGE
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&sourceid=346"
+    :id: belgapress_query_00024
+    :name: BELGA ONLINE
+    :desc: NEWS AGENCIES BELGA ONLINE
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&sourceid=343"
+    :id: belgapress_query_00025
+    :name: BELGA VIDEO
+    :desc: NEWS AGENCIES BELGA VIDEO
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&mediumtypegroup=0&sourceid=26"
+    :id: belgapress_query_00026
+    :name: Grenz Echo
+    :desc: Newpaper   Grenz Echo
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&sourceid=354"
+    :id: belgapress_query_00027
+    :name: PR PRO
+    :desc: NEWS AGENCIES PR PRO
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&sourceid=354"
+    :id: belgapress_query_00027
+    :name: PR PRO
+    :desc: NEWS AGENCIES PR PRO
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&sourceid=224"
+    :id: belgapress_query_00028
+    :name: RTBF
+    :desc: TELEVISION RTBF
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&sourceid=362"
+    :id: belgapress_query_00029
+    :name: RTL info
+    :desc: DIGITAL NEWSBRANDS RTL info
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&sourceid=316"
+    :id: belgapress_query_00030
+    :name: VRT
+    :desc: TELEVISION RTL VRT
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'
+- :query:
+    :value: "&sourceid=361"
+    :id: belgapress_query_00031
+    :name: VRT NWS
+    :desc: DIGITAL NEWSBRANDS VRT NWS
+  :recent_records:
+    :start_date: '2022-05-25'
+    :last_run_update: '2022-06-16T02:00:05Z'
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01'
+    :end_date: '2022-05-25'
+    :current_process_date: 
+    :completed: true
+    :url: 
+    :last_run_update: 
+  :last_parsing_datetime: '2022-06-16T08:05:05Z'

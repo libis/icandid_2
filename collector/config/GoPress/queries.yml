@@ -1,0 +1,146 @@
+---
+:queries:
+- :query:
+    :value: MetroNL
+    :id: gopress_query_0000001
+    :name: gopress_metro
+    :desc: GoPress records for MetroNL from 01/01/2014
+  :recent_records:
+    :newest_id: 
+    :last_run_update: '2022-06-11T05:00:05Z'
+    :next_token: ''
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01T00:00:00Z'
+    :end_date: 
+    :current_process_date: 
+    :next_token: ''
+    :url: 
+    :completed: false
+  :last_parsing_datetime: '2022-06-16T08:10:04Z'
+- :query:
+    :value: DeMorgen
+    :id: gopress_query_0000002
+    :name: gopress_demorgen
+    :desc: GoPress records for DeMorgen from 01/01/2014
+  :recent_records:
+    :newest_id: 
+    :last_run_update: '2022-06-11T05:00:05Z'
+    :next_token: ''
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01T00:00:00Z'
+    :end_date: 
+    :current_process_date: 
+    :next_token: ''
+    :url: 
+    :completed: false
+  :last_parsing_datetime: '2022-06-16T08:10:04Z'
+- :query:
+    :value: DeStandaard
+    :id: gopress_query_0000003
+    :name: gopress_destandaard
+    :desc: GoPress records for DeStandaard from 01/01/2014
+  :recent_records:
+    :newest_id: 
+    :last_run_update: '2022-06-11T05:00:05Z'
+    :next_token: ''
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01T00:00:00Z'
+    :end_date: 
+    :current_process_date: 
+    :next_token: ''
+    :url: 
+    :completed: false
+  :last_parsing_datetime: '2022-06-16T08:10:04Z'
+- :query:
+    :value: DeTijd
+    :id: gopress_query_0000004
+    :name: gopress_detijd
+    :desc: GoPress records for DeTijd from 01/01/2014
+  :recent_records:
+    :newest_id: 
+    :last_run_update: '2022-06-11T05:00:05Z'
+    :next_token: ''
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01T00:00:00Z'
+    :end_date: 
+    :current_process_date: 
+    :next_token: ''
+    :url: 
+    :completed: false
+  :last_parsing_datetime: '2022-06-16T08:10:04Z'
+- :query:
+    :value: GazetvanAntwerpen
+    :id: gopress_query_0000005
+    :name: gopress_gazetvanantwerpen
+    :desc: GoPress records for GazetvanAntwerpen from 01/01/2014
+  :recent_records:
+    :newest_id: 
+    :last_run_update: '2022-06-11T05:00:05Z'
+    :next_token: ''
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01T00:00:00Z'
+    :end_date: 
+    :current_process_date: 
+    :next_token: ''
+    :url: 
+    :completed: false
+  :last_parsing_datetime: '2022-06-16T08:10:04Z'
+- :query:
+    :value: HetBelangvanLimburg
+    :id: gopress_query_0000006
+    :name: gopress_hetbelangvanlimburg
+    :desc: GoPress records for HetBelangvanLimburg from 01/01/2014
+  :recent_records:
+    :newest_id: 
+    :last_run_update: '2022-06-11T05:00:05Z'
+    :next_token: ''
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01T00:00:00Z'
+    :end_date: 
+    :current_process_date: 
+    :next_token: ''
+    :url: 
+    :completed: false
+  :last_parsing_datetime: '2022-06-16T08:10:04Z'
+- :query:
+    :value: HetLaatsteNieuws
+    :id: gopress_query_0000007
+    :name: gopress_hetlaatstenieuws
+    :desc: GoPress records for HetLaatsteNieuws from 01/01/2014
+  :recent_records:
+    :newest_id: 
+    :last_run_update: '2022-06-11T05:00:05Z'
+    :next_token: ''
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01T00:00:00Z'
+    :end_date: 
+    :current_process_date: 
+    :next_token: ''
+    :url: 
+    :completed: false
+  :last_parsing_datetime: '2022-06-16T08:10:04Z'
+- :query:
+    :value: HetNieuwsblad
+    :id: gopress_query_0000008
+    :name: gopress_hetnieuwsblad
+    :desc: GoPress records for HetNieuwsblad from 01/01/2014
+  :recent_records:
+    :newest_id: 
+    :last_run_update: '2022-06-11T05:00:05Z'
+    :next_token: ''
+    :url: 
+  :backlog:
+    :start_date: '2014-01-01T00:00:00Z'
+    :end_date: 
+    :current_process_date: 
+    :next_token: ''
+    :url: 
+    :completed: false
+  :last_parsing_datetime: '2022-06-16T08:10:04Z'

@@ -1,0 +1,19 @@
+---
+:auth:
+  :ftp_host: ftp-production.gopress.be
+  :consumer_key: 
+  :consumer_secret: 
+:backlog_auth:
+  :ftp_host: ftp.belga.be
+  :consumer_key:
+  :consumer_secret:
+:testing: true
+:save_raw_data: true
+:source_records_dir: "/source_records/GoPress/{{query_id}}/"
+:records_dir: "/records/GoPress/{{query_id}}/{{date}}/"
+:extraction_dir: "/source_records/GoPress/xml_extract/"
+:source_file_name_pattern: "*.zip"
+:dir_based_on_datePublished: false
+:override_parsed_records: true
+:rule_set: RULE_SET_v1_0
+:status: parsing

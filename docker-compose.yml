@@ -1,0 +1,75 @@
+version: '3'
+services:
+  mailbox_parser:
+    image: mail_parser
+    build: 
+      context: ./mail_parser
+      dockerfile: Dockerfile_parser
+    networks: 
+      - data_network
+    links:
+      -  mailbox_redis
+    volumes:
+      # - ./mail_parser/src:/app/src
+      - ./volumes/mail_parser/config:/app/config
+      - ./volumes/records:/records
+      - ./volumes/source_records:/source_records
+      - ./volumes/logs:/logs
+
+  pst_converter:
+      image: pst_converter
+      build: 
+        context: ./mail_parser
+        dockerfile: Dockerfile_pst
+      networks: 
+        - data_network
+      volumes:
+        #- ./mail_parser/bin:/app/bin
+        - ./volumes/records:/records
+        - ./volumes/source_records:/source_records
+        - ./volumes/logs:/logs
+
+  mailbox_redis:
+    image: redis:alpine
+    command: redis-server --appendonly yes 
+    ports:
+      - 6380:6379
+    volumes:
+        -  ./volumes/redis/data:/data
+    networks: 
+      - data_network        
+    restart: always
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+  collector:
+    image: icandid_collector
+    build: 
+      context: ./collector
+      dockerfile: Dockerfile_collector
+    networks: 
+      - data_network
+    volumes:
+      # - ./collector/src/:/app/src
+      - ./volumes/collector/config/:/app/config/
+      - ./volumes/records:/records
+      - ./volumes/source_records:/source_records
+      - ./volumes/logs:/logs
+
+  es_loader:
+    image: es_loader
+    build: 
+      context: ./es_loader
+      dockerfile: Dockerfile_esloader
+    networks: 
+      - data_network
+    volumes:
+      # - ./esloader/src/:/app/src
+      - ./volumes/es_loader/elastic/:/elastic
+      - ./volumes/es_loader/config/:/app/config
+      - ./volumes/records:/records
+      - ./volumes/logs:/logs
+
+networks:
+  data_network:
+    driver: bridge
