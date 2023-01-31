@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://icandid.libis.be/sitemap/sitemap.xml
