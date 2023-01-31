@@ -1,3 +1,2 @@
-
-/volumes/*
-notes.txt
+.env.json
+.env2.json

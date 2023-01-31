@@ -1,0 +1,9 @@
+version: '3'
+services:
+  icandid2_front:
+    build: 
+        context: .
+        dockerfile: docker/Dockerfile
+    ports:
+      - "4201:4201"
+      - "4202:4202"

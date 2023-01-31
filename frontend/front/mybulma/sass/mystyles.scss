@@ -1,0 +1,39 @@
+@charset "utf-8";
+
+// Import a Google Font
+@import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
+
+// Set your brand colors
+$purple: #8A4D76;
+$pink: #FA7C91;
+
+$green: #306e24;
+$pistache: #1a8d00;
+
+$brown: #757763; 
+$beige-light: #D0D1CD;
+$beige-lighter: #EFF0EB;
+
+// Update Bulma's global variables
+$family-sans-serif: "Nunito", sans-serif;
+$grey-dark: $brown;
+$grey-light: $beige-light;
+//$grey-lighter: $beige-lighter;
+$primary: $green;
+$link: $pistache;
+$widescreen-enabled: true;
+$fullhd-enabled: false; 
+
+// Update some of Bulma's component variables
+$body-background-color: $beige-lighter;
+$control-border-width: 2px;
+$input-border-color: $brown;
+$input-shadow: none;
+//$footer-padding: 0rem 0.5rem 0rem;
+
+$divider-thickness: .1rem; 
+
+
+@import "../node_modules/bulma/sass/_all.sass";
+@import "../node_modules/bulma-divider/dist/css/bulma-divider.sass";
+@import "../node_modules/bulma-checkradio/dist/css/bulma-checkradio.sass"; 
