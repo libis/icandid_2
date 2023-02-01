@@ -37,7 +37,7 @@ RUN mkdir /var/www/html/front
 RUN mkdir /var/www/html/api
 
 ADD ./front/dist /var/www/html/front/
-ADD ./front-api81 /var/www/html/api/
+ADD ./front-api /var/www/html/api/
 
 RUN rm -rfv /var/www/html/api/storage/framework/cache/data/*
 RUN rm -rfv /var/www/html/api/storage/app/export/*
