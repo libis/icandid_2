@@ -69,6 +69,10 @@ begin
   ################## RECENT SEARCH ######################################
   icandid_config.query_config[:queries].each.with_index() do |query, index|
 
+    unless icandid_config.get_queries_to_process.include?(query[:query][:id])
+      @logger.info ("NExt next")
+        next
+    end
     @logger.info ("downloading recent_records for query: #{ query[:query][:id] } [ #{ query[:query][:name] } ]")
     if query[:recent_records].nil?
       # No recent_records for this query
@@ -221,6 +225,11 @@ begin
 
     icandid_config.query_config[:queries].each.with_index() do |query, index|
 
+      unless icandid_config.get_queries_to_process.include?(query[:query][:id])
+        @logger.info ("NExt next")
+          next
+      end
+      
       if query[:backlog].nil?
         @logger.info ("No backlog processing for #{ query[:query][:name]  } [ #{query[:query][:id]} ] !!!!!!!")
         next

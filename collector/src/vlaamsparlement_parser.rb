@@ -64,7 +64,7 @@ begin
     @logger.info ("Paring records for query: #{ query[:query][:id] } [ #{ query[:query][:name] } ]")
     @logger.info ("Start parsing using rule_set: #{icandid_config.config[:rule_set]}")
 
-    unless icandid_config.get_queries_to_parse.include?(query[:query][:id])
+    unless icandid_config.get_queries_to_process.include?(query[:query][:id])
         next
     end
 

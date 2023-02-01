@@ -52,6 +52,7 @@ module Icandid
           o.banner = "Usage: #{$0} [options]"
           o.on("-c CONFIG", "--config", "yml-file (including path) with the configuration (./config/config.yml)") { |c| @command_line_options[:config] = c }
           o.on("-q QUERY_FILE", "--query", "yml-file (including path) with query configuration (url-parameters, last_update_datetime)  (./config/queries.yml)") { |q| @command_line_options[:query_config] = q}
+          o.on("-n QUERY_ID", "--query_id", "The id of the query if only one specific query needs to be downloaded") { |n| @command_line_options[:query_id] = n}          
           o.on("-s SOURCE_RECORDS_DIR", "--source", "Directory where the records will be stored (/source_records/<provider>/{{query}}/)") { |s| @command_line_options[:source_dir] = s}
           o.on( '-h', '--help', 'Display this screen.' ) do
             puts o
@@ -140,7 +141,7 @@ module Icandid
       @config[:status] = status
     end
 
-    def get_queries_to_parse( )
+    def get_queries_to_process( )
       queries_to_parse = queries_to_parse = query_config[:queries].map { |q|  q[:query][:id] }
       unless @command_line_options[:query_id].nil?
         queries_to_parse.select! { |q| q == @command_line_options[:query_id] }

@@ -109,7 +109,7 @@ begin
     end
 
 
-    unless icandid_config.get_queries_to_parse.include?(query[:query][:id])
+    unless icandid_config.get_queries_to_process.include?(query[:query][:id])
       @logger.info ("NExt next")
       next
     end
