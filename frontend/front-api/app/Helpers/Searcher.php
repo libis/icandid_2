@@ -141,9 +141,11 @@ class Searcher {
                                             'verify' => false
                                         ]
                                     );
-        $r = json_decode($response->getBody()->getContents());
+        $content = $response->getBody()->getContents();
+        $r = json_decode($content);
+        Log::info($response->getStatusCode() . " " . $response->getReasonPhrase() . " " . strlen($content)); // . " : " . count($r->hits->hits));   
+        Log::info($content);                                 
         $this->_scroll_id = $r->_scroll_id;
-        Log::info($response->getStatusCode() . " " . $response->getReasonPhrase() . " : " . count($r->hits->hits));                                    
         if (count($r->hits->hits) > 0) {
             $this->hits = $r->hits->total->value;
             Log::info($r->hits->total->value);
@@ -184,8 +186,10 @@ class Searcher {
                                             'verify' => false
                                         ]
                                     );
-        $r = json_decode($response->getBody()->getContents());
-        Log::info($response->getStatusCode() . " " . $response->getReasonPhrase()); // . " : " . count($r->hits->hits));                                    
+        $content = $response->getBody()->getContents();
+        $r = json_decode($content);
+        Log::info($response->getStatusCode() . " " . $response->getReasonPhrase() . " " . strlen($content)); // . " : " . count($r->hits->hits));   
+        Log::info($content);
         $this->_scroll_id = $r->_scroll_id;
         if (count($r->hits->hits) > 0) {
             Log::info($r->hits->total->value);
