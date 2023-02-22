@@ -5,7 +5,7 @@ $config = Array();
 function init() {
     global $config;
     $env = parse_ini_file('.env');
-    $list = ['icandidApiUrl','elasticUrl','elasticUser','elasticPassword'];
+    $list = ['icandidApiUrl','elasticUrl','elasticUser','elasticPassword','cacheTimeout'];
 
     foreach($list as $k => $v) {
         if (getenv($v)) {
@@ -31,7 +31,7 @@ function getPermissions($apikey) {
     
         if (curl_getinfo($ch, CURLINFO_RESPONSE_CODE) == 200) {
             $permissions = json_decode($output);
-            save_cache($permissions, $apikey, 600);
+            save_cache($permissions, $apikey, $config['cacheTimeout']);
         } else {
             http_response_code(401);  // unauthorised
             exit;
@@ -80,6 +80,10 @@ function getResult($query, $request_uri) {
     $result_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
     
     curl_close($ch);
+
+    writelog($config['elasticUrl'] . $request_uri);
+    writelog($query);
+    writelog($result_code);
 
     return array($result, $result_code);
     
