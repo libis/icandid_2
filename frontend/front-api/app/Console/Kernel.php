@@ -7,7 +7,6 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Helpers\Export;
 use App\Helpers\DocCounter;
 use App\Helpers\StorageMonitor;
-use App\Helpers\DataMonitor;
 
 class Kernel extends ConsoleKernel
 {
@@ -53,14 +52,6 @@ class Kernel extends ConsoleKernel
             $sm = new StorageMonitor;  // calculate how much storage every user is using and report this
             $sm->exec();
         })->daily();
-/*
-        $schedule->call(function() {
-            $dm = new DataMonitor;  // see if there is an anomoulous number of items for a publisher
-            $dm->exec();
-        })->dailyAt('12:00');
-*/
-
-
 
     }
 
