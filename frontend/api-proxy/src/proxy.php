@@ -6,7 +6,7 @@ include('cache.php');
 
 init();
 
-$request_uri = str_replace("/esapi","",$_SERVER["REQUEST_URI"]);
+$request_uri = $_SERVER["REQUEST_URI"];
 
 $apikey = getallheaders()["APIKEY"];
 if ($apikey == "") {
