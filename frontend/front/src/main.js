@@ -272,7 +272,8 @@ const store = new Vuex.Store(
         )
       },
       setQuery: (state, q) => {
-        state.search.queryObj = q
+        state.search.queryObj = {q:'', s:'relevance', f:[], nav:'first'}
+        state.search.queryObj = {...state.search.queryObj, ...q}
       },
       setSearchStatus: (state, s) => {state.search.loading = s},
       setActiveResultIdx: (state, idx) => { state.search.activeResultIdx = idx},
