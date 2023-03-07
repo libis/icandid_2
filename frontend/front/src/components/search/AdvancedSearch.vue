@@ -135,7 +135,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      query: [{ operator: "blank", field: "any", condition: "contains", q: "" }],
+      query: [{ operator: "blank", field: "any", condition: "contains"}],
       dateformat: "yyyy-MM-dd",
       ddlists: [],
     };
@@ -155,7 +155,6 @@ export default {
       this.query[0].operator = "blank";
     },
     queryObj() {
-      
       var name = "";
       for (var idx in this.query) {
         var line = this.query[idx];
@@ -166,14 +165,33 @@ export default {
           if (line.operator == 'AND' || line.operator == 'OR') {
               name += ' ' + line.operator + ' '
           }
+          var lq = ""
+
+          switch(line.field) {
+            case "dataset":
+              line.name = this.$parent.datasets.find(d => d.internalident == line.query).name
+              lq = line.name
+              break;
+            case "language":
+              line.name = this.$parent.languages.find(d => d.id == line.query).name
+              lq = line.name
+              break;
+            case "label":
+              line.name = this.$parent.labels.find(d => d.id == line.query).name
+              lq = line.name
+              break;
+            default:
+              lq = line.query
+              break;
+          }
           if (line.condition == "contains") {
-              name += line.field+':'+line.query
+              name += line.field+':'+lq
           }
           if (line.condition == "starts") {
-              name += line.field+':'+line.query+'*'
+              name += line.field+':'+lq+'*'
           }
           if (line.condition == "phrase") {
-              name += line.field+':"'+line.query+'"'
+              name += line.field+':"'+lq+'"'
           }
         }
       }

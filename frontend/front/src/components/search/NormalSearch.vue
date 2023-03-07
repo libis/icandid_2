@@ -161,7 +161,6 @@ export default {
   methods: {
     ...mapActions(["clearResultset","clearAggregations","saveQuery","exportResultCsv","exportResultJsonLd"]),
     queryObj() {
-
       // make sure only active datasets are selected (cfr. difference media/collections)
       // var ds_id = this.$parent.datasets.map(x => x.internalident);
       // for (var i=0; i<this.selectedDatasets.length; i++) {
@@ -170,6 +169,9 @@ export default {
       //     i--;
       //   }
       // }
+
+      var datasets_full = this.$parent.datasets.filter(d => this.selectedDatasets.indexOf(d.internalident) > -1 ).map(e=>e.name)
+
       return { 
         searchtype:"normal", 
         q: this.searchterm, 
@@ -177,6 +179,7 @@ export default {
         period:this.selectedPeriod, 
         //publications:this.selectedPublications,
         datasets:this.selectedDatasets,
+        datasets_fullname: datasets_full,
         name: this.searchterm };
     },
     clear() {
