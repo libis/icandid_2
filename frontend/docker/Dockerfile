@@ -3,29 +3,15 @@ FROM php:8.1-apache
 
 RUN apt-get upgrade -y
 
-RUN apt-get update && \
-    apt-get install -y net-tools && \
-    apt-get install -y rsyslog
-RUN apt-get install -y mailutils
-
-RUN apt-get update && \
-    apt-get install -y apt-utils default-mysql-client git zip unzip curl libzip-dev vim iputils-ping net-tools netcat less libxml2 libxml2-dev cron sqlite3
-
-RUN apt-get update && \
-	apt-get install -y libpq-dev
-
-RUN apt-get install -y libonig-dev
-
-
-RUN apt-get update && apt-get install -y \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libpng-dev \
+RUN apt-get update  && \
+    apt-get install -y net-tools rsyslog mailutils \
+    apt-utils default-mysql-client git zip unzip curl libzip-dev vim iputils-ping net-tools netcat less libxml2 libxml2-dev cron sqlite3 \
+    libpq-dev libonig-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
+    && apt-get clean \
     && docker-php-ext-install -j$(nproc) iconv \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd
-
-RUN docker-php-ext-install mysqli pdo pdo_mysql mbstring ctype bcmath xml opcache pgsql pdo_pgsql 
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install mysqli pdo pdo_mysql mbstring ctype bcmath xml opcache pgsql pdo_pgsql 
 
 RUN pecl install zip && docker-php-ext-enable zip
 
