@@ -32,9 +32,10 @@ export default {
         }
     },
     methods:{
-        ... mapActions(["setUser"]),
+        ... mapActions(["setUser","setSavedShelves"]),
         open() {
             this.visible = true
+            this.getShelves();
         },
         close() {
             this.visible = false
@@ -66,10 +67,20 @@ export default {
                     });
                 }
             }
+        },
+        getShelves() {
+            axios
+                .get(this.getApiShelvesUrl)
+                .then(res => {
+                    this.setSavedShelves(res.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                });      
         }
     },
     computed: {
-        ...mapGetters(["getSavedSets","getActiveResult","getApiProfileUrl","getSelectedResults","getSearchRequest"])
+        ...mapGetters(["getSavedSets","getActiveResult","getApiProfileUrl","getSelectedResults","getSearchRequest","getApiShelvesUrl"])
     }
     
 }
