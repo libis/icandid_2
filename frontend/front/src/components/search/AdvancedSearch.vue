@@ -96,7 +96,9 @@
  -->
               <div class="select" v-if="advancedQ.field == 'language'">
               <select style="width:315px" v-model="advancedQ.query" >
-                  <option v-for="item in $parent.languages" :value="item.id" :key="'lang_' + item.id">{{ item['name_'+$ml.current] }}</option>
+                  <!-- <option v-for="item in $parent.languages" :value="item.id" :key="'lang_' + item.id">{{ item['name_'+$ml.current] }}</option> -->
+                  <option v-for="item in ddlists.languages" :value="item" :key="'lang_' + item">{{ item }}</option>
+
               </select>
               </div>
 
@@ -172,10 +174,10 @@ export default {
               line.name = this.$parent.datasets.find(d => d.internalident == line.query).name
               lq = line.name
               break;
-            case "language":
+/*            case "language":
               line.name = this.$parent.languages.find(d => d.id == line.query).name
               lq = line.name
-              break;
+              break; */
             case "label":
               line.name = this.$parent.labels.find(d => d.id == line.query).name
               lq = line.name

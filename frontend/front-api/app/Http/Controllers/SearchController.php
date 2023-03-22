@@ -187,6 +187,14 @@ class SearchController extends Controller
 
         $r = $this->searcher->ddlists($this->user->apikey);
 
+        $lists["languages"] = [];
+        foreach ($r->aggregations->languages->buckets as $b) {
+            if ($b->key != "Undetermined") {
+                $lists["languages"][] = $b->key;
+            }
+        }
+        //sort($lists["languages"]);
+
         $lists["providers"] = [];
         foreach ($r->aggregations->providers->buckets as $b) {
             $lists["providers"][] = $b->key;

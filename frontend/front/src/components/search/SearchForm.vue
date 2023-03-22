@@ -100,7 +100,7 @@ export default {
         }
         );
 
-    },
+    }, 
     languages() {
       this.lang; // forces the language list to be recomputed (and re-sorted !) on UI-language-change (weird I know)
       let tmp_langs = []
@@ -123,7 +123,7 @@ export default {
         }
         );
 
-    },
+    }, 
     datasets() {
       let tmp_datasets = []
       // for (var i=0; i<this.getDatasets.length; i++) {

@@ -43,7 +43,8 @@ class Searcher {
         'dataset' => ['isBasedOn.isPartOf.name.keyword','isBasedOn.isPartOf.@id'],
         'edition' => ['printEdition.keyword'],
         'type' => ['@type'],         
-        'legislationType' => ['legislationType.keyword']
+        'legislationType' => ['legislationType.keyword'],
+        'language' => ['inLanguage.name.keyword']
     ];
     private $sortmapping = [
         'relevance' => ["_score"=>"desc"],
@@ -417,11 +418,11 @@ class Searcher {
                 }');
                 if (isset($v->queryfrom) && $v->queryfrom != "") $tmpq->query->range->datePublished->gte = date("Y-m-d", strtotime($v->queryfrom));
                 if (isset($v->queryto) && $v->queryto != "")  $tmpq->query->range->datePublished->lte = date("Y-m-d", strtotime($v->queryto));
-            } else if ($v->field == 'language') {
+/*            } else if ($v->field == 'language') {
                 $tmpq->query->bool = (object)[];
                 $tmpq->query->bool->filter = [];
                 $datasets = array_map(function($d) { return $d->internalident; },DB::table('datasets')->select('internalident')->join('dataset_language',"datasets.id", "=", "dataset_language.dataset_id")->where("dataset_language.language_id", "=", $v->query)->get()->all());
-                $tmpq->query->bool->filter[] = ["terms"=>["isBasedOn.isPartOf.@id"=>$datasets]];
+                $tmpq->query->bool->filter[] = ["terms"=>["isBasedOn.isPartOf.@id"=>$datasets]];*/
             } else if ($v->field == 'label') {
                 $tmpq->query->bool = (object)[];
                 $tmpq->query->bool->filter = [];
@@ -557,28 +558,34 @@ class Searcher {
             },
             "size": 0,
             "aggregations":{
+                "languages":{
+                    "terms": {
+                        "field":"inLanguage.name.keyword",
+                        "size":500
+                    }
+                },
                 "providers":{
                     "terms": {
                         "field":"isBasedOn.provider.name.keyword",
-                        "size":500
+                        "size":5000
                     }
                 },
                 "publishers":{
                     "terms": {
                         "field":"publisher.name.keyword",
-                        "size":500
+                        "size":5000
                     }
                 },
                 "editions":{
                     "terms": {
                         "field":"printEdition.keyword",
-                        "size":500
+                        "size":5000
                     }
                 },
                 "legislationTypes":{
                     "terms": {
                         "field":"legislationType.keyword",
-                        "size":500
+                        "size":5000
                     }
                 }                
             }
