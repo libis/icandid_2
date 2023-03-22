@@ -41,9 +41,9 @@ end
 
 begin
   config = {
-    :config_path => File.join(ROOT_PATH, './config/twitter/'),
+    :config_path => File.join(ROOT_PATH, './config/twitter'),
     :config_file => "config.yml",
-    :query_config_path => File.join(ROOT_PATH, './config/twitter/'),
+    :query_config_path => File.join(ROOT_PATH, './config/twitter'),
     :query_config_file => "queries.yml"
   }
 
@@ -55,7 +55,7 @@ begin
 
   start_process  = Time.now.strftime("%Y-%m-%dT%H:%M:%SZ")
   
-  @logger.info ("downloading for queries in : #{ icandid_config.query_config.path }#{ icandid_config.query_config.file }")
+  @logger.info ("downloading for queries in : #{ icandid_config.query_config.path }/#{ icandid_config.query_config.file }")
 
   # Alwyas get the recent records first. After that start processing the backlog
   # All query[:recent_records][:url] are nil and all query[:recent_records][:last_run_update] have te value today: recent_records has been processed for today 
@@ -76,7 +76,7 @@ begin
 
   icandid_config.query_config[:queries].each.with_index() do |query, index|
 
-    unless icandid_config.get_queries_to_process.include?(query[:query][:id])
+    unless icandid_config.get_queries_to_parse.include?(query[:query][:id])
       @logger.info ("NExt next")
         next
     end
@@ -229,30 +229,27 @@ puts "--------------------------------------------------------------------------
   end
 
   # detect most recent process_dates
-  current_process_dates = icandid_config.query_config[:queries].map{ |q| q[:backlog][:current_process_date].to_date }
+  current_process_dates = icandid_config.query_config[:queries].select{ |q| !q[:backlog][:current_process_date].nil? }.map{ |q| q[:backlog][:current_process_date].to_date }
   current_running_process = icandid_config.query_config[:queries].select{ |q| !q[:backlog][:url].nil? }
-  earliest_start_date = icandid_config.query_config[:queries].map{ |q| q[:backlog][:start_date].to_date }.min
+  earliest_start_date = icandid_config.query_config[:queries].select{ |q| !q[:backlog][:start_date].nil? }.map{ |q| q[:backlog][:start_date].to_date }.min
 
   if (current_process_dates.uniq.size == 1 && current_running_process.size == 0) 
     @logger.info ("All backlog records for #{ current_process_dates[0] } are processed")
     current_process_dates = [ (current_process_dates[0] - 1.month).end_of_month ]
   end
+
   most_recent_process_date = current_process_dates.max
 
   if icandid_config.query_config[:queries].select { |q| !q[:backlog][:completed] }.empty?
     @logger.info ("All backlog records are processed")
   else
 
+
   while most_recent_process_date > (earliest_start_date - 1.days)
     @logger.debug ("Processing backlog records for current_process_date : #{ most_recent_process_date }")
-    
-
+   
     icandid_config.query_config[:queries].each.with_index() do |query, index|
       
-      unless icandid_config.get_queries_to_process.include?(query[:query][:id])
-        @logger.info ("NExt next")
-          next
-      end
       @logger.debug ("Processing backlog records for #{ query[:query][:name]  } [ #{query[:query][:id]} ]")
 
       if query[:backlog].nil?
@@ -265,6 +262,8 @@ puts "--------------------------------------------------------------------------
         next
       end
   
+   
+
       current_process_date = query[:backlog][:current_process_date].to_date 
       @logger.debug ("current_process_date : #{ current_process_date }")
       @logger.debug ("most_recent_process_date : #{ most_recent_process_date }")
@@ -285,13 +284,14 @@ puts "--------------------------------------------------------------------------
 
       @logger.info ("downloads written to #{ source_records_dir }")
 
+      
+
       url_options[:start_time] = query[:backlog][:current_process_date].to_date.beginning_of_month.strftime("%Y-%m-%dT%H:%M:%SZ")
       url_options[:end_time]   = ((query[:backlog][:current_process_date].to_date.end_of_month)+1).strftime("%Y-%m-%dT%H:%M:%SZ")
 
       if url_options[:end_time] > query[:backlog][:end_date]
         url_options[:end_time]   = ((query[:backlog][:current_process_date].to_date)+1).strftime("%Y-%m-%dT00:00:00Z")
       end
-
 
       if url_options[:query_max_results] > 100 
         url_options[:query_max_results] = 100 
@@ -305,6 +305,8 @@ puts "--------------------------------------------------------------------------
 
       url = icandid_config::create_backlog_url( url: icandid_config.config[:backlog_url], query: query, options: url_options)
 
+
+
       while url
         if  ( Time.parse(RESTART_PROCESS_TIME) - (60*15) ) < Time.now  && Time.now  <= Time.parse(RESTART_PROCESS_TIME) 
           icandid_config.update_system_status("ready")
@@ -317,7 +319,9 @@ puts "--------------------------------------------------------------------------
           @logger.warn "NO DATA AVAILABLE on this url #{url}"
           break
         end
-  
+
+        
+
         unless data["errors"].nil?
           if data["errors"].select { |e| e["message"] =~ /Invalid 'start_time':'(.*)'. 'start_time' must be on or after (.*)/  }.empty?
   
@@ -328,6 +332,9 @@ puts "--------------------------------------------------------------------------
               raise "Error in request"
             end
           else
+
+
+
             old_time = $1.to_date.strftime("%Y-%m-%dT%H:%M:%SZ")
             new_time = ($2.to_date + 1).strftime("%Y-%m-%dT%H:%M:%SZ")
             @logger.warn ("replace start date #{old_time} ==> #{new_time} ")
@@ -396,4 +403,20 @@ ensure
   @logger.info("Twitter download is finished without errors")
 end
 
+=begin
+Elke provider kan meerder datasets aanleveren
+Elke dataset heeft een 
+  - backlog
+  - daily, weekly, monthly, quartly, yearly update
+
+In de config moet dus worden bijgehouden voor welke dataset welke records reeds zijn afgehaald.
+==> provider : config.yml
+==> dataset(s) : queries.yml
+Indien mogelijk zal de directory structuur eerst de dataset en daarna downloaddate bevatten.
+De directory structuur van de backlog is gebasseerd op de publicationdate ????
+De directory structuur van de updates is gebasseerd op de downloaddate ????
+Voor download is het source_records/<provider>/<dataset>/<download_date>/ eventueel opgesplits in backlog en updates
+De geparste records zouden beste ook in een directory structuur komen die gebasseerd is op de process time (sorteren op input date !!! publication date is maar een veld zoals een ander.)
+
+=end
 
