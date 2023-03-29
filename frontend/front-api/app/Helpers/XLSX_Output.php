@@ -48,7 +48,7 @@ class XLSX_Output extends CSV_Output{
     private function fillrow($r) {
         foreach($r as $k=>$val) {
             $cell = $this->column($k) . $this->row;
-            
+            print($cell . "\n");
             if (substr($val,0,1) == "=") { // data beginning with = is considered a formula, adding a ' prevents this
                 $val = "'" . $val;
             }
@@ -63,7 +63,7 @@ class XLSX_Output extends CSV_Output{
         $b = $num % 26;
 
         if ($num > 25) {
-            $col .= chr($a+65);
+            $col .= chr($a+64);
         }
         $col .= chr($b+65);
         return $col;
