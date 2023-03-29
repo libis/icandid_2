@@ -178,12 +178,12 @@ export default {
                     if (dat[i].thumbnailUrl != undefined) {
                       out += '<a target="_blank" href="' + dat[i].thumbnailUrl + '">' + dat[i].thumbnailUrl + '</a><br/>'
                     }
-                    if (dat[i].width != undefined && dat[i].height != undefined) {
+/*                    if (dat[i].width != undefined && dat[i].height != undefined) {
                       out += dat[i].width + 'x' + dat[i].height + '<br/>'
                     }
                     if (dat[i].encodingFormat != undefined) {
                       out += dat[i].encodingFormat + '<br/>'
-                    }
+                    } */
                   }
                 }
               }
@@ -234,12 +234,12 @@ export default {
             if (dat.thumbnailUrl != undefined) {
               out += '<a target="_blank" href="' + dat.thumbnailUrl + '">' + dat.thumbnailUrl + '</a><br/>'
             }
-            if (dat.width != undefined && dat.height != undefined) {
+/*            if (dat.width != undefined && dat.height != undefined) {
               out += dat.width + 'x' + dat.height + '<br/>'
             }
             if (dat.encodingFormat != undefined) {
               out += dat.encodingFormat + '<br/>'
-            }
+            }*/
             
           }
 
