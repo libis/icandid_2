@@ -3,6 +3,7 @@ require 'yaml'
 require 'logger'
 require 'zip'
 require 'data_collector'
+require 'timeout'
 
 include DataCollector::Core
 
@@ -39,6 +40,7 @@ module IcandidCollector
 
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
+      http.read_timeout = 10
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       request = Net::HTTP::Post.new(uri)
 
@@ -121,6 +123,15 @@ module IcandidCollector
           end
         end
         data
+      rescue Timeout::Error => exc
+        @logger.error("Error [timed out]: #{exc.message}")
+        if @retry_count < number_of_retries
+          @retry_count += 1
+          @logger.error ("Wait 300 seconds and try Again ==> number_of_retries:#{@retry_count}")
+          sleep 300
+          @retry_count -= 1
+          get_data(url, url_options)
+        end
       rescue => exception
         @logger.error("Error : #{ exception } ")
         raise "Error get_data !!!! ==> number_of_retries:#{@retry_count}"
@@ -137,7 +148,8 @@ module IcandidCollector
                 
         @logger.debug(" options #{ options }")
 
-        # @logger.debug(" rules_ng.run #{ rule_set }")
+        #@logger.debug(" rules_ng.run #{ rule_set }")
+        #puts rule_set
         #puts rule_set[:version]
         #puts "================>"
 
@@ -156,6 +168,32 @@ module IcandidCollector
         exit
       end
     end
+
+    def convert_data( rule_set: nil , options: {} )
+      begin
+        if rule_set.nil?
+          raise "rule_set is required to parse file"
+        end
+        
+        converted_data = DataCollector::Output.new
+        converted_data.clear
+
+        data = JSON.parse(output.raw.to_json)
+
+        rules_ng.run( rule_set[:rs_records], data, converted_data, options)
+        
+        converted_data[:records]
+
+      rescue StandardError => e
+        @logger.error("Error convert data  #{rule_set} ")  
+        @logger.error("#{ e.message  }")
+        @logger.error("#{ e.backtrace.inspect   }")
+        @logger.error( "HELP, HELP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        raise e
+        exit
+      end
+    end
+
 
     def csv_file_to_hash(file, seprator=",", encoding="UTF-8")
       begin
@@ -194,30 +232,69 @@ module IcandidCollector
     end
 
 
-    def write_records(records_dir: nil )
+    def write_records(records_dir: nil, record_format: 'json', file_name: nil,  clear_output: true, options: {})
       if records_dir.nil?
         raise "no records_dir specified !"
       end
-      
+
       # records_dir = "#{records_dir}"
-
       @logger.debug(" Output to folder:  #{records_dir}")        
-
+      @logger.debug("  record_format:  #{record_format}")        
+      
       unless output[:records].nil?
-          if output[:records].is_a?(Array)
-              output[:records].each do |record|
-                  write_file(record: record, record_file_name: record[:@id], records_dir: records_dir)
-              end
-          else
-              record = output[:records]
-              write_file(record: record, record_file_name: record[:@id], records_dir: records_dir)
+        if output[:records].is_a?(Array)
+          records = output[:records]
+        else
+          records = [ output[:records] ]
+        end
+        
+        unless file_name.nil?
+          record_file_name = file_name
+        end
+
+        if record_format == 'csv'
+          record_file_name = "csv_output.csv" if file_name.nil?
+          write_csv(records: records, record_file_name: record_file_name, records_dir: records_dir, clear_output: clear_output,  options: options)
+        else
+          records.each do |record|
+            record_file_name = record[:@id] if file_name.nil?
+            write_file(record: record, record_file_name: record_file_name, records_dir: records_dir, record_format: record_format, clear_output: clear_output)
           end
+        end
+
       end
     end
 
-    def write_file(record: ,  record_file_name: nil, records_dir:)
+    def write_csv(records: , record_file_name: nil, records_dir: , clear_output: true,  options: {})
+      if records_dir.nil?
+        raise "no records_dir specified !"
+      end
+      #if @config[:csv_headers].nil?
+      #  raise "no csv_headers specified !"
+      #end
+
+      csv_headers = options[:csv_headers].keys
+
+      # puts 'HEADERS:'
+      # puts csv_headers
+
+      csv_file = File.join(records_dir,record_file_name)
+
+      if File.exists?( csv_file )
+        header_written = false
+      else
+        header_written = true
+      end
+      
+      CSV.open(csv_file, "ab", :write_headers=> header_written, :headers => csv_headers, :col_sep => "\t") do |csv|
+        records.each { |record| csv << collect_csv_values(record, csv_headers) }
+      end
+
+    end
+
+    def write_file(record: , record_file_name: nil, records_dir:, record_format: 'json', clear_output: true)
       if record.nil?
-        raise "record specified !"
+        raise "no record specified !"
       end
       if records_dir.nil?
         raise "no records_dir specified !"
@@ -230,8 +307,16 @@ module IcandidCollector
         records_dir = records_dir.gsub(/\{\{record_dataPublished\}\}/, record[:datePublished].to_datetime.year.to_s)
       end
 
-      output.to_jsonfile( record, record_file_name, records_dir, @config[:override_parsed_records])
-      output.clear()
+      if record_format == 'json'
+        output.to_jsonfile( record, record_file_name, records_dir, @config[:override_parsed_records])
+      elsif record_format == 'xml'
+        raise "Ouput to xml not implemented yet!!!!"
+      else
+        output.to_jsonfile( record, record_file_name, records_dir, @config[:override_parsed_records])
+      end
+      if clear_output
+        output.clear()
+      end
     end
 
     def extract_fulltext_with_tika( id:, data: )
@@ -248,6 +333,19 @@ module IcandidCollector
       f_data = HTTP.put(tika_url, headers: { accept: "text/plain" }, body: data)
       if f_data.code == 200
         result = f_data.body.to_s.encode!('UTF-8', :undef => :replace, :invalid => :replace, :replace => "")
+
+        if ( ( result.scan(/\ufffd/).length.to_f / result.length.to_f ) > 0.20 )
+        #  char_hash={}
+        #  result.split('').each { |c| 
+        #    # c = c.ord
+        #    if char_hash.has_key?(c)
+        #      char_hash[c] += 1 
+        #    else
+        #      char_hash[c] = 1
+        #    end
+        #  }
+          result = "Extraction text from pdf fails! encoding issues - Unicode mapping"
+        end
         result.to_json
       end
       puts "\textract_fulltext_with_tika - #{Time.now.to_f - ts} s"
@@ -256,15 +354,24 @@ module IcandidCollector
       puts "extract_fulltext_with_tika - #{id} - #{e.message}"
     end 
 
-
-
-
-
-
-
-
-
-
+    def collect_csv_values(hash, headers)
+      arr = headers.map { | header | 
+        value = hash[header]
+        if value.nil?
+          ""
+        elsif (value.class == Array)
+          value.join(',').delete("\n")
+        elsif (value.class == String)
+          value.delete("\n")
+        elsif (value.class == Integer)
+          value 
+        else
+          pp value
+          value
+        end
+      } 
+      arr
+    end
 
   end
 end

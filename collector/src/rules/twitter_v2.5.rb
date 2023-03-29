@@ -2,15 +2,15 @@
 require 'data_collector'
 require "iso639"
 
-RULE_SET_v2_4 = {
-    version: "2.4",
+RULE_SET_v2_5 = {
+    version: "2.5",
     rs_records: {
         records: { "@" => lambda { |d,o|  
 
 
             o[:media] = {}
             media = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_media], d, media, o)
+            rules_ng.run(RULE_SET_v2_5[:rs_media], d, media, o)
             unless media[:media].nil?
                 o[:media] = media[:media] 
                 o[:media] = [ o[:media] ] unless o[:media].kind_of?(Array)
@@ -19,7 +19,7 @@ RULE_SET_v2_4 = {
 
             o[:places] = {}
             places = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_places], d, places, o)
+            rules_ng.run(RULE_SET_v2_5[:rs_places], d, places, o)
             unless places[:places].nil?
                 o[:places] = places[:places] 
                 o[:places] = [ o[:places] ] unless o[:places].kind_of?(Array)
@@ -28,7 +28,7 @@ RULE_SET_v2_4 = {
 
             o[:users] = {}
             users = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_users], d, users, o)
+            rules_ng.run(RULE_SET_v2_5[:rs_users], d, users, o)
             unless users[:users].nil?
                 o[:users] = users[:users] 
                 o[:users] = [ o[:users] ] unless o[:users].kind_of?(Array)
@@ -38,7 +38,7 @@ RULE_SET_v2_4 = {
 
             o[:includes_tweets] = {}
             includes_tweets = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_includes_tweets], d, includes_tweets, o)
+            rules_ng.run(RULE_SET_v2_5[:rs_includes_tweets], d, includes_tweets, o)
             unless includes_tweets[:includes_tweets].nil?
                 o[:includes_tweets] = includes_tweets[:includes_tweets] 
                 o[:includes_tweets] = [ o[:includes_tweets] ] unless o[:includes_tweets].kind_of?(Array)
@@ -46,7 +46,7 @@ RULE_SET_v2_4 = {
             end
             
             records = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_record], d, records, o)
+            rules_ng.run(RULE_SET_v2_5[:rs_record], d, records, o)
             records[:records]
 
         } }
@@ -56,7 +56,7 @@ RULE_SET_v2_4 = {
             record = DataCollector::Output.new
             #out.clear          
             #haal data op
-            rules_ng.run(RULE_SET_v2_4[:rs_data_tweets], d, record, o)
+            rules_ng.run(RULE_SET_v2_5[:rs_data_tweets], d, record, o)
             record[:data] 
         } ] }
     },
@@ -101,7 +101,7 @@ RULE_SET_v2_4 = {
 # https://developer.twitter.com/en/docs/twitter-api/premium/data-dictionary/object-model/tweet
 
             tweet = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_tweets], d, tweet, o)
+            rules_ng.run(RULE_SET_v2_5[:rs_tweets], d, tweet, o)
             rdata = tweet[:tweets].to_h
             # out.clear
 
@@ -158,7 +158,37 @@ RULE_SET_v2_4 = {
                 end
             end
 
-           
+            unless d["public_metrics"].nil?
+                rdata[:interactionStatistic] = []
+                unless d["public_metrics"]["retweet_count"].nil?
+                    rdata[:interactionStatistic] << { 
+                            "@type": "InteractionCounter",
+                            "interactionType": "https://schema.org/ShareAction",
+                            "userInteractionCount": d["public_metrics"]["retweet_count"]
+                        }
+                end
+ 
+                unless d["public_metrics"]["reply_count"].nil?
+                    rdata[:interactionStatistic] << { 
+                            "@type": "InteractionCounter",
+                            "interactionType": "https://schema.org/ReplyAction",
+                            "userInteractionCount": d["public_metrics"]["reply_count"]
+                        }
+                end
+                unless d["public_metrics"]["like_count"].nil?
+                    rdata[:interactionStatistic] << { 
+                            "@type": "InteractionCounter",
+                            "interactionType": "https://schema.org/LikeAction",
+                            "userInteractionCount": d["public_metrics"]["like_count"]
+                        }
+                end
+                unless d["public_metrics"]["quote_count"].nil?
+                    rdata[:interactionStatistic] << { 
+                            "@type": "InteractionCounter",
+                            "interactionType": "https://schema.org/CommentAction",
+                            "userInteractionCount": d["public_metrics"]["quote_count"]
+                        }
+                end      
 =begin                
                 unless d["public_metrics"]["impression_count"].nil?
                     rdata[:interactionStatistic] << { 
@@ -168,11 +198,11 @@ RULE_SET_v2_4 = {
                         }
                 end                              
 =end
-
+            end
 
             # Expand referenced_tweets
             ref_tweet = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_referenced_tweets], d, ref_tweet, o)
+            rules_ng.run(RULE_SET_v2_5[:rs_referenced_tweets], d, ref_tweet, o)
             unless ref_tweet[:referenced_tweets].to_h[:identifier].nil?
                 rdata[:identifier].concat( ref_tweet[:referenced_tweets][:identifier] )
             end
@@ -186,7 +216,7 @@ RULE_SET_v2_4 = {
                     
             # Expand conversation
             conversation = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_conversation], d, conversation, o)
+            rules_ng.run(RULE_SET_v2_5[:rs_conversation], d, conversation, o)
             
             unless conversation[:conversation].to_h.empty?
                 rdata[:identifier] << conversation[:conversation].to_h[:identifier] 
@@ -199,10 +229,10 @@ RULE_SET_v2_4 = {
 
             #"entities": { "user_mentions": [] }
             tweet_expands = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_mentions], d, tweet_expands, o)            
+            rules_ng.run(RULE_SET_v2_5[:rs_mentions], d, tweet_expands, o)            
             
             #"attachments": { "media_keys": [] }
-            rules_ng.run(RULE_SET_v2_4[:rs_associated_media], d, tweet_expands, o)
+            rules_ng.run(RULE_SET_v2_5[:rs_associated_media], d, tweet_expands, o)
 
             rdata.merge!(tweet_expands.to_h)
 
@@ -495,7 +525,7 @@ place.geo : {
 
                     #"lang": "de"
                     out = DataCollector::Output.new
-                    rules_ng.run(RULE_SET_v2_4[:rs_in_language], d, out, o)
+                    rules_ng.run(RULE_SET_v2_5[:rs_in_language], d, out, o)
                     rdata.merge!(out.to_h)
 
                     unless out.to_h[:inLanguage][:@id] == "und"
@@ -535,7 +565,7 @@ place.geo : {
         # It will also be available with author, creator, sender and recipoent
         includes_tweets: { "$.includes.tweets" => [ lambda { |d,o|  
             out = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_tweets], d, out, o)
+            rules_ng.run(RULE_SET_v2_5[:rs_tweets], d, out, o)
             rdata = out[:tweets].to_h
             rdata[:isBasedOn].delete(:isPartOf)
             rdata.delete(:author)
@@ -568,9 +598,9 @@ place.geo : {
                     :name  => "Twitter"
                 }
             }
-
+       
             #add id, isBasedOn, isPartOf
-            #rules_ng.run(RULE_SET_v2_4[:rs_basic_schema], d, out, o)
+            #rules_ng.run(RULE_SET_v2_5[:rs_basic_schema], d, out, o)
             #out.clear
             
             user = {
@@ -591,7 +621,7 @@ place.geo : {
             end
 
             #"lang": "de"
-            rules_ng.run(RULE_SET_v2_4[:rs_in_language], d, out, o)
+            rules_ng.run(RULE_SET_v2_5[:rs_in_language], d, out, o)
             rdata.merge!(out.to_h)
 
             unless out.to_h[:inLanguage][:@id] == "und"
@@ -604,11 +634,11 @@ place.geo : {
 
 
             basic_schema = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_basic_schema], d, basic_schema, o)
+            rules_ng.run(RULE_SET_v2_5[:rs_basic_schema], d, basic_schema, o)
             rdata.merge!(basic_schema[:basic_schema].to_h)
 
             #"entities": { "hashtags": [] 
-            rules_ng.run(RULE_SET_v2_4[:rs_keywords], d, out, o)
+            rules_ng.run(RULE_SET_v2_5[:rs_keywords], d, out, o)
             rdata.merge!(out.to_h)
 
             # out.clear

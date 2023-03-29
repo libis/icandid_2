@@ -2,12 +2,12 @@
 require 'data_collector'
 require "iso639"
 
-RULE_SET_v1_0 = {
-    version: "1.0",
+RULE_SET_v2_0 = {
+    version: "2.0",
     rs_records: {
         records: { "$" => [ lambda { |d,o|  
             out = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v1_0[:rs_data], d, out, o)
+            rules_ng.run(RULE_SET_v2_0[:rs_data], d, out, o)
             data = out[:data] 
             data
         } ] }
@@ -38,13 +38,21 @@ RULE_SET_v1_0 = {
             }
 # categories, keywords, topic, entities
 
+            if d["source"] == "BELGA AUDIO"
+                if rdata[:headline] =~ /belga (\d{2}):(\d{2})/ 
+                    rdata[:headline] = "Belga nieuws #{ Date.parse( d["publishDate"]).strftime('%d/%m/%Y') } #{$1}:#{$2}"
+                end
+                if rdata[:headline] =~ /Nieuws (\d{2})u(\d{2})/
+                   rdata[:headline] = "Belga nieuws #{ Date.parse( d["publishDate"]).strftime('%d/%m/%Y') } #{$1}:#{$2}"
+                end
+            end
             if rdata[:headline].empty?
                 rdata[:headline] = rdata[:articleBody].to_s.truncate( 150, separator: ' ') unless (rdata[:articleBody].empty?)
             end
             rdata[:name] = rdata[:headline] 
             
             out = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v1_0[:rs_basic_schema], d, out, o)
+            rules_ng.run(RULE_SET_v2_0[:rs_basic_schema], d, out, o)
             rdata.merge!(out[:basic_schema].to_h)
             o[:@id] = out[:basic_schema].to_h[:@id] 
             out.clear
@@ -60,12 +68,12 @@ RULE_SET_v1_0 = {
                 rdata[:@type ] = "WebSite"
             end
 
-            rules_ng.run(RULE_SET_v1_0[:rs_printEdition], d, out, o)
-            rules_ng.run(RULE_SET_v1_0[:rs_articleSection], d, out, o)
-            rules_ng.run(RULE_SET_v1_0[:rs_in_language], d, out, o)
+            rules_ng.run(RULE_SET_v2_0[:rs_printEdition], d, out, o)
+            rules_ng.run(RULE_SET_v2_0[:rs_articleSection], d, out, o) unless d['source'].starts_with("BELGA")
+            rules_ng.run(RULE_SET_v2_0[:rs_in_language], d, out, o)
 
             o[:index] = 0
-            rules_ng.run(RULE_SET_v1_0[:rs_associated], d, out, o)         
+            rules_ng.run(RULE_SET_v2_0[:rs_associated], d, out, o)         
             rdata.merge!(out.to_h)
             out.clear
 
@@ -75,7 +83,7 @@ RULE_SET_v1_0 = {
             #  "authors"=>["Par Benjamin Quenelle Par Christophe Bourdoiseau"],
             
             o[:index] = 0
-            rules_ng.run(RULE_SET_v1_0[:rs_creator], d, out, o)
+            rules_ng.run(RULE_SET_v2_0[:rs_creator], d, out, o)
             rdata.merge!(out.to_h)
             out.clear
 
@@ -138,7 +146,7 @@ RULE_SET_v1_0 = {
     },    
     rs_articleSection: {
         articleSection: { "$.subSource" =>  lambda { |d,o| 
-           d
+            d 
         }}
     },  
     rs_creator: {

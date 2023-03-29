@@ -3,18 +3,21 @@ $LOAD_PATH << '.' << './lib' << "#{File.dirname(__FILE__)}" << "#{File.dirname(_
 require "unicode"
 require 'logger'
 require 'icandid'
-require_relative './rules/belgapress_v1.0'
 # require 'belgapress_utils'
 
 include Icandid
 
 @logger = Logger.new(STDOUT)
 @logger.level = Logger::DEBUG
+@total_nr_parsed_files = 0
 @total_nr_parsed_records = 0
 
 
 ADMIN_MAIL_ADDRESS = "tom.vanmechelen@kuleuven.be"
 ROOT_PATH = File.join( File.dirname(__FILE__), '../')
+
+
+Dir[  File.join( ROOT_PATH,"src/rules/belgapress_*.rb") ].each {|file| require file;  }
 
 # ConfJson = File.read( File.join(ROOT_PATH, './config/config.cfg') )
 # ICANDID_CONF = JSON.parse(ConfJson, :symbolize_names => true)
@@ -65,7 +68,7 @@ begin
     @logger.info ("Paring records for query: #{ query[:query][:id] } [ #{ query[:query][:name] } ]")
     @logger.info ("Start parsing using rule_set: #{icandid_config.config[:rule_set]}")
 
-    unless icandid_config.get_queries_to_process.include?(query[:query][:id])
+    unless icandid_config.get_queries_to_parse.include?(query[:query][:id])
         next
     end
 
@@ -113,7 +116,15 @@ begin
                 dir_options[:date] = "{{record_dataPublished}}"
             end
 
-            @total_nr_parsed_records += 1
+            unless collector.output[:records].nil?
+              if collector.output[:records].is_a?(Array)
+                @total_nr_parsed_records += collector.output[:records].size
+              else
+                @total_nr_parsed_records += 1
+              end
+            end
+
+            @total_nr_parsed_files += 1
 
             collector.write_records( records_dir:  icandid_config.get_records_dir( options:dir_options) )
 
@@ -160,7 +171,8 @@ ensure
   message = <<END_OF_MESSAGE
 
   <h2>Parsing #{INGEST_CONF[:provider][:name]} [#{INGEST_CONF[:provider][:@id]}] data</h2>
-  Parsing using config: #{ icandid_config.config.path}/#{ icandid_config.config.file}
+  Parsing using config: #{ icandid_config.config.path}/#{ icandid_config.config.file} :<br/>
+  <i>Processed <b>#{@total_nr_parsed_records}</b> in <b>#{@total_nr_parsed_files}</b> files</i>
 <H3>#{$0} </h3>
 command_line_options :<br/> #{ icandid_config.command_line_options.map { |k, v|  "  - #{k}: #{v} </br>" }.join   }
 

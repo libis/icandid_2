@@ -2,61 +2,14 @@
 require 'data_collector'
 require "iso639"
 
-RULE_SET_v2_4 = {
-    version: "2.4",
+RULE_SET_v2_3 = {
+    version: "2.3",
     rs_records: {
-        records: { "@" => lambda { |d,o|  
-
-
-            o[:media] = {}
-            media = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_media], d, media, o)
-            unless media[:media].nil?
-                o[:media] = media[:media] 
-                o[:media] = [ o[:media] ] unless o[:media].kind_of?(Array)
-                o[:media] = o[:media].map{ |e| [e[:@id], e] }.to_h
-            end
-
-            o[:places] = {}
-            places = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_places], d, places, o)
-            unless places[:places].nil?
-                o[:places] = places[:places] 
-                o[:places] = [ o[:places] ] unless o[:places].kind_of?(Array)
-                o[:places] = o[:places].map{ |e| [e[:@id], e] }.to_h
-            end
-
-            o[:users] = {}
-            users = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_users], d, users, o)
-            unless users[:users].nil?
-                o[:users] = users[:users] 
-                o[:users] = [ o[:users] ] unless o[:users].kind_of?(Array)
-                o[:users] = o[:users].map{ |e| [e[:@id], e] }.to_h
-            end
-
-
-            o[:includes_tweets] = {}
-            includes_tweets = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_includes_tweets], d, includes_tweets, o)
-            unless includes_tweets[:includes_tweets].nil?
-                o[:includes_tweets] = includes_tweets[:includes_tweets] 
-                o[:includes_tweets] = [ o[:includes_tweets] ] unless o[:includes_tweets].kind_of?(Array)
-                o[:includes_tweets] = o[:includes_tweets].map{ |e| [e[:@id], e] }.to_h
-            end
-            
-            records = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_record], d, records, o)
-            records[:records]
-
-        } }
-    },
-    rs_record: {
         records: { "$.data" => [ lambda { |d,o|  
             record = DataCollector::Output.new
             #out.clear          
             #haal data op
-            rules_ng.run(RULE_SET_v2_4[:rs_data_tweets], d, record, o)
+            rules_ng.run(RULE_SET_v2_3[:rs_data_tweets], d, record, o)
             record[:data] 
         } ] }
     },
@@ -71,7 +24,7 @@ RULE_SET_v2_4 = {
 # text                   => name, articleBody 
 # attachments        => associatedMedia
 # attachments.media_keys => associatedMedia
-# author_id              => author, sender, creator
+# author_id              => author, creator, sender
 # context_annotations    =>  TODO : _named_entitie ????????
 # conversation_id        => isPartOf (conversation with messages?) ?????
 # entities           => keywords, mentions
@@ -101,7 +54,7 @@ RULE_SET_v2_4 = {
 # https://developer.twitter.com/en/docs/twitter-api/premium/data-dictionary/object-model/tweet
 
             tweet = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_tweets], d, tweet, o)
+            rules_ng.run(RULE_SET_v2_3[:rs_tweets], d, tweet, o)
             rdata = tweet[:tweets].to_h
             # out.clear
 
@@ -158,21 +111,9 @@ RULE_SET_v2_4 = {
                 end
             end
 
-           
-=begin                
-                unless d["public_metrics"]["impression_count"].nil?
-                    rdata[:interactionStatistic] << { 
-                            "@type": "InteractionCounter",
-                            "interactionType": "https://schema.org/????",
-                            "userInteractionCount": d["public_metrics"]["impression_count"]
-                        }
-                end                              
-=end
-
-
             # Expand referenced_tweets
             ref_tweet = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_referenced_tweets], d, ref_tweet, o)
+            rules_ng.run(RULE_SET_v2_3[:rs_referenced_tweets], d, ref_tweet, o)
             unless ref_tweet[:referenced_tweets].to_h[:identifier].nil?
                 rdata[:identifier].concat( ref_tweet[:referenced_tweets][:identifier] )
             end
@@ -186,23 +127,19 @@ RULE_SET_v2_4 = {
                     
             # Expand conversation
             conversation = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_conversation], d, conversation, o)
-            
+            rules_ng.run(RULE_SET_v2_3[:rs_conversation], d, conversation, o)
             unless conversation[:conversation].to_h.empty?
                 rdata[:identifier] << conversation[:conversation].to_h[:identifier] 
                 rdata[:isPartOf] = conversation[:conversation].to_h[:isPartOf] 
             end
             # conversation.clear
 
-
-
-
             #"entities": { "user_mentions": [] }
             tweet_expands = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_mentions], d, tweet_expands, o)            
+            rules_ng.run(RULE_SET_v2_3[:rs_mentions], d, tweet_expands, o)            
             
             #"attachments": { "media_keys": [] }
-            rules_ng.run(RULE_SET_v2_4[:rs_associated_media], d, tweet_expands, o)
+            rules_ng.run(RULE_SET_v2_3[:rs_associated_media], d, tweet_expands, o)
 
             rdata.merge!(tweet_expands.to_h)
 
@@ -219,16 +156,16 @@ RULE_SET_v2_4 = {
                     :@type    => "CreativeWork",
                     # @id must including dataset, Otherwise the records will be linked to all datasets in the graph
                     :@id      => "#{INGEST_CONF[:prefixid]}_#{INGEST_CONF[:provider][:@id] }_#{INGEST_CONF[:dataset][:@id]}",
+                    :license  => INGEST_CONF[:license],
                     :name     => INGEST_CONF[:genericRecordDesc],
                     :provider => INGEST_CONF[:provider],
                     :isPartOf => {
                         :@id   => INGEST_CONF[:dataset][:@id],
                         :@type => "Dataset",
-                        :name  => INGEST_CONF[:dataset][:name],
-                        :license  => INGEST_CONF[:dataset][:license]
+                        :name  => INGEST_CONF[:dataset][:name]
                     }
                 },
-                :@context  => ["http://schema.org", { :@language => "#{  o[:contextLanguage] }-#{ INGEST_CONF[:unicode_script]}" }]    
+                :@context  => ["http://schema.org", { :@language => "#{ INGEST_CONF[:metaLanguage]}-#{ INGEST_CONF[:unicode_script]}" }]    
             }
         }}
     },
@@ -321,9 +258,8 @@ RULE_SET_v2_4 = {
     verified           => memberOf.roleName, identifier { PropertyValue,verified } 
     withheld
 =end                  
-            unless d["url"].nil?
-                d["url"] = "https://#{d["url"]}" unless d["url"].start_with?("http://","https://")
-            end
+
+            d["url"] = "https://#{d["url"]}" unless d["url"].start_with?("http://","https://")
             d["name"] = d["username"] if d["name"].empty?
           
             u = {
@@ -336,11 +272,6 @@ RULE_SET_v2_4 = {
                 :url           => d["url"],
                 :address       => d["location"]
             }
-
-            if d["url"] ==  "https://"
-                u.except!(:url)
-            end
-
             unless d["created_at"].nil?
                 u[:memberOf] = {
                     :@type    => "OrganizationRole",
@@ -493,17 +424,6 @@ place.geo : {
                     
                     rdata[:identifier] << identifier
 
-                    #"lang": "de"
-                    out = DataCollector::Output.new
-                    rules_ng.run(RULE_SET_v2_4[:rs_in_language], d, out, o)
-                    rdata.merge!(out.to_h)
-
-                    unless out.to_h[:inLanguage][:@id] == "und"
-                        o[:contextLanguage] = out.to_h[:inLanguage][:@id]
-                    else
-                        o[:contextLanguage] = INGEST_CONF[:metaLanguage]
-                    end
-
                     # Text of a retweeted tweet might be cut off (twitter API v1)
                     # Test of a qouted tweet will be set to citation
                     unless ref_tweet.nil?
@@ -515,10 +435,8 @@ place.geo : {
                                 :@id            => "#{o[:prefixid]}_#{referenced_tweet["id"]}",
                                 :@type          => o[:type],
                                 :additionalType => "CreativeWork",
-                                :@context       => ["http://schema.org", { :@language => "#{ o[:contextLanguage] }-#{ INGEST_CONF[:unicode_script]}" }],
+                                :@context       => ["http://schema.org", { :@language => "#{ INGEST_CONF[:metaLanguage]}-#{ INGEST_CONF[:unicode_script]}" }],
                                 :name           => ref_tweet[:text],
-                                :inLanguage     => ref_tweet[:inLanguage],
-                                :identifier     => ref_tweet[:identifier]
                             }
                         end
                     end
@@ -535,7 +453,7 @@ place.geo : {
         # It will also be available with author, creator, sender and recipoent
         includes_tweets: { "$.includes.tweets" => [ lambda { |d,o|  
             out = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_tweets], d, out, o)
+            rules_ng.run(RULE_SET_v2_3[:rs_tweets], d, out, o)
             rdata = out[:tweets].to_h
             rdata[:isBasedOn].delete(:isPartOf)
             rdata.delete(:author)
@@ -570,7 +488,7 @@ place.geo : {
             }
 
             #add id, isBasedOn, isPartOf
-            #rules_ng.run(RULE_SET_v2_4[:rs_basic_schema], d, out, o)
+            #rules_ng.run(RULE_SET_v2_3[:rs_basic_schema], d, out, o)
             #out.clear
             
             user = {
@@ -578,10 +496,10 @@ place.geo : {
                 :@id   => "#{o[:prefixid]}_PERSON_#{d["author_id"]}"
             }
 
-            rdata[:author]  = user
+            rdata[:author] = user
             rdata[:creator] = user
-            rdata[:sender]  = user   
- 
+            rdata[:sender] = user            
+
             unless d["in_reply_to_user_id"].nil?
                 user = {
                     :@type => "Person",
@@ -590,25 +508,17 @@ place.geo : {
                 rdata[:recipient ] = user
             end
 
-            #"lang": "de"
-            rules_ng.run(RULE_SET_v2_4[:rs_in_language], d, out, o)
-            rdata.merge!(out.to_h)
-
-            unless out.to_h[:inLanguage][:@id] == "und"
-                o[:contextLanguage] = out.to_h[:inLanguage][:@id]
-            else
-                o[:contextLanguage] = INGEST_CONF[:metaLanguage]
-            end
-
-            
-
-
             basic_schema = DataCollector::Output.new
-            rules_ng.run(RULE_SET_v2_4[:rs_basic_schema], d, basic_schema, o)
+            rules_ng.run(RULE_SET_v2_3[:rs_basic_schema], d, basic_schema, o)
             rdata.merge!(basic_schema[:basic_schema].to_h)
 
+
+            #"lang": "de"
+            rules_ng.run(RULE_SET_v2_3[:rs_in_language], d, out, o)
+
             #"entities": { "hashtags": [] 
-            rules_ng.run(RULE_SET_v2_4[:rs_keywords], d, out, o)
+            rules_ng.run(RULE_SET_v2_3[:rs_keywords], d, out, o)
+            
             rdata.merge!(out.to_h)
 
             # out.clear

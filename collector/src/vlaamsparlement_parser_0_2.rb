@@ -3,30 +3,29 @@ $LOAD_PATH << '.' << './lib' << "#{File.dirname(__FILE__)}" << "#{File.dirname(_
 require "unicode"
 require 'logger'
 require 'icandid'
+require_relative './rules/vlaamsparlement_v1.0'
+# require 'VlaamsParlement_utils'
 
 include Icandid
 
 @logger = Logger.new(STDOUT)
 @logger.level = Logger::DEBUG
-@total_nr_parsed_records = 0
 
 ADMIN_MAIL_ADDRESS = "tom.vanmechelen@kuleuven.be"
 ROOT_PATH = File.join( File.dirname(__FILE__), '../')
 
-Dir[  File.join( ROOT_PATH,"src/rules/twitter_*.rb") ].each {|file| require file;  }
-
 # ConfJson = File.read( File.join(ROOT_PATH, './config/config.cfg') )
 # ICANDID_CONF = JSON.parse(ConfJson, :symbolize_names => true)
 PROCESS_TYPE  = "parser"  # used to determine (command line) config options
-SOURCE_DIR   = '/source_records/twitter/'
+SOURCE_DIR   = '/source_records/VlaamsParlement/'
 SOURCE_FILE_NAME_PATTERN = "*.json"
 
-RECORDS_DIR  = '/records/twitter/'
+RECORDS_DIR  = '/records/VlaamsParlement/'
 
 ConfJson = File.read(File.join(ROOT_PATH, './config/config.cfg'))
 ICANDID_CONF = JSON.parse(ConfJson, :symbolize_names => true)
 
-ingestConfJson =  File.read(File.join(ROOT_PATH, './config/twitter/ingest.cfg'))
+ingestConfJson =  File.read(File.join(ROOT_PATH, './config/VlaamsParlement/ingest.cfg'))
 INGEST_CONF = JSON.parse(ingestConfJson, :symbolize_names => true)
 
 INGEST_CONF[:prefixid] = ICANDID_CONF[:prefixid]
@@ -36,24 +35,25 @@ INGEST_CONF[:genericRecordDesc] = "Entry from #{INGEST_CONF[:dataset][:name]}"
 #############################################################
 TESTING = true
 STATUS = "parsing"
+@total_nr_parsed_records = 0
 
 begin
   config = {
-    :config_path => File.join(ROOT_PATH, './config/twitter/'),
+    :config_path => File.join(ROOT_PATH, './config/VlaamsParlement/'),
     :config_file => "config.yml",
-    :query_config_path => File.join(ROOT_PATH, './config/twitter/'),
+    :query_config_path => File.join(ROOT_PATH, './config/VlaamsParlement/'),
     :query_config_file => "queries.yml"
   }
 
   icandid_config = Icandid::Config.new( config: config )
-  
+
   collector = IcandidCollector::Input.new( icandid_config.config ) 
 
   @logger.info ("Start parsing using config: #{ icandid_config.config.path}/#{ icandid_config.config.file} ")
 
   start_process  = Time.now.strftime("%Y-%m-%dT%H:%M:%SZ")
   
-  @logger.info ("Parsing for queries in : #{ icandid_config.query_config.path }/#{ icandid_config.query_config.file }")
+  @logger.info ("Parsing for queries in : #{ icandid_config.query_config.path }#{ icandid_config.query_config.file }")
 
   rule_set =  icandid_config.config[:rule_set].constantize unless  icandid_config.config[:rule_set].nil?
 
@@ -65,19 +65,22 @@ begin
     @logger.info ("Start parsing using rule_set: #{icandid_config.config[:rule_set]}")
 
     unless icandid_config.get_queries_to_parse.include?(query[:query][:id])
-      @logger.info ("NExt next")
         next
     end
 
     INGEST_CONF[:dataset][:@id]  = query[:query][:id]
-    INGEST_CONF[:dataset][:name] = query[:query][:name].gsub(/_/," ").capitalize()
+    # INGEST_CONF[:dataset][:name] = query[:query][:name].gsub(/_/," ").capitalize()
+    INGEST_CONF[:dataset][:name] = query[:query][:name].gsub(/_/," ")
 
     # recent_search records are downloaded to {{query_name}}/{{date}}/" 
     # - query_name is tanslitarted from query[:query][:name]
+    # - year_dir 
+    # - weeknr 
     # - date is download day (today) %Y_%m/%d
     options = { 
         :query =>  query[:query], 
-        :date => "**"
+        :year_dir => "*",
+        :weeknr => "*"
     }
 
     source_records_dir = icandid_config.get_source_records_dir( options: options)
@@ -91,21 +94,30 @@ begin
     @logger.info ("Start parsing source_file_name_pattern: #{source_file_name_pattern}")
     @logger.info ("Start parsing last_parsing_datetime: #{last_parsing_datetime}")
 
-
-    Dir["#{source_records_dir}/#{source_file_name_pattern}"].each_with_index do |source_file, index| 
-# puts File.mtime(source_file)
-# puts last_parsing_datetime
-# exit
-
+    Dir["#{source_records_dir}/#{source_file_name_pattern}"].each.with_index do |source_file, index| 
+        # puts File.mtime(source_file)
         if last_parsing_datetime < File.mtime(source_file)
             @logger.debug(" parser - file : #{ source_file }")  
 
             options = {
-                :type => "Message",
-                :prefixid => "#{INGEST_CONF[:prefixid]}_#{INGEST_CONF[:provider][:@id] }"
+                :type => "Legislation",
+                :prefixid => "#{INGEST_CONF[:prefixid]}_#{ INGEST_CONF[:provider][:@id].downcase }_#{ INGEST_CONF[:dataset][:@id].downcase }"
             }
 
             collector.parse_data( file: source_file, options: options, rule_set: rule_set )
+            
+            file = collector.output.raw[:records][:text]
+            data_file = "#{File.dirname(source_file)}/#{file}"
+            if File.exists?(data_file)
+            
+              # Add full text extraction from pdf to the key "text"
+              collector.output.raw[:records][:text] = collector.extract_fulltext_with_tika( id: collector.output.raw[:records][:identifier],  data: File.open(data_file) )
+            else
+              @logger.warn ("PDF-file does not exits for fulltex extraction: #{data_file}")
+            end    
+
+            #puts ">-----------------------------------------------<"
+            # pp collector.output.raw[:records][:text]
 
             dir_options = { 
                 :query =>  query[:query], 
@@ -117,61 +129,11 @@ begin
             end
 
             @total_nr_parsed_records += 1
-
-#            collector.write_records( records_dir: icandid_config.get_records_dir( options:dir_options), clear_output: false )
-
-            if icandid_config.config[:create_csv]
-
-              options[:csv_headers] = { 
-                id: { path: "@id"},
-                type: { path: "type"},
-                legislationType: { path: "legislationType"},
-                author: { path: "author.name"},
-                author_alternateName: { path: "author.alternateName"},
-                name: { path: "name"},
-                description: { path: "description"},
-                articleBody: { path: "articleBody"},
-                text: { path: "text"},
-                printEdition: { path: "printEdition"},
-                articleSection: { path: "articleSection"},
-                sender: { path: "sender.name"},
-                sender_alternateName: { path: "sender.alternateName"},
-                recipient: { path: "recipient.name"},
-                recipient_alternateName: { path: "recipient.alternateName"},
-                legislationPassedBy: { path: "legislationPassedBy"},
-                legislationResponsible: { path: "legislationResponsible"},
-                retweet: { path: "retweet"},
-                datePublished: { path: "datePublished"},
-                url: { path: "url"},
-                provider: { path: "provider"},
-                publisher: { path: "publisher.name"},
-                link: { path: "sameAs"},
-                pagination: { path: "pagination"},
-                publicationdate: { path: "publicationdate"},
-                keywords: { path: "keywords"},
-                mentions: { path: "mentions.name"},
-                duration: { path: "duration"},
-                contentUrl: { path: "contentUrl"},
-                about: { path: "about"},
-                inLanguage: { path: "inLanguage.name"},
-                contentLocation: { path: "contentLocation"},
-                associatedMedia: { path: "associatedMedia.url"},
-                sdDatePublished: { path: "sdDatePublished"},
-                updatetime: { path: "updatetime"},
-                replay_count: {path: "interactionStatistic[?(@['interactionType'] == 'https://schema.org/ReplyAction')].userInteractionCount"},
-                retweet_count: {path: "interactionStatistic[?(@['interactionType'] == 'https://schema.org/ShareAction')].userInteractionCount"},
-                like_count: {path: "interactionStatistic[?(@['interactionType'] == 'https://schema.org/LikeAction')].userInteractionCount"},
-                qoute_count: {path: "interactionStatistic[?(@['interactionType'] == 'https://schema.org/CommentAction')].userInteractionCount"}
-              }
-
-              records = collector.convert_data( rule_set: TWITTER_TO_CSV, options: options )
-              collector.output.clear 
-              collector.output[:records] = records
-              collector.write_records( records_dir: icandid_config.get_records_dir( options:dir_options) , record_format: 'csv', file_name: "iCANDID_twitter.txt", clear_output: true, options: options )
-            end
-
+ 
+            collector.write_records( records_dir:  icandid_config.get_records_dir( options:dir_options) )
         end
     end
+
 
     if  icandid_config.command_line_options[:last_parsing_datetime].nil?
       @logger.info ("Update last_parsing_datetime: #{start_process}")
@@ -179,10 +141,10 @@ begin
     else
         @logger.info ("Do not update last_parsing_datetime in config (last_parsing_datetime was a command line options)")
     end
+
     icandid_config::update_query_config(query: query, index: index)
-    
   end
-  
+
   icandid_config.update_system_status("ready")
 
 rescue StandardError => e
@@ -190,10 +152,10 @@ rescue StandardError => e
   @logger.error("#{ e.backtrace.inspect   }")
 
   importance = "High"
-  subject = "[ERROR] iCANDID Twitter parsing"
+  subject = "[ERROR] iCANDID VlaamsParlement parsing"
   message = <<END_OF_MESSAGE
   
-  <h2>Error while parsing Twitter data</h2>
+  <h2>Error while parsing VlaamsParlement data</h2>
   <p>source_file #{source}</p>
   <p>#{e.message}</p>
   <p>#{e.backtrace.inspect}</p>
@@ -204,7 +166,7 @@ END_OF_MESSAGE
 
   Icandid::Utils.mailErrorReport(subject, message, importance, config)
 
-  @logger.info("Twitter Parsing is finished with errors")
+  @logger.info("VlaamsParlement Parsing is finished with errors")
 ensure
 
   importance = "Normal"
@@ -222,7 +184,6 @@ END_OF_MESSAGE
 
   Icandid::Utils.mailErrorReport(subject, message, importance, config)
 
-  @logger.info("Twitter Parsing is finished without errors")
-
+  @logger.info("VlaamsParlement Parsing is finished without errors")
 
 end
