@@ -25,18 +25,17 @@ RUN mkdir /var/www/html/api
 ADD ./front/dist /var/www/html/front/
 ADD ./front-api /var/www/html/api/
 
-RUN rm -rfv /var/www/html/api/storage/framework/cache/data/*
-RUN rm -rfv /var/www/html/api/storage/app/export/*
-RUN rm -rfv /var/www/html/api/storage/app/public/*
+#RUN rm -rfv /var/www/html/api/storage/framework/cache/data/*
+#RUN rm -rfv /var/www/html/api/storage/app/export/*
+#RUN rm -rfv /var/www/html/api/storage/app/public/*
+#RUN rm -f /var/www/html/api/storage/logs/laravel.log
 
-RUN rm -fv /var/www/html/api/.env
-#RUN cp /var/www/html/api/.env.live /var/www/html/api/.env
-#RUN cp /var/www/html/api/.env.demo /var/www/html/api/.env
-RUN sed -e "s/http:\/\/localhost:88//g" -i.backup /var/www/html/front/js/*.js
-
-RUN rm -f /var/www/html/api/storage/logs/laravel.log
 RUN touch /var/www/html/api/storage/logs/laravel.log
 RUN chmod -R 777 /var/www/html/api/storage
+#RUN rm -fv /var/www/html/api/.env
+
+RUN sed -e "s/http:\/\/localhost:88//g" -i.backup /var/www/html/front/js/*.js
+
 
 COPY ./docker/docker-php-ext-memory.ini /usr/local/etc/php/conf.d/
 
@@ -46,7 +45,6 @@ RUN update-exim4.conf
 RUN /etc/init.d/rsyslog start
 
 RUN crontab -l -u root | { cat; echo "SHELL=/bin/bash"; } | crontab -u root -
-#RUN crontab -l -u root | { cat; echo "BASH_ENV=/container.env"; } | crontab -u root -
 RUN crontab -l -u root | { cat; echo "0 3 * * * cd /var/www/html/api/ && /usr/local/bin/php -d memory_limit=4G artisan cache:clear >> /dev/null 2>&1"; } | crontab -u root -
 RUN crontab -l -u root | { cat; echo "* * * * * cd /var/www/html/api/ && /usr/local/bin/php -d memory_limit=16G artisan schedule:run >> /dev/null 2>&1"; } | crontab -u root -
 
