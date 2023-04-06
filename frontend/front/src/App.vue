@@ -59,6 +59,7 @@ export default {
           {id:"41", name:this.$ml.get('abouticandid'), route:"/#/about", vis:"noauth"},
           {id:"42", name:this.$ml.get('aboutdatasets'), route:"/#/datasets", vis:"noauth"},
           {id:"43", name:this.$ml.get('eula'), route:"/#/eula", vis:"noauth"},
+          {id:"44", name:this.$ml.get('aboutcitations'), route:"/#/citation", vis:"noauth"},
         ]},
         {id:"5", name:this.$ml.get('help'), route:"/#/help", vis:"noauth"},
 /*        {id:"7", name:this.$ml.get('requests'), submenu:[

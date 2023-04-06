@@ -10,6 +10,7 @@ import About from './components/about/About.vue'
 import AboutDatasets from './components/about/Datasets.vue'
 import EULA from './components/about/EULA.vue'
 import Help from './components/about/Help.vue'
+import Citation from './components/about/Citation.vue'
 import Records from './components/Records.vue'
 import Searches from './components/Searches.vue'
 import SearchHistory from './components/SearchHistory.vue'
@@ -367,6 +368,11 @@ const router = new VueRouter(
         path: '/eula',
         name: 'EULA',
         component: EULA,
+      },
+      {
+        path: '/citation',
+        name: 'AboutCitations',
+        component: Citation,
       },
       {
         path: '/help',
