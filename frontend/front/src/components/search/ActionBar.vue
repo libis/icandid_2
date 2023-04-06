@@ -1,7 +1,8 @@
 <template>
     <div>
         <div class="columns" style="margin-bottom:0px" v-if="getHits>0">
-            <div class="column">
+            <div class="column" style="padding-top:30px">
+                <div v-if="getHits>0">{{ $ml.get('hits') }}: {{ getHits }}</div>
             </div>
             <div class="column has-text-right">
                <!-- <button class="button is-rounded" :title="$ml.get('selectall')" @click="selectall()" v-if="$parent.mode=='result'"><i class="fa fa-check" style="color:#1a8d00" aria-hidden="true"></i></button> -->
