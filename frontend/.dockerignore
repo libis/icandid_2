@@ -1,5 +1,4 @@
 */storage/logs/*
-*/storage/framework/*
 */storage/app/export/*
 */storage/app/public/*
 */.env
