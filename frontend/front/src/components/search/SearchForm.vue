@@ -24,7 +24,7 @@
     </div>
     <div class="level">
       <div class="level-left">
-        <a href="/#/citation" v-html="$ml.get('howtocite')"></a>
+        <a href="/#/page/aboutcitation" v-html="$ml.get('howtocite')"></a>
       </div>
       <div class="level-right">
         <div class="level-item">
