@@ -57,7 +57,7 @@
                 <input type="radio" name="function" value="Student" v-model="formdata.function">
                 {{ $ml.get('student') }}
             </label>
-            <p class="help is-danger is-hidden" ref="function"></p>
+            <p class="help is-danger is-hidden" ref="function">{{ $ml.get('functiontitle_warn') }}</p>
             </div>
 
             <div class="field" v-if="formdata.institution == 'KU Leuven' && formdata.function == 'Student'">
@@ -99,7 +99,7 @@
                 </optgroup>
             </select>
             </div>
-            <p class="help is-danger is-hidden" ref="faculty"></p>
+            <p class="help is-danger is-hidden" ref="faculty">{{ $ml.get('faculty_warn') }}</p>
             </div>
 
             <div class="field">
@@ -137,10 +137,10 @@
             <label class="label">{{ $ml.get('requestfunctionality') }}</label>
             <div class="select">
             <select v-model="formdata.functionality">
-                    <option>UI</option>
-                    <option>UI + export</option>
+                    <option>User Interface</option>
+                    <option>User Interface + export</option>
                     <option>API</option>
-                    <option>API + UI + export</option>
+                    <option>API + User Interface + export</option>
             </select>
             </div>
             <p class="help is-danger is-hidden" ref="functionality">{{ $ml.get('chooseone') }}</p>
@@ -302,11 +302,14 @@ export default {
                     }
                 }
 
+                console.log(this.formdata)
                 if (this.formdata.institution == "KU Leuven") {
                     if (this.formdata.faculty.trim() == "" ) {
+                        console.log('a')
                         this.$refs.faculty.classList.remove('is-hidden')
                         error++
                     } else {
+                        console.log('b')
                         this.$refs.faculty.classList.add('is-hidden')
                     }
                 }
@@ -342,9 +345,7 @@ export default {
                         this.$refs.duration.classList.add('is-hidden')
                     }
                 }
-            }
 
-            if (this.step == 3) {
                 if (this.formdata.functionality.trim() == "") {
                     this.$refs.functionality.classList.remove('is-hidden')
                     error++
@@ -352,6 +353,10 @@ export default {
                     this.$refs.functionality.classList.add('is-hidden')
                 }
 
+
+            }
+
+            if (this.step == 3) {
                 if (this.formdata.collectionregister=='Ja') {
                     if (this.formdata.datasets.length == 0) {
                         this.$refs.datasets.classList.remove('is-hidden')
