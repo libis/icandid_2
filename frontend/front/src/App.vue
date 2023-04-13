@@ -140,6 +140,7 @@ export default {
     this.setAuthentication(false);
     this.$refs.navbar.updateMenu();
     this.getUserInfo();
+    document.title = this.$ml.get('projecttitle')
   },
   created() {
     if (this.getLandingpad) {
