@@ -1,0 +1,4 @@
+*/storage/logs/*
+*/storage/app/export/*
+*/storage/app/public/*
+*/.env

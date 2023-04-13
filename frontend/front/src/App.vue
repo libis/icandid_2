@@ -56,11 +56,16 @@ export default {
         {id:"1", name:this.$ml.get('collections'), route:"/#/collections", vis:"search"},
         {id:"3", name:this.$ml.get('statistics'), route:"/#/stats", vis:"noauth"},        
         {id:"4", name:this.$ml.get('about'), submenu: [
-          {id:"41", name:this.$ml.get('abouticandid'), route:"/#/about", vis:"noauth"},
-          {id:"42", name:this.$ml.get('aboutdatasets'), route:"/#/datasets", vis:"noauth"},
+//          {id:"41", name:this.$ml.get('abouticandid'), route:"/#/about", vis:"noauth"},
+//          {id:"42", name:this.$ml.get('aboutdatasets'), route:"/#/datasets", vis:"noauth"},
+          {id:"41", name:this.$ml.get('abouticandid'), route:"/#/page/abouticandid", vis:"noauth"},
+          {id:"42", name:this.$ml.get('aboutdatasets'), route:"/#/page/aboutdatasets", vis:"noauth"},
           {id:"43", name:this.$ml.get('eula'), route:"/#/eula", vis:"noauth"},
+//          {id:"44", name:this.$ml.get('aboutcitations'), route:"/#/citation", vis:"noauth"},
+          {id:"44", name:this.$ml.get('aboutcitations'), route:"/#/page/aboutcitation", vis:"noauth"},
         ]},
-        {id:"5", name:this.$ml.get('help'), route:"/#/help", vis:"noauth"},
+//        {id:"5", name:this.$ml.get('help'), route:"/#/help", vis:"noauth"},
+        {id:"5", name:this.$ml.get('help'), route:"/#/page/help", vis:"noauth"},
 /*        {id:"7", name:this.$ml.get('requests'), submenu:[
           {id:"71", name:this.$ml.get('access'), "route":"/#/request/access", vis:"unauth"},
           {id:"72", name:this.$ml.get('dataset_on_demand'), "route":"/#/request/dataset", vis:"auth"}
@@ -135,6 +140,7 @@ export default {
     this.setAuthentication(false);
     this.$refs.navbar.updateMenu();
     this.getUserInfo();
+    document.title = this.$ml.get('projecttitle')
   },
   created() {
     if (this.getLandingpad) {

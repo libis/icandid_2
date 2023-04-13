@@ -63,7 +63,7 @@ class XLSX_Output extends CSV_Output{
         $b = $num % 26;
 
         if ($num > 25) {
-            $col .= chr($a+65);
+            $col .= chr($a+64);
         }
         $col .= chr($b+65);
         return $col;

@@ -6,14 +6,16 @@ import App from './App.vue'
 import Home from './components/Home.vue'
 import Search from './components/Search.vue'
 import Statistics from './components/Statistics.vue'
-import About from './components/about/About.vue'
-import AboutDatasets from './components/about/Datasets.vue'
+//import About from './components/about/About.vue'
+//import AboutDatasets from './components/about/Datasets.vue'
 import EULA from './components/about/EULA.vue'
-import Help from './components/about/Help.vue'
+//import Help from './components/about/Help.vue'
+//import Citation from './components/about/Citation.vue'
 import Records from './components/Records.vue'
 import Searches from './components/Searches.vue'
 import SearchHistory from './components/SearchHistory.vue'
 import Collections from './components/Collections.vue'
+import Page from './components/about/Page.vue'
 
 import AccessRequest from './components/requests/Access.vue'
 import NewDatasetRequest from './components/requests/Newdataset.vue'
@@ -353,7 +355,7 @@ const router = new VueRouter(
         name: 'Statistics',
         component: Statistics,
       },      
-      {
+/*      {
         path: '/about',
         name: 'About',
         component: About,
@@ -362,17 +364,27 @@ const router = new VueRouter(
         path: '/datasets',
         name: 'AboutDatasets',
         component: AboutDatasets,
+      },*/
+      {
+        path: '/page/:page',
+        name: 'Page',
+        component: Page
       },
       {
         path: '/eula',
         name: 'EULA',
         component: EULA,
       },
+/*      {
+        path: '/citation',
+        name: 'AboutCitations',
+        component: Citation,
+      },
       {
         path: '/help',
         name: 'Help',
         component: Help,
-      },
+      },*/
       {
         path: '/profile/records',
         name: 'Records',
