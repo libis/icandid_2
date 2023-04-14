@@ -4,15 +4,18 @@
         <loc>https://icandid.libis.be/#/</loc>
     </url>
     <url>
-        <loc>https://icandid.libis.be/#/about</loc>
+        <loc>https://icandid.libis.be/#/pages/abouticandid</loc>
     </url>
     <url>
-        <loc>https://icandid.libis.be/#/datasets</loc>
+        <loc>https://icandid.libis.be/#/page/aboutdatasets</loc>
     </url>
     <url>
         <loc>https://icandid.libis.be/#/eula</loc>
     </url>  
     <url>
-        <loc>https://icandid.libis.be/#/help</loc>
+        <loc>https://icandid.libis.be/#/page/help</loc>
+    </url>  
+    <url>
+        <loc>https://icandid.libis.be/#/page/aboutcitation</loc>
     </url>  
 </urlset>
