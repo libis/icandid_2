@@ -36,23 +36,36 @@ module Icandid
       @query_config.path = config[:query_config_path]
       @query_config.file = config[:query_config_file]
 
-
-     # puts "---- Icandid::Config.initialize config ---" 
-     # pp @config
-     # pp @config.methods
-
       update_config_with_command_line_options()
       check_system_status()
     end
 
     def get_command_line_options()
 
+      if PROCESS_TYPE == "count"
+        option_parser = OptionParser.new do |o|
+          o.banner = "Usage: #{$0} [options]"
+          o.on("-c CONFIG", "--config", "yml-file (including path) with the configuration (./config/config.yml)") { |c| @command_line_options[:config] = c }
+          o.on("-q QUERY_FILE", "--query", "yml-file (including path) with query configuration (url-parameters, last_update_datetime)  (./config/queries.yml)") { |q| @command_line_options[:query_config] = q}
+          o.on("-n QUERY_ID", "--query_id QUERY_ID", "=MANDATORY", "The id of the query if only one specific query needs to be parsed") { |n| @command_line_options[:query_id] = n}
+          o.on( '-h', '--help', 'Display this screen.' ) do
+            puts o
+            exit
+          end
+          o.parse!
+        end
+        if  @command_line_options[:query_id].nil?
+          puts option_parser.help
+          exit 1
+        end
+      end
+
       if PROCESS_TYPE == "download"
         OptionParser.new do |o|
           o.banner = "Usage: #{$0} [options]"
           o.on("-c CONFIG", "--config", "yml-file (including path) with the configuration (./config/config.yml)") { |c| @command_line_options[:config] = c }
+	  o.on("-n QUERY_ID", "--query_id", "The id of the query if only one specific query needs to be parsed") { |n| @command_line_options[:query_id] = n}
           o.on("-q QUERY_FILE", "--query", "yml-file (including path) with query configuration (url-parameters, last_update_datetime)  (./config/queries.yml)") { |q| @command_line_options[:query_config] = q}
-          o.on("-n QUERY_ID", "--query_id", "The id of the query if only one specific query needs to be parsed") { |n| @command_line_options[:query_id] = n}
           o.on("-s SOURCE_RECORDS_DIR", "--source", "Directory where the records will be stored (/source_records/<provider>/{{query}}/)") { |s| @command_line_options[:source_dir] = s}
           o.on( '-h', '--help', 'Display this screen.' ) do
             puts o
@@ -126,14 +139,14 @@ module Icandid
       unless STATUS == "parsing" && ! @command_line_options[:last_parsing_datetime].nil?
         if ! ["ready",STATUS].include?(  @config[:status] )
           message = "Unable to start #{STATUS}. system is not ready: STATUS = #{  @config[:status] }"
-          @logger.warn ("Unable to start #{STATUS}. system is not ready: STATUS = #{  @config[:status] }")
-          @logger.info ("status in config_file (config.yml) should be ready or #{STATUS}")
-          @logger.info ("Config files will be overridden if another process is still running")
+          @logger.warn ("Unable to start #{STATUS}. system is not ready: STATUS = #{  @config[:status] }")  
+          @logger.info ("status in config_file (config.yml) should be ready or #{STATUS}")  
+	  @logger.info ("Config files will be overridden if another process is still running")
           exit
         else
-          @logger.debug ("update config_file (config.yml) with #{STATUS}")
+          @logger.debug ("update config_file (config.yml) with #{STATUS}")  
           update_system_status "#{STATUS}"
-        end
+        end  
       end
     end
 
@@ -191,17 +204,15 @@ module Icandid
       source_records_dir = source_records_dir.gsub(/\{\{day\}\}/, Time.now.strftime("%d"))
       source_records_dir = source_records_dir.gsub(/\{\{hour\}\}/, Time.now.strftime("%H"))
 
-
       source_records_dir.scan(/\{\{([^{}]*)\}\}/).each { |substitution|
         substitution = substitution[0]
         if  options[substitution.to_sym].nil?
           raise ("Missing option \"#{ substitution }\" to substitute source_records_dir")
         else
-          source_records_dir = source_records_dir.gsub(/\{\{#{substitution}\}\}/, options[substitution.to_sym])         
+          source_records_dir = source_records_dir.gsub(/\{\{#{substitution}\}\}/, options[substitution.to_sym])
+          
         end
-        
       }
-
       return source_records_dir
     end
 
@@ -216,7 +227,7 @@ module Icandid
       options[:query_name] = I18n.transliterate( options[:query][:name] ).delete(' ').delete('\'') unless options[:query].nil?
       options[:query_id]   = options[:query][:id]  unless options[:query].nil?
 
-      # records_dir = records_dir.gsub(/\{\{month\}\}/, Time.now.strftime("%Y/%m/%d"))
+      records_dir = records_dir.gsub(/\{\{today\}\}/, Time.now.strftime("%Y/%m/%d"))
       records_dir = records_dir.gsub(/\{\{year\}\}/, Time.now.strftime("%Y"))
       records_dir = records_dir.gsub(/\{\{month\}\}/, Time.now.strftime("%m"))
       records_dir = records_dir.gsub(/\{\{day\}\}/, Time.now.strftime("%d"))
@@ -284,10 +295,9 @@ module Icandid
         if @config[:encode_query_value]
           options[:query] = URI.encode_www_form_component( query[:query][:value] )
         else
-          options[:query] =  query[:query][:value] 
-        end 
+          options[:query] =  query[:query][:value]
+        end
       end
-
       url.scan(/\{\{([^{}]*)\}\}/).each { |substitution|
         substitution = substitution[0]
         if  options[substitution.to_sym].nil?
@@ -407,9 +417,6 @@ Date: #{ now }
 #{report}
 
 END_OF_MESSAGE
-
-puts "REMOVE THIS LINE BEFORE GOING TO PRODUCTION"
-exit()
 
       Net::SMTP.start('smtp.kuleuven.be', 25) do |smtp|
           smtp.send_message message,
