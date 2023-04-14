@@ -126,6 +126,23 @@ export default {
             }
         }
         return false            
+    },
+    getExtraML() {
+      axios
+        .get('/res/extraml.json')
+        .then(res => {
+            var d=res.data
+            var li = 0;
+            this.$ml.list.forEach((l) => {              
+              Object.keys(d[l]).forEach((i) =>{
+                this.$ml.db[li][i] = d[l][i]
+              })
+              li++;
+            })
+
+
+        })
+        .catch(error => console.log(error));          
     }    
   },
   mounted(){
@@ -140,7 +157,9 @@ export default {
     this.setAuthentication(false);
     this.$refs.navbar.updateMenu();
     this.getUserInfo();
+    this.getExtraML();   
     document.title = this.$ml.get('projecttitle')
+    console.log(this.$ml)
   },
   created() {
     if (this.getLandingpad) {
