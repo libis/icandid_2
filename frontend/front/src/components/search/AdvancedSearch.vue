@@ -28,6 +28,8 @@
                   <option value="provider">{{ $ml.get('provider') }}</option>
                   <option value="dataset">{{ $ml.get('dataset') }}</option>
                   <option value="edition">{{ $ml.get('edition') }}</option>
+                  <option value="volume">{{ $ml.get('volume') }}</option>
+                  <option value="issue">{{ $ml.get('issue') }}</option>
                   <option value="retweet">{{ $ml.get('retweet') }}</option>
                   <option value="language">{{ $ml.get('language') }}</option>
                   <option value="label">{{ $ml.get('label') }}</option>
