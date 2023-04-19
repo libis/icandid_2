@@ -44,7 +44,9 @@ class Searcher {
         'edition' => ['printEdition.keyword'],
         'type' => ['@type'],         
         'legislationType' => ['legislationType.keyword'],
-        'language' => ['inLanguage.name.keyword']
+        'language' => ['inLanguage.name.keyword'],
+        'volume' => ['volumeNumber'],
+        'issue' => ['issueNumber']
     ];
     private $sortmapping = [
         'relevance' => ["_score"=>"desc"],
@@ -117,6 +119,7 @@ class Searcher {
         $this->url = config('elastic.url');
         $this->username = config('elastic.user');
         $this->password = config('elastic.password');
+        $this->highlight = json_decode(config('elastic.highlight'));
         if ($query) $this->buildQuery($query);
     }
 
@@ -204,7 +207,7 @@ class Searcher {
 
     public function query($request, $apikey) {
         $this->buildQuery($request);
-
+/*
         $this->esquery->highlight = (object)[
             "max_analyzer_offset" => 200000,
             "pre_tags" => ["<span class='highlighted'>"],
@@ -212,6 +215,9 @@ class Searcher {
             "fields" => (object)["*" => (object)["number_of_fragments"=> 0]],
             "require_field_match" => false
         ];
+*/
+
+        $this->esquery->highlight = $this->highlight;
 
         $this->esquery->aggs = $this->aggs;
 

@@ -282,7 +282,9 @@ export default new MLCreate({
         userexists:"A user with this loginname already exists",
         legislationPassedBy:"Petitioner",
         legislationType:"Documentype",
-        legislationResponsible:"Responsible minister"
+        legislationResponsible:"Responsible minister",
+        volume:"Volume",
+        issue:"Issue"
     }),
  
     new MLanguage('nl').create({
@@ -560,7 +562,9 @@ export default new MLCreate({
         userexists:"Een gebruiker met deze loginnaam bestaat reeds",
         legislationPassedBy:"Indiener",
         legislationType:"Documentsoort",
-        legislationResponsible:"Verantwoordelijke minister"
+        legislationResponsible:"Verantwoordelijke minister",
+        volume:"Volume",
+        issue:"Uitgifte"
     })
   ]
 })
