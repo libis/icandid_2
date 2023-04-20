@@ -1,0 +1,22 @@
+---
+:base_url: https://data.riksdagen.se/dokumentlista
+:opendata_url: 
+:testing: true
+:save_raw_data: true
+:source_records_base_dir: "/source_records/ZweedsParlement"
+:source_records_dir: "/source_records/ZweedsParlement/{{query_id}}/{{date}}/"
+:records_dir: "/records/ZweedsParlement/{{query_id}}/new/{{date}}/"
+:source_file_name_pattern: "*.json"
+:dir_based_on_datePublished: false
+:override_parsed_records: true
+:rule_set: RULE_SET_v1_0
+:recent_url: "{{base_url}}/?tom={{end_date}}&a=s&utformat=json&{{query}}&sort=datum&sortorder=desc&from={{start_date}}&p={{page}}"
+:backlog_url: "{{base_url}}/?tom={{end_date}}&a=s&utformat=json&{{query}}&sort=datum&sortorder=desc&from={{start_date}}&p={{page}}"
+:meeting_url: 
+:legislatures_url: 
+:committees_legislature_url: 
+:committee_url: 
+:pi_url: 
+:encode_query_value: false
+:tika_server: services3.libis.be
+:status: ready

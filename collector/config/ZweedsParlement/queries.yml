@@ -1,0 +1,18 @@
+---
+:queries:
+- :query:
+    :value: doktyp=mot
+    :aggregation: ''
+    :id: data_riksdagen_query_0000001
+    :name: moties_zweeds_parlement
+    :desc: Documents from Swedish Parliament  (Sveriges riksdag)
+  :recent_records:
+    :start_date: 2023-03-31
+    :last_run_update: '2023-04-14T15:21:45Z'
+  :backlog:
+    :start_date: '2000-01-01T00:00:00Z'
+    :end_date: '2023-03-31T00:00:00Z'
+    :current_process_date: '2023-01-31'
+    :completed: 
+    :last_run_update: '2023-04-14T15:20:42Z'
+  :last_parsing_datetime: 
