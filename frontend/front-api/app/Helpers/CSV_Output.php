@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Log;
     
 class CSV_Output {
 
-    public static $header = array("id","type","legislationType","author","author_alternateName","name","description","articleBody","text","printEdition","articleSection","sender","sender_alternateName","recipient","recipient_alternateName","legislationPassedBy","legislationResponsible","retweet","datePublished","url","provider","publisher","link","pagination","publicationdate","keywords","mentions","duration","contentUrl","about","inLanguage","contentLocation","associatedMedia","sdDatePublished","updatetime");
+    public static $header = array("id","type","legislationType","author","author_alternateName","name","description","articleBody","text","printEdition","articleSection","sender","sender_alternateName","recipient","recipient_alternateName","legislationPassedBy","legislationResponsible","retweet","datePublished","url","provider","publisher","link","pagination","keywords","mentions","duration","contentUrl","about","inLanguage","contentLocation","associatedMedia","sdDatePublished","updatetime");
 
     public function __construct() {
         $this->tmpname = tempnam(storage_path('app/export'),'');
@@ -67,6 +67,10 @@ class CSV_Output {
         if (isset($d->_source->publisher)) $disp["publisher"] = Flattener::process($d->_source->publisher);
         if (isset($d->_source->sameAs)) $disp["link"] = Flattener::process($d->_source->sameAs);
         if (isset($d->_source->pagination)) $disp["pagination"] = Flattener::process($d->_source->pagination);
+
+
+
+
         if (isset($d->_source->keywords)) $disp["keywords"] = Flattener::process($d->_source->keywords);
         if (isset($d->_source->mentions)) $disp["mentions"] = Flattener::process($d->_source->mentions);
         if (isset($d->_source->duration)) $disp["duration"] = Flattener::process($d->_source->duration);
@@ -151,6 +155,12 @@ class CSV_Output {
             join(", ", (isset($disp["publisher"])?self::nonl($disp["publisher"]):[])),
             join(", ", (isset($disp["link"])?self::nonl($disp["link"]):[])),
             join(", ", (isset($disp["pagination"])?self::nonl($disp["pagination"]):[])),
+
+
+
+
+
+
             join(", ", (isset($disp["keywords"])?self::nonl($disp["keywords"]):[])),
             join(", ", (isset($disp["mentions"])?self::nonl($disp["mentions"]):[])),
             join(", ", (isset($disp["duration"])?self::nonl($disp["duration"]):[])),
