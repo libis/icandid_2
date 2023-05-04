@@ -159,7 +159,6 @@ export default {
     this.getUserInfo();
     this.getExtraML();   
     document.title = this.$ml.get('projecttitle')
-    console.log(this.$ml)
   },
   created() {
     if (this.getLandingpad) {

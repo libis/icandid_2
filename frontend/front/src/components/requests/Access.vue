@@ -302,14 +302,11 @@ export default {
                     }
                 }
 
-                console.log(this.formdata)
                 if (this.formdata.institution == "KU Leuven") {
                     if (this.formdata.faculty.trim() == "" ) {
-                        console.log('a')
                         this.$refs.faculty.classList.remove('is-hidden')
                         error++
                     } else {
-                        console.log('b')
                         this.$refs.faculty.classList.add('is-hidden')
                     }
                 }

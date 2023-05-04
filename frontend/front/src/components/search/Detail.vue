@@ -70,8 +70,6 @@ export default {
       return strvar.replace(/\n/g, "<br />");
     },
     format(str,idx) {
-      
-//      console.log(idx + ' ' + str)
       if (idx === 'duration') {
         let duration = this.$moment.duration(str);
         let d = "";
@@ -111,7 +109,6 @@ export default {
       return out;
     },
     show(idx) {
-//      console.log(idx)
       var dat = "";
       var out = "";
       if (this.activeResult != undefined) {
@@ -129,8 +126,10 @@ export default {
           }
 
         }
+
         if (typeof dat == 'string') {
           out = this.format(dat, idx);
+          
           if (idx == '@type') {
             if (this.activeResult._source['additionalType'] != undefined && this.activeResult._source['additionalType'] != '') {
               out += ", " + this.activeResult._source['additionalType'];
@@ -143,6 +142,7 @@ export default {
           return out
         }
         if (typeof dat == 'object') {
+          
           if (Array.isArray(dat)) {
             for (var i in dat) {
               if (typeof dat[i] == 'string') {
@@ -168,7 +168,6 @@ export default {
                   if (dat[i].contentUrl.substring(0,downloadFormat.length) == downloadFormat) {
                     out += "<a download=\"" + dat[i].name + "\" href=\"" + dat[i].contentUrl+ "\">" + dat[i].name + "</a><br />"
                   } else {
-                    console.log("hier mag ik niet zijn")
                     if (dat[i].url != undefined) {
                       out += '<a target="_blank" href="' + dat[i].url + '">' + dat[i].url + '</a><br/>'
                     }
@@ -202,14 +201,22 @@ export default {
           }
 
           if (idx == 'sender' || idx == 'recipient') {
-            if (dat.alternateName != undefined) {
-              if (dat.sameAs != undefined) {
-                out += "&nbsp;<a target=\"_blank\" href=\"" + dat.sameAs + "\">@" + dat.alternateName + "</a>"
-              } else {
-                out += "&nbsp;@" + dat.alternateName
+            out = out.replace("<div>","").replace("</div>","");
+            if (this.activeResult != undefined) {
+              if (this.activeResult._source[idx] != undefined) {
+                var dat2 = this.activeResult._source[idx]
+                if (dat2.alternateName != undefined) {
+                  if (dat2.sameAs != undefined) {
+                    out += "&nbsp;<a target=\"_blank\" href=\"" + dat2.sameAs + "\">@" + dat2.alternateName + "</a>"
+                    
+                  } else {
+                    out += "&nbsp;@" + dat2.alternateName
+                  }
+                }
               }
-            }
 
+            }
+            out = "<div>" + out + "</div>"
           }
 
           if (idx == 'retweeted_tweet' || idx == 'replied_to_tweet' || idx == 'quoted_tweet') {
