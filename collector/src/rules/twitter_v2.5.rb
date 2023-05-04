@@ -125,14 +125,7 @@ RULE_SET_v2_5 = {
                 rdata[:recipient ] = user
             end
             
-            # If it is a retweet; the user is not the creator of the message, is it only th sender ???                            
-            ref_tweet_username = rdata[:name].scan(/^RT @[^:]*/)[0]
-            unless ref_tweet_username.nil?
-                ref_tweet_username = ref_tweet_username[4..-1].to_s
-                user = o[:users].values.select { |user| user[:alternateName] == ref_tweet_username }.first
-                rdata[:author] = user unless user.nil?
-                rdata[:creator] = user unless user.nil?
-            end
+
 
             # Expand geo/location
             unless d["geo"].nil?
@@ -224,8 +217,19 @@ RULE_SET_v2_5 = {
             end
             # conversation.clear
 
+            # If it is a retweet; the user is not the creator of the message, is it only th sender ???              
+            retweet = rdata[:identifier].select { |i| i[:name] == "retweeted_tweet_id" }.first
 
-
+            unless retweet.nil?
+                tweet = o[:includes_tweets]["#{o[:prefixid]}_#{  retweet[:value]  }"]
+                unless tweet.nil?
+                    unless tweet[:twitter_author_id].nil?
+                        user = o[:users].values.select { |user| user[:@id] == "#{o[:prefixid]}_PERSON_#{  tweet[:twitter_author_id]  }" }.first
+                        rdata[:author] = user unless user.nil?
+                        rdata[:creator] = user unless user.nil?
+                    end
+                end
+            end
 
             #"entities": { "user_mentions": [] }
             tweet_expands = DataCollector::Output.new
@@ -607,6 +611,8 @@ place.geo : {
                 :@type => "Person",
                 :@id   => "#{o[:prefixid]}_PERSON_#{d["author_id"]}"
             }
+
+            rdata[:twitter_author_id] = d["author_id"]
 
             rdata[:author]  = user
             rdata[:creator] = user
