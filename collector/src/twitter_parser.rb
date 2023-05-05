@@ -116,7 +116,9 @@ begin
                 dir_options[:date] = "{{record_dataPublished}}"
             end
 
-            @total_nr_parsed_records += collector.output[:records]&.size
+            unless collector.output[:records].nil?
+              @total_nr_parsed_records += collector.output[:records]&.size
+            end
 
             unless icandid_config.config[:create_csv]
               collector.write_records( records_dir: icandid_config.get_records_dir( options:dir_options), clear_output: false )
