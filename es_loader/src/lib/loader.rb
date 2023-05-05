@@ -467,6 +467,9 @@ END_OF_MESSAGE
               unless doc_id.nil?
                 puts "retrieved from elastic #{jsondata['@id'] }"
                 jsondata = merge_json([jsondata,doc_id])
+                jsondata["author"].select!{ |p| p["@id"] == jsondata_from_file["author"]["@id"] } if jsondata["author"].size > 1
+                jsondata["creator"].select!{ |p| p["@id"] == jsondata_from_file["creator"]["@id"] } if jsondata["creator"].size > 1
+                jsondata["sender"].select!{ |p| p["@id"] == jsondata_from_file["sender"]["@id"] } if jsondata["sender"].size > 1
                 jsondata = create_record(jsondata)
               end
             end
