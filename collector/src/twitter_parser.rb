@@ -65,8 +65,8 @@ begin
     @logger.info ("Start parsing using rule_set: #{icandid_config.config[:rule_set]}")
 
     unless icandid_config.get_queries_to_parse.include?(query[:query][:id])
-      @logger.info ("NExt next")
-        next
+      @logger.info ("Next query")
+      next
     end
 
     INGEST_CONF[:dataset][:@id]  = query[:query][:id]
@@ -116,9 +116,14 @@ begin
                 dir_options[:date] = "{{record_dataPublished}}"
             end
 
-            @total_nr_parsed_records += 1
+            unless collector.output[:records].nil?
+              @total_nr_parsed_records += collector.output[:records]&.size
+            end
 
-#            collector.write_records( records_dir: icandid_config.get_records_dir( options:dir_options), clear_output: false )
+            unless icandid_config.config[:create_csv]
+              collector.write_records( records_dir: icandid_config.get_records_dir( options:dir_options), clear_output: false )
+            end
+
 
             if icandid_config.config[:create_csv]
 

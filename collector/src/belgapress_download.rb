@@ -143,6 +143,9 @@ begin
           }   
       end
 
+
+      data["data"].compact!
+
       unless (data["data"].empty? && data["_meta"]["total"] == 0)
         filename = "#{data["data"].first["uuid"]}_#{data["data"].last["uuid"]}.json"
         output.to_jsonfile( data["data"], filename, source_records_dir , true )

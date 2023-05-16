@@ -81,7 +81,7 @@ module IcandidCollector
 
         data = input.from_uri(url, url_options)
         # pp data
-        unless data["error"].nil?
+        unless data.nil? || data["error"].nil?
           @logger.error("Data response: [#{ data["error"]["code"]}] #{ data["error"]["message"]}")  
           case data["error"]["code"].to_i
           when 400
