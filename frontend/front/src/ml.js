@@ -284,7 +284,9 @@ export default new MLCreate({
         legislationType:"Documentype",
         legislationResponsible:"Responsible minister",
         volume:"Volume",
-        issue:"Issue"
+        issue:"Issue",
+        showmore:"Show more",
+        showless:"Show less"
     }),
  
     new MLanguage('nl').create({
@@ -564,7 +566,9 @@ export default new MLCreate({
         legislationType:"Documentsoort",
         legislationResponsible:"Verantwoordelijke minister",
         volume:"Volume",
-        issue:"Uitgifte"
+        issue:"Uitgifte",
+        showmore:"Toon meer",
+        showless:"Toon minder"
     })
   ]
 })

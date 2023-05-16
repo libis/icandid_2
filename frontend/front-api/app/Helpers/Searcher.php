@@ -64,43 +64,43 @@ class Searcher {
     	"publisher" => [
     		"terms" => [
     			"field"=>"publisher.name.keyword",
-    			"size"=>30
+    			"size"=>3000
             ]
         ],/*
     	"type" => [
     		"terms" => [
     			"field" => "@type",
-    			"size" => 30
+    			"size" => 3000
             ]
         ],*/
         "author" => [
     		"terms" => [
     			"field"=>"creator.name.keyword",
-    			"size"=>30
+    			"size"=>3000
             ]   
         ],/*
     	"datePublished" => [
     		"terms" => [ 
     			"field"=>"datePublished",
-    			"size"=>30
+    			"size"=>3000
             ]
         ],
     	"articleSection" => [
     		"terms" => [
     			"field"=>"articleSection.keyword",
-    			"size"=>30
+    			"size"=>3000
             ]
         ],*/
     	"provider" => [
     		"terms" => [
     			"field"=>"isBasedOn.provider.name.keyword",
-    			"size"=>30
+    			"size"=>3000
             ]
         ],
     	"edition"=> [
     		"terms" => [
     			"field"=>"printEdition.keyword",
-    			"size"=>30
+    			"size"=>3000
             ]
         ],
         "retweets" => [

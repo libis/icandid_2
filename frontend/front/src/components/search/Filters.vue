@@ -2,10 +2,10 @@
     <div>
         <br />
         <div class="has-text-weight-semibold">{{ $ml.get('filters')}}</div>
-        <div class="content is-capitalized" v-for="type in filterOrder" :key="type">
+        <div class="content is-capitalized" v-for="(type,l) in filterOrder" :key="type">
             <span v-if="isPresent(type)">{{ $ml.get(type) }}</span>
             <ul class="content is-small" style="list-style-type: none; margin: 8px">
-                <li v-for="(v,k) in buckets(type)" :key="k">
+                <li v-for="(v,k) in buckets(type)" :key="k" :class="(k>=filterSize && !filterMore[l])?'hidden':''">
                     <div class="field">
                     <input
                         type="checkbox"
@@ -19,6 +19,9 @@
                     </div>
                 </li>
             </ul>
+            <div v-if="(isPresent(type) && buckets(type).length > filterSize)" style="width:100%; font-weight: Bold; font-size:10px; text-align: center;">
+              <a @click="toggle(l)">{{ (filterMore[l]?$ml.get('showless'):$ml.get('showmore')) }}</a>
+            </div>
         </div>
     </div>
 </template>
@@ -28,7 +31,9 @@ export default {
     data() {
       return {
         nbspace:"&nbsp;",
-        filterOrder:["provider","author","publisher","edition","retweets"]
+        filterOrder:["provider","author","publisher","edition","retweets"],
+        filterMore:[false,false,false,false,false],
+        filterSize:6
       }
     },
   computed: {
@@ -57,6 +62,10 @@ export default {
       isPresent(type) {
         var aggs = this.getAggregations
         return ( aggs[type] != undefined && aggs[type].buckets.length > 0)
+      },
+      toggle(i) {
+        this.filterMore[i] = !this.filterMore[i]
+        this.$forceUpdate();
       }
   }
 }
@@ -72,5 +81,8 @@ export default {
     display:table-cell;
     vertical-align:top;
     width:15px;
+}
+.hidden {
+  display:none
 }
 </style>
