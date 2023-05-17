@@ -66,6 +66,9 @@ export default {
       toggle(i) {
         this.filterMore[i] = !this.filterMore[i]
         this.$forceUpdate();
+      },
+      resetFilterMore() {
+        this.filterMore.fill(false);
       }
   }
 }

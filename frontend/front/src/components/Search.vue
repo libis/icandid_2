@@ -17,7 +17,7 @@
             <option value="title">{{  $ml.get('title') }}</option>
           </select>
         </div>
-        <Filters></Filters>
+        <Filters ref="filters"></Filters>
       </div>
       <div class="is-divider-vertical" style="padding:0" v-bind:class="{'is-hidden': (!(visiblefilters && mode=='result'))}"></div>
       <div class="column is-5" v-bind:class="{'is-hidden': (!(getHits>0 && mode=='result'))}">

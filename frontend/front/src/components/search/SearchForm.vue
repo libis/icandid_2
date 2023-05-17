@@ -61,11 +61,13 @@ export default {
         var queryObj = this.$refs[this.selectedTab].queryObj();
         this.setQuery(queryObj)
         this.$parent.mode='result'
+        this.$parent.$refs.filters.resetFilterMore();
       },
       clear() {
         this.$refs[this.selectedTab].clear();
         this.setHits(-1)
         this.$parent.mode='result'
+        this.$parent.$refs.filters.resetFilterMore();
       },
       saveQuery() {
         axios

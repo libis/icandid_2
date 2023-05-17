@@ -66,19 +66,19 @@ class Searcher {
     			"field"=>"publisher.name.keyword",
     			"size"=>3000
             ]
-        ],/*
+        ],
     	"type" => [
     		"terms" => [
     			"field" => "@type",
     			"size" => 3000
             ]
-        ],*/
+        ],
         "author" => [
     		"terms" => [
     			"field"=>"creator.name.keyword",
     			"size"=>3000
             ]   
-        ],/*
+        ],
     	"datePublished" => [
     		"terms" => [ 
     			"field"=>"datePublished",
@@ -90,7 +90,7 @@ class Searcher {
     			"field"=>"articleSection.keyword",
     			"size"=>3000
             ]
-        ],*/
+        ],
     	"provider" => [
     		"terms" => [
     			"field"=>"isBasedOn.provider.name.keyword",
