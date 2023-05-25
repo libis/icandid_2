@@ -65,7 +65,8 @@ export default {
           {id:"44", name:this.$ml.get('aboutcitations'), route:"/#/page/aboutcitation", vis:"noauth"},
         ]},
 //        {id:"5", name:this.$ml.get('help'), route:"/#/help", vis:"noauth"},
-        {id:"5", name:this.$ml.get('help'), route:"/#/page/help", vis:"noauth"},
+//        {id:"5", name:this.$ml.get('help'), route:"/#/page/help", vis:"noauth"},
+        {id:"5", name:this.$ml.get('help'), route:"https://icandid.helpdocs.com/", vis:"noauth"},
 /*        {id:"7", name:this.$ml.get('requests'), submenu:[
           {id:"71", name:this.$ml.get('access'), "route":"/#/request/access", vis:"unauth"},
           {id:"72", name:this.$ml.get('dataset_on_demand'), "route":"/#/request/dataset", vis:"auth"}

@@ -22,7 +22,7 @@
 
       <div class="navbar-end">
         <div v-for="m in menu" :key="m.id">
-          <a v-if="m.route" class="navbar-item is-hidden" :href="m.route" ref="mi" :id="m.vis">{{ m.name }}</a>
+          <a v-if="m.route" class="navbar-item is-hidden" :href="m.route" ref="mi" :id="m.vis" :target="((m.route.substring(0, 4) == 'http')?'_blank':'')">{{ m.name }}</a>
           <div v-if="m.submenu" class="navbar-item has-dropdown is-hoverable is-hidden" ref="mi" :id="m.vis">
             <a class="navbar-link">{{ m.name }}</a>
             <div class="navbar-dropdown">
