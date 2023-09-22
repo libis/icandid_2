@@ -1,0 +1,16 @@
+---
+:base_url: https://repository.teneo.libis.be/oaiprovider/request?verb=ListRecords&metadataPrefix=oai_dc_fulltext&set=kadoc_parochiebladen_fulltext
+:testing: true
+:save_raw_data: true
+:source_records_base_dir: "/source_records/rosetta"
+:source_records_dir: "/source_records/rosetta/IE_XML/{{query_id}}/{{KYE}}/"
+:records_dir: "/records/rosetta/{{query_id}}/new/{{date}}/"
+:source_file_name_pattern: *.xml
+:dir_based_on_datePublished: false
+:override_parsed_records: true
+:rule_set: RULE_SET_v1_0
+:recent_url: "{{base_url}}&from={{start_date}}&until={{end_date}}"
+:backlog_url: "{{base_url}}&from={{start_date}}&until={{end_date}}"
+:encode_query_value: false
+:tika_server: services3.libis.be
+:status: ready
