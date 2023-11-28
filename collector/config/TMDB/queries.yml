@@ -1,0 +1,12 @@
+---
+:queries:
+- :query:
+    :value: sort_by=primary_release_date.asc&with_genres=878
+    :id: tmdb_query_00001
+    :name: SciFi
+    :desc: SciFi movies in TMDB
+  :recent_records:
+    :start_date: ''
+    :last_run_update: '2023-10-04T14:34:11Z'
+    :url:
+  :last_parsing_datetime: '2023-10-03T05:05:03Z'

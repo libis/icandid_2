@@ -1,0 +1,14 @@
+---
+:auth:
+  :api_key: 
+:base_url: https://api.themoviedb.org/3
+:testing: true
+:save_raw_data: true
+:source_records_dir: "/source_records/TMDB/{{query_id}}/{{date}}/"
+:records_dir: "/records/TMDB/{{query_id}}/new/{{date}}/"
+:source_file_name_pattern: "*.json"
+:dir_based_on_datePublished: false
+:override_parsed_records: true
+:status: downloading
+:discover_url: "{{base_url}}/discover/movie?primary_release_date.lte={{primary_release_date_lte}}&primary_release_date.gte={{primary_release_date_gte}}&page={{page}}&api_key={{api_key}}&{{query}}"
+:record_url: "{{base_url}}/movie/{{movie_id}}?api_key={{api_key}}&append_to_response=videos,images,alternative_titles,credits,external_ids,keywords,release_dates,reviews,translations"

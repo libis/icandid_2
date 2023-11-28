@@ -1,0 +1,17 @@
+---
+:auth:
+  :api_key: 
+:base_url: https://imdb-api.com/en/API
+:testing: true
+:save_raw_data: true
+:source_records_dir: "/source_records/IMDB-API/{{query_id}}/{{date}}/"
+:records_dir: "/records/IMDB-API/{{query_id}}/new/{{date}}/"
+:source_file_name_pattern: "*.json"
+:dir_based_on_datePublished: false
+:override_parsed_records: true
+:status: downloading
+:discover_url: "{{base_url}}/AdvancedSearch/{{api_key}}/?release_date={{release_date_gte}},{{release_date_lte}}&title_type={{title_type}}&{{query}}"
+:record_url: "{{base_url}}/Title/{{api_key}}/{{movie_id}}/FullActor,FullCast,Posters,Images,Trailer,Ratings,Wikipedia,"
+:review_url: "{{base_url}}/Reviews/{{api_key}}/{{movie_id}}"
+:metacriticreview_url: "{{base_url}}/MetacriticReviews/{{api_key}}/{{movie_id}}"
+:usage_url: "{{base_url}}/Usage/{{api_key}}"
