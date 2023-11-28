@@ -1,0 +1,50 @@
+---
+:queries:
+- :query:
+    :value: kadoc_parochiebladen
+    :aggregation: ''
+    :id: parochiebladen_query_0000001
+    :name: kadoc_parochiebladen
+    :desc: Documents from Rosetta KADOC Parochiebladen
+  :recent_records:
+    :start_date: 
+    :last_run_update: 
+  :backlog:
+    :start_date: 
+    :end_date: 
+    :current_process_date: 
+    :completed: true
+    :last_run_update: 
+  :last_parsing_datetime: 
+- :query:
+    :value: kadoc_fotoalbums
+    :aggregation: ''
+    :id: fotoalbums_query_0000001
+    :name: kadoc_fotoalbums
+    :desc: Documents from Rosetta KADOC PhotoAlbum
+  :recent_records:
+    :start_date: 
+    :last_run_update: 
+  :backlog:
+    :start_date: 
+    :end_date: 
+    :current_process_date: 
+    :completed: true
+    :last_run_update: 
+  :last_parsing_datetime: 
+- :query:
+    :value: kadoc_affiches
+    :aggregation: ''
+    :id: affiches_query_0000001
+    :name: kadoc_affiches
+    :desc: Documents from Rosetta KADOC Affiche
+  :recent_records:
+    :start_date: 
+    :last_run_update: 
+  :backlog:
+    :start_date: 
+    :end_date: 
+    :current_process_date: 
+    :completed: true
+    :last_run_update: 
+  :last_parsing_datetime: 
