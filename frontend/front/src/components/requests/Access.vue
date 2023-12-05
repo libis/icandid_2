@@ -1,5 +1,8 @@
 <template>
     <div class="box">
+        <h1 class="title">{{ $ml.get('requestAccessTitle') }}</h1>
+        <p v-html="$ml.get('requestAccessInfo')"></p>
+        <br/>
         <div :class="step==1 ? '' : 'hidden'"> 
             <div class="field">
             <label class="label">{{ $ml.get('name') }}</label>

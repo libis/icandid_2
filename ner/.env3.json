@@ -1,0 +1,123 @@
+{
+    "models": {
+        "nl-Latn":{
+            "@id":"nl_core_news_lg",
+            "name":"Dutch pipeline",
+            "url":"https://spacy.io/models/nl",
+            "longname":"Dutch Named Entity Recognition"
+        },
+        "en-Latn":{
+            "@id":"en_core_web_lg",
+            "name":"English",
+            "url":"https://spacy.io/models/en",
+            "longname":"English Named Entity Recognition"
+        },
+        "fr-Latn":{
+            "@id":"fr_core_news_lg",
+            "name":"French",
+            "url":"https://spacy.io/models/fr",
+            "longname":"French Named Entity Recognition"
+        },
+        "de-Latn":{
+            "@id":"de_core_news_lg",
+            "name":"German",
+            "url":"https://spacy.io/models/en",
+            "longname":"German Named Entity Recognition"
+        },
+        "it-Latn":{
+            "@id":"it_core_news_lg",
+            "name":"Italian",
+            "url":"https://spacy.io/models/it",
+            "longname":"Italian Named Entity Recognition"
+        },
+        "ca-Latn":{
+            "@id":"ca_core_news_lg",
+            "name":"Catalan",
+            "url":"https://spacy.io/models/ca",
+            "longname":"Catalan Named Entity Recognition"
+        },
+        "da-Latn":{
+            "@id":"da_core_news_lg",
+            "name":"Danish",
+            "url":"https://spacy.io/models/da",
+            "longname":"Danish Named Entity Recognition"
+        },
+        "el-Latn":{
+            "@id":"el_core_news_lg",
+            "name":"Greek",
+            "url":"https://spacy.io/models/el",
+            "longname":"Greek Named Entity Recognition"
+        },
+        "es-Latn":{
+            "@id":"es_core_news_lg",
+            "name":"Spanish",
+            "url":"https://spacy.io/models/es",
+            "longname":"Spanish Named Entity Recognition"
+        },
+        "fi-Latn":{
+            "@id":"fi_core_news_lg",
+            "name":"Finnish",
+            "url":"https://spacy.io/models/fi",
+            "longname":"Finnish Named Entity Recognition"
+        },
+        "ja-Latn":{
+            "@id":"ja_core_news_lg",
+            "name":"Japanese",
+            "url":"https://spacy.io/models/ja",
+            "longname":"Japanese Named Entity Recognition"
+        },
+        "lt-Latn":{
+            "@id":"lt_core_news_lg",
+            "name":"Lithuanian",
+            "url":"https://spacy.io/models/lt",
+            "longname":"Lithuanian Named Entity Recognition"
+        },
+        "pl-Latn":{
+            "@id":"pl_core_news_lg",
+            "name":"Polish",
+            "url":"https://spacy.io/models/pl",
+            "longname":"Polish Named Entity Recognition"
+        },
+        "pt-Latn":{
+            "@id":"pt_core_news_lg",
+            "name":"Portuguese",
+            "url":"https://spacy.io/models/pt",
+            "longname":"Portuguese Named Entity Recognition"
+        },
+        "ro-Latn":{
+            "@id":"ro_core_news_lg",
+            "name":"Romanian",
+            "url":"https://spacy.io/models/ro",
+            "longname":"Romanian Named Entity Recognition"
+        },
+        "ru-Latn":{
+            "@id":"ru_core_news_lg",
+            "name":"Russian",
+            "url":"https://spacy.io/models/ru",
+            "longname":"Russian Named Entity Recognition"
+        },
+        "sl-Latn":{
+            "@id":"sl_core_news_lg",
+            "name":"Slovenian",
+            "url":"https://spacy.io/models/sl",
+            "longname":"Slovenian Named Entity Recognition"
+        },
+        "sv-Latn":{
+            "@id":"sv_core_news_lg",
+            "name":"Swedish",
+            "url":"https://spacy.io/models/sv",
+            "longname":"Swedish Named Entity Recognition"
+        },
+        "uk-Latn":{
+            "@id":"uk_core_news_lg",
+            "name":"Ukrainian",
+            "url":"https://spacy.io/models/uk",
+            "longname":"Ukrainian Named Entity Recognition"
+        }
+    },
+    "elastic_url": "https://libis-p-icandid-2.lnx.icts.kuleuven.be:9200",
+    "elastic_user": "icandid_admin",
+    "elastic_password": "ibandid_admin",
+    "elastic_index":"/icandid_test_v2",
+    "querysize" : 1
+}

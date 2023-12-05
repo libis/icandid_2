@@ -7,6 +7,8 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Helpers\Export;
 use App\Helpers\DocCounter;
 use App\Helpers\StorageMonitor;
+use App\Helpers\PeriodUpdater;
+use App\Helpers\Sitemap;
 
 class Kernel extends ConsoleKernel
 {
@@ -51,7 +53,24 @@ class Kernel extends ConsoleKernel
         $schedule->call(function() {
             $sm = new StorageMonitor;  // calculate how much storage every user is using and report this
             $sm->exec();
+
+            if (config(app.updateperiods)) {  // update the dataset from and until fields based on updatetime in ES
+                $pu = new PeriodUpdater;
+                $pu->exec();
+            }
         })->daily();
+
+        $schedule->call(function() {
+            $site = new Sitemap();
+            if ($site != Null) $site->exec() ;
+         })->weeklyOn(1,'12:00');
+
+         $schedule->call(function() {
+            if (!file_exists(public_path('sitemap/')."sitemap.xml")) {
+                $site = new Sitemap();
+                if ($site != Null) $site->exec() ;
+            }
+         })->hourlyAt(15);
 
     }
 

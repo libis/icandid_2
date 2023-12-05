@@ -227,6 +227,12 @@ class SearchController extends Controller
         sort($lists["legislationTypes"]);
 
 
+        $lists["types"] = [];
+        foreach ($r->aggregations->types->buckets as $b) {
+            $lists["types"][] = $b->key;
+        }
+        sort($lists["types"]);
+
 
         Cache::put('ddlists',$lists, now()->addMinutes(config('cache.lifetime')));
 

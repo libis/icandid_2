@@ -85,6 +85,32 @@ function getResult($query, $request_uri) {
     writelog($query);
     writelog($result_code);
 
+    /*
+    if ($result_code == 404) {  // nothing found, is it because there is nothing or because user has no access ???   let's check ...
+        unset($query->query->bool->must[0])
+
+        $ch = curl_init($config['elasticUrl'] . $request_uri);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($query));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_USERPWD, $config['elasticUser'] . ":" . $config['elasticPassword']);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        
+        $result2 = curl_exec($ch);
+        $result_code2 = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        
+        curl_close($ch);
+    
+        writelog($config['elasticUrl'] . $request_uri);
+        writelog($query);
+        writelog($result_code2);
+    
+        if ($result_code2 == 200) {
+            $result_code = 403;
+        }
+    } */
+
     return array($result, $result_code);
     
 }

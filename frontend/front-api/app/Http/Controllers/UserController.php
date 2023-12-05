@@ -53,17 +53,30 @@ class UserController extends Controller
             $user->permissions = $permissions;
         }
 
+
+        $permissions = $user->permissions;
+        if ($user->authenticated) {
+            if ($user->eppn == "publicuser") {
+                $permissions["resources"][] = array("name"=>"Login","reference"=>"login");
+            } else {
+                $permissions["resources"][] = array("name"=>"Logout","reference"=>"logout");
+            }
+        } else {
+            $permissions["resources"][] = array("name"=>"Login","reference"=>"login");
+        }
+        $user->permissions = $permissions;
+
         return $user;
     }
 
 
     public function getshelves(Request $request) {
-        $this->authorize('search');
+        $this->authorize('save');
         $eshelves = Eshelf::where("user_id","=",$this->user_id)->withCount('items')->get()->all();
         return $eshelves;
     }
     public function getshelf(Request $request) {
-        $this->authorize('search');
+        $this->authorize('save');
 
         $shelf = Eshelf::where("user_id","=",$this->user_id)->where("id","=",$request->id)->get()->all();
         if (count($shelf) > 0 ) {
@@ -95,14 +108,14 @@ class UserController extends Controller
 
             return $items;
         } else {
-            abort(401);
+            abort(400);
         }
     }
 
 
 
     public function storeItem(Request $request) {
-        $this->authorize('search');
+        $this->authorize('save');
         $data = json_decode($request->getContent(), true);
 
         
@@ -131,7 +144,7 @@ class UserController extends Controller
     }
 
     public function storeQuery(Request $request) {
-        $this->authorize('search');
+        $this->authorize('save');
         $queryobj = $request->getContent();
         $query = new Query;
         $query->user_id = $this->user_id;
@@ -141,7 +154,7 @@ class UserController extends Controller
     }
 
     public function deleteItem(Request $request) {
-        $this->authorize('search');
+        $this->authorize('save');
         $item = Item::where('id',$request->id)->first();
         $shelf = Eshelf::where('id',$item->eshelf_id)->where('user_id',$this->user_id)->first();
         if ($shelf) {
@@ -151,7 +164,7 @@ class UserController extends Controller
     }
 
     public function deleteShelf(Request $request) {
-        $this->authorize('search');
+        $this->authorize('save');
         $shelf = Eshelf::where('id',$request->id)->where('user_id',$this->user_id)->first();
         if ($shelf) {
             $deletedItems = Item::where('eshelf_id', $request->id)->delete();
@@ -161,7 +174,7 @@ class UserController extends Controller
     }
 
     public function deleteQuery(Request $request) {
-        $this->authorize('search');
+        $this->authorize('save');
         Query::where('user_id',$this->user_id)->where('id',$request->id)->delete();
         return $this->profile($request);
     }

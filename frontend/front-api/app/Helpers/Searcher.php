@@ -30,15 +30,16 @@ class Searcher {
         'dataset' => ['isBasedOn.isPartOf.name.keyword','isBasedOn.isPartOf.@id'],
         'type' => ['@type'] */
         'any' => ["*_name", "*_headline", "isBasedOn.provider.name.keyword",'isBasedOn.provider.alternateName.keyword', 
-            "publisher.name.keyword", "*_articleBody", "creator.name",'author.name','creator.alternateName','author.alternateName','sender.name','sender.alternateName', 
+            "publisher.name.keyword", "*_articleBody", "creator.name",'author.name','creator.alternateName','author.alternateName','sender.name','sender.alternateName', 'creator.name.@value','author.name.@value','creator.alternateName.@value','author.alternateName.@value',
             "*_description","*_keywords", "*_text"],
         'title' => ["*_name", "*_headline"],
-        'author' => ['creator.name','author.name','creator.alternateName','author.alternateName'],
+        'author' => ['creator.name','author.name','creator.alternateName','author.alternateName','creator.name.@value','author.name.@value','creator.alternateName.@value','author.alternateName.@value'],
         'sender' => ['sender.name','sender.alternateName'],
         'text' => ["*_articleBody", "*_description", "*_text"],
         'publicationdate' => ['datePublished'],
         'period' => ['period'],
         'publisher' => ['publisher.name.keyword'],
+        'publisher_ft' => ['publisher.name'],
         'provider' => ['isBasedOn.provider.name.keyword','isBasedOn.provider.alternateName.keyword'],
         'dataset' => ['isBasedOn.isPartOf.name.keyword','isBasedOn.isPartOf.@id'],
         'edition' => ['printEdition.keyword'],
@@ -46,19 +47,30 @@ class Searcher {
         'legislationType' => ['legislationType.keyword'],
         'language' => ['inLanguage.name.keyword'],
         'volume' => ['volumeNumber'],
-        'issue' => ['issueNumber']
+        'issue' => ['issueNumber'],
+        'subject' => ['keywords.@value'],
+        'isbn' => ['isbn'],
+        'issn' => ['issn'],
+        'locationcreated' => ['locationCreated.name']
     ];
     private $sortmapping = [
         'relevance' => ["_score"=>"desc"],
         'datePublished' => ["datePublished"=>"desc"] ,
         'author' => ["creator.name.keyword"=>"asc"],
-        'title' => [["headline.keyword"=>"asc"], ["name.@value.keyword"=>"asc"]]
+        'title' => ["name.@value.keyword"=>"asc"],
+        'datePublishedAsc' => ["datePublished"=>"asc"],
+        'datePublishedDesc' => ["datePublished"=>"desc"]
     ];
     private $filtermapping = [
         'author' => 'creator.name.keyword',
         'publisher' => 'publisher.name.keyword',
         'provider' => 'isBasedOn.provider.name.keyword',
-        'edition' => 'printEdition.keyword'
+        'edition' => 'printEdition.keyword',
+        'subject' => 'keywords.@value.keyword',
+        'type' => '@type',
+        'contributor' => 'contributor.name.keyword',
+        'dataset' => 'isBasedOn.isPartOf.name.keyword',
+        'locationcreated' => 'locationCreated.name.keyword'
     ];
     private $aggs = [
     	"publisher" => [
@@ -109,7 +121,60 @@ class Searcher {
                     "identifier.name.keyword"=>"retweeted_tweet_id"
                 ]
             ]
+        ],
+        "subject" => [
+    		"terms" => [
+    			"field"=>"keywords.@value.keyword",
+    			"size"=>3000
+            ]
+        ],
+        "inlanguage" => [
+    		"terms" => [
+    			"field"=>"inLanguage.name.@value.keyword",
+    			"size"=>3000
+            ]
+        ],
+        "type" => [
+    		"terms" => [
+    			"field"=>"@type",
+    			"size"=>3000
+            ]
+        ],
+        "contributor" => [
+    		"terms" => [
+    			"field"=>"contributor.name.keyword",
+    			"size"=>3000
+            ]
+        ],
+        "locationcreated" => [
+    		"terms" => [
+    			"field"=>"locationCreated.name.keyword",
+    			"size"=>3000
+            ]
+        ],
+        "publisher" => [
+    		"terms" => [
+    			"field"=>"publisher.name.keyword",
+    			"size"=>3000
+            ]
+        ],
+        "dataset" => [
+    		"terms" => [
+    			"field"=>"isBasedOn.isPartOf.name.keyword",
+    			"size"=>3000
+            ]
+        ],
+        "min_datePublished" => [
+            "min" => [
+                "field"=>"datePublished_time_frame_from"
+            ]
+        ],
+        "max_datePublished" => [
+            "max" => [
+                "field"=>"datePublished_time_frame_till"
+            ]
         ]
+
     ];
     private $source = [
         "exclude" => ["*-*_*"]
@@ -263,6 +328,7 @@ class Searcher {
         $result = json_decode($response->getBody()->getContents());
 
         Log::info($response->getStatusCode() . " " . $response->getReasonPhrase()); // . " : " . count($r->hits->hits));                                    
+        Log::info(print_r($result->hits->total,True));
 
         foreach ($result->hits->hits as $k => $v) {
             if (!isset($v->highlight) ) {
@@ -291,9 +357,16 @@ class Searcher {
             unset($result->aggregations->retweets);
         }
 
+        $result->aggregations->minmax_datePublished = ["buckets"=>[]];
+        if (isset($result->aggregations->min_datePublished->value_as_string)) {
+            $result->aggregations->minmax_datePublished["buckets"][] = ["key"=>"min_datePublished", "doc_count"=>$result->aggregations->min_datePublished->value_as_string];
+        }
+        unset($result->aggregations->min_datePublished);
 
-
-
+        if (isset($result->aggregations->max_datePublished->value_as_string)) {
+            $result->aggregations->minmax_datePublished["buckets"][] = ["key"=>"max_datePublished", "doc_count"=>$result->aggregations->max_datePublished->value_as_string];
+        }
+        unset($result->aggregations->max_datePublished);
 
         return $result;
     }
@@ -322,15 +395,47 @@ class Searcher {
         return $query;
     }
 
-    private function parseIdRequest($req) {
+    private function parseSitemapRequest($req) {
         $query = json_decode('{
+            "query": {
+              "match_all": {}
+            },
+            "size":500
+          }');
+        return $query;
+    }
+
+
+
+    private function parseIdRequest($req) {
+/*        $query = json_decode('{
             "query": {
                 "match": {
                     "_id": ""
                 }
             }
-        }');
-        $query->query->match->_id = $req->q;
+        }'); */
+
+        $query = json_decode('{
+            "query": {
+              "bool": {
+                "should": [
+                  {
+                    "match": {
+                      "@id": ""
+                    }
+                  },
+                  {
+                    "match": {
+                      "@uuid": ""
+                    }
+                  }
+                ]
+              }
+            }
+          }');
+        $query->query->bool->should[0]->match = ["@id" => $req->q];
+        $query->query->bool->should[1]->match = ["@uuid" => $req->q];
         return $query;
     }
 
@@ -363,6 +468,14 @@ class Searcher {
         if ($req->type == 'one') $query->query->bool->must[0]->multi_match->operator = "or";
         if ($req->type == 'phrase') $query->query->bool->must[0]->multi_match->type = "phrase";
 
+        if (isset($req->types) && count($req->types) > 0) {
+            $query->query->bool->filter[] = ["terms"=>["@type"=>$req->types]];
+        }
+
+        if (isset($req->onlineonly) && $req->onlineonly) {
+            $query->query->bool->must[] = ["exists"=>["field"=>"associatedMedia.contentUrl"]];
+        }
+
         if (isset($req->publications) && count($req->publications) > 0) {
             $query->query->bool->filter[] = ["terms"=>["publisher.name.keyword"=>$req->publications]];
         }
@@ -370,33 +483,34 @@ class Searcher {
             $query->query->bool->filter[] = ["terms"=>["isBasedOn.isPartOf.@id"=>$req->datasets]];
         }
 
+        if (isset($req->period)) {
+            switch ($req->period) {
+                case "today":
+                    $date = date("Y-m-d");
+                break;
+                case "yesterday":
+                    $date = date("Y-m-d",strtotime("-1 day"));
+                break;
+                case "week":
+                    $date = date("Y-m-d",strtotime("-1 week"));
+                break;
+                case "month":
+                    $date = date("Y-m-d",strtotime("-1 month"));
+                break;
+                case "year":
+                    $date = date("Y-m-d",strtotime("-1 year"));
+                break;
+                case "entire":
+                default:
+                    $date = "";
+                break;
 
-        switch ($req->period) {
-            case "today":
-                $date = date("Y-m-d");
-            break;
-            case "yesterday":
-                $date = date("Y-m-d",strtotime("-1 day"));
-            break;
-            case "week":
-                $date = date("Y-m-d",strtotime("-1 week"));
-            break;
-            case "month":
-                $date = date("Y-m-d",strtotime("-1 month"));
-            break;
-            case "year":
-                $date = date("Y-m-d",strtotime("-1 year"));
-            break;
-            case "entire":
-            default:
-                $date = "";
-            break;
-
+            }
+        
+            if ($date != "") {
+                $query->query->bool->filter[] = ["range" => ["datePublished" => ["gte" => $date]]];
+            }
         }
-        if ($date != "") {
-            $query->query->bool->filter[] = ["range" => ["datePublished" => ["gte" => $date]]];
-        }
-
         return $query;
     }
 
@@ -409,10 +523,11 @@ class Searcher {
             $tmpq->operator = $v->operator;
             $tmpq->query=(object)[];
             if ($v->field == 'publicationdate') {
-                $tmpq->query->query_string = (object)[];
+                /*$tmpq->query->query_string = (object)[];
                 $tmpq->query->query_string->fields = $this->fieldmapping[$v->field];
-                $tmpq->query->query_string->query = date("Y-m-d", strtotime($v->query));
-
+                $tmpq->query->query_string->query = date("Y-m-d", strtotime($v->query)); */
+                $d = date("Y-m-d", strtotime($v->query));
+                $tmpq->query = (object)["range"=>["datePublished_time_frame"=>["gte"=>$d, "lte"=>$d]]];
             } else if ($v->field == 'period') {
                 $tmpq->query = json_decode('{
                     "range": {
@@ -472,6 +587,9 @@ class Searcher {
     private function applyFilters($query, $filters) {
         $terms = [];
         $retweet_terms = [];
+        $sdDatePublished_terms = [];
+        $pdr_term = '';
+        $online_term = Null;
         foreach($filters as $f) {
             $part = explode(":", $f, 2);  // 2 = enkel splitten op eerste dubbele punt
 
@@ -482,7 +600,32 @@ class Searcher {
                 if ($part[1] == "noretweet") {
                     $retweet_terms[] = ["bool"=>["must_not"=>["terms"=>["identifier.name.keyword"=>array("retweeted_tweet_id")]]]];
                 }
-
+            } else if ($part[0] == "onlineonly") {
+                $online_term = ["bool"=>["must"=>["exists"=>["field"=>"associatedMedia.contentUrl"]]]];
+            } else if ($part[0] == "sdDatePublished") {
+                switch($part[1]) {
+                    case 'lastweek':
+                        $sdDatePublished_terms[] = ["range"=>["sdDatePublished"=>["gte"=>date("Y-m-d", strtotime('-1 week'))]]];
+                        break;
+                    case 'last2week':
+                        $sdDatePublished_terms[] = ["range"=>["sdDatePublished"=>["gte"=>date("Y-m-d", strtotime('-2 week'))]]];
+                        break;
+                    case 'lastmonth':
+                        $sdDatePublished_terms[] = ["range"=>["sdDatePublished"=>["gte">date("Y-m-d", strtotime('-1 month'))]]];
+                        break;
+                    case 'last3month':
+                        $sdDatePublished_terms[] = ["range"=>["sdDatePublished"=>["gte">date("Y-m-d", strtotime('-3 month'))]]];
+                        break;
+                    case 'last6month':
+                        $sdDatePublished_terms[] = ["range"=>["sdDatePublished"=>["gte">date("Y-m-d", strtotime('-6 month'))]]];
+                        break;
+                    case 'lastyear':
+                        $sdDatePublished_terms[] = ["range"=>["sdDatePublished"=>["gte"=>date("Y-m-d", strtotime('-1 year'))]]];
+                        break;
+                }
+            } else if($part[0] == 'publicationdaterange') {
+                list($from,$until) = explode(" ", $part[1]);
+                $pdr_term = ["range"=>["datePublished_time_frame"=>["gte"=>$from, "lte"=>$until]]];
             } else {
                 if (isset($terms[$this->filtermapping[$part[0]]]))  {
                     $terms[$this->filtermapping[$part[0]]][] = $part[1];
@@ -517,11 +660,42 @@ class Searcher {
             $new->query->bool->filter[] = (object)$tmp;
         }
 
+        if ($online_term != Null) {
+            $new->query->bool->filter[] = (object)$online_term;
+        }
+
+        if (count($sdDatePublished_terms) > 0) {
+            $tmp = ["bool"=>["should"=>[]]];
+            foreach($sdDatePublished_terms as $k => $v) {
+                $tmp["bool"]["should"][] = (object)$v;
+            }
+            $new->query->bool->filter[] = (object)$tmp;
+        }
+
+        if ($pdr_term != '') {
+            $new->query->bool->filter[] = (object)$pdr_term;
+        }
+
+
         return $new;
     }
 
+    private function escapeRequest($req) {
+        if ($req == Null)  return Null;
+        if (is_string($req)) return escape($req);
+        else if (is_array($req)) {
+            foreach($req as $k => $v) {
+                $req[$k]->query = escape($v->query);
+            }
+            return $req;
+        }
+        else {
+            return $req;
+        }
+    }
+
     private function buildQuery($req, $size = 1000) {
-        
+        if (isset($req->q)) $req->q = $this->escapeRequest($req->q);
         switch ($req->searchtype) {
             case "simple":
                 $query = $this->parseSimpleRequest($req);
@@ -535,6 +709,8 @@ class Searcher {
             case "id":
                 $query = $this->parseIdRequest($req);
             break;
+            case "sitemap":
+                $query = $this->parseSitemapRequest($req);
         }
 
         if (isset($req->f) && count($req->f) > 0) {
@@ -593,6 +769,13 @@ class Searcher {
                         "field":"legislationType.keyword",
                         "size":5000
                     }
+                },
+                "types":{
+                    "terms": {
+                        "field":"@type",
+                        "size":5000
+                    }
+
                 }                
             }
         }';
@@ -619,6 +802,16 @@ class Searcher {
 
 
 }
+
+function escape($str) {
+    $arr = ["/"];
+
+    foreach ($arr as $a) {
+        $str = str_replace($a,"\\".$a,$str);
+    }
+    return $str;
+}
+
 
 
 ?>

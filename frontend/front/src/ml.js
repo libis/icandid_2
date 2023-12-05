@@ -286,7 +286,9 @@ export default new MLCreate({
         volume:"Volume",
         issue:"Issue",
         showmore:"Show more",
-        showless:"Show less"
+        showless:"Show less",
+        requestAccessTitle:"Request access to iCANDID",
+        requestAccessInfo:"To request access to iCANDID, complete the details below. More info on the process can be found <a target='_blank' href='https://icandid.helpdocs.com/account/creating-an-account'>here</a>."
     }),
  
     new MLanguage('nl').create({
@@ -568,7 +570,9 @@ export default new MLCreate({
         volume:"Volume",
         issue:"Uitgifte",
         showmore:"Toon meer",
-        showless:"Toon minder"
+        showless:"Toon minder",
+        requestAccessTitle:"Vraag toegang tot iCANDID",
+        requestAccessInfo:"Om toegang te vragen tot iCANDID, vul uw gegevens in hieronder. Meer informatie over de procedure om toegang te krijgen, kan u <a target='_blank' href='https://icandid.helpdocs.com/account/creating-an-account'>hier</a> vinden."
     })
   ]
 })

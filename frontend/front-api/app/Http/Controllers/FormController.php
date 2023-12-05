@@ -26,4 +26,13 @@ class FormController extends Controller
         Mail::to(config('app.contact'))->send(new Email(nl2br($body),$subject));
     }
 
+    public function mail(Request $request) {
+        $this->authorize('search');
+        $m = json_decode($request->getContent());
+        Mail::to($m->to)->send(new Email(nl2br($m->body),$m->subject));
+
+
+
+    }
+
 }

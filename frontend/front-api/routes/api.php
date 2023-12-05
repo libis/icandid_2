@@ -30,9 +30,11 @@ Route::post('/query/nocache','QueryController@cachelessquery');
 Route::get('/flush','QueryController@flush');
 Route::get('/json/{id}','SearchController@getjson');
 Route::post('/search','SearchController@search');
+Route::post('/search/public','SearchController@search');
 Route::post('/search/query','SearchController@query');
 
 Route::get('/profile/user', "UserController@profile");
+Route::get('/profile/user/public', "UserController@profile");
 Route::get('/profile/shelves', "UserController@getshelves");
 Route::get('/profile/shelf/{id}/{start}', "UserController@getshelf");
 
@@ -50,6 +52,7 @@ Route::get('/profile/shelf/{id}/{format?}',"SearchController@exportset");
 Route::get('/export/{id}', "ExportController@download");
 
 Route::get('/ddlists',"SearchController@ddlists");
+Route::get('/ddlists/public',"SearchController@ddlists");
 
 Route::get('/status',"QueryController@status");
 
@@ -58,13 +61,15 @@ Route::delete('/admin/status',"ContentController@statusdelete");
 
 Route::post('/stats/counter','StatisticsController@counter');
 Route::post('/stats/newspaperpie','StatisticsController@newspaperpie');
+Route::post('/stats/providerpie','StatisticsController@providerpie');
 Route::post('/stats/recordsdaybar','StatisticsController@recordsdaybar');
 Route::post('/stats/typepie','StatisticsController@typepie');
 Route::post('/stats/articleline','StatisticsController@articleline');
 Route::post('/stats/ner','StatisticsController@ner');
 
 Route::post('/form', 'FormController@form');
-Route::get('/form/jwt','JWTController@decode');
+//Route::get('/form/jwt','JWTController@decode');
+Route::post('/form/mail','FormController@mail');
 
 Route::post('/admin/users/{type}', 'AdminController@usersearch');
 Route::post('/admin/user', 'AdminController@usersave');
@@ -96,3 +101,4 @@ Route::get('/content/{contentcode}', 'ContentController@get');
 
 Route::get('/jwt/validate','JWTController@validation');
 Route::get('/jwt/decode','JWTController@decode');
+

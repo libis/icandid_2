@@ -30,7 +30,7 @@ class StatisticsController extends Controller
         return $this->query($q);
     }
 
-    public function newspaperpie(Request $request) {
+    public function providerpie(Request $request) {
         $q = json_decode('{
           "query": {
             "bool": {
@@ -46,7 +46,7 @@ class StatisticsController extends Controller
             "aggs": {
               "two": {
                 "terms": {
-                  "field": "publisher.name.keyword",
+                  "field": "isBasedOn.provider.name.keyword",
                   "order": {
                     "_count": "desc"
                   },
@@ -58,6 +58,37 @@ class StatisticsController extends Controller
           }');
         return $this->query($q);
     }
+
+    public function newspaperpie(Request $request) {
+      $q = json_decode('{
+        "query": {
+          "bool": {
+            "must_not": [
+              {
+                "terms": {
+                  "publisher.name.keyword" : ["testSource"]
+                }
+              }
+            ]
+          }
+        },          
+          "aggs": {
+            "two": {
+              "terms": {
+                "field": "publisher.name.keyword",
+                "order": {
+                  "_count": "desc"
+                },
+                "size": 50
+              }
+            }
+          },
+          "size": 0
+        }');
+      return $this->query($q);
+  }
+
+
 
     public function recordsdaybar(Request $request) {
         $q = json_decode('{

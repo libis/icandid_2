@@ -230,5 +230,6 @@ return [
 
     ],
 
-    'contact' => env('APP_CONTACT', 'icandid@kuleuven.be')
+    'contact' => env('APP_CONTACT', 'icandid@kuleuven.be'),
+    'updateperiods' => env('APP_UPDATEPERIODS', false)
 ];

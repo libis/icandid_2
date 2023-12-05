@@ -39,20 +39,31 @@ class Controller extends BaseController
     public function authorize($module = Null){
 
         if (config('app.env') != 'local') {
-            list($authType, $bearerToken) = \explode(" ",$_SERVER['HTTP_AUTHORIZATION']);
-            if ($authType == "Bearer" && $bearerToken != "" && $bearerToken != Null) {
-                $result = $this->parse_jwt($bearerToken);
-                if ($result) {
-                    $this->user_eppn = $result["preferred_user"];
-                } else {
-                    $this->user_eppn = "";
-                }                
-            } else { 
-                $this->user_eppn = $_SERVER["HTTP_EPPN"];
+            if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+                list($authType, $bearerToken) = \explode(" ",$_SERVER['HTTP_AUTHORIZATION']);
+                if ($authType == "Bearer" && $bearerToken != "" && $bearerToken != Null) {
+                    $result = $this->parse_jwt($bearerToken);
+                    if ($result) {
+                        $this->user_eppn = $result["preferred_user"];
+                    } else {
+                        $this->user_eppn = "";
+                    }                
+                } else { 
+                    if (isset($_SERVER["HTTP_EPPN"])) {
+                        $this->user_eppn = $_SERVER["HTTP_EPPN"];
+                    } else {
+                        $this->user_eppn = "";
+                    }
+                }
+            } else {
+                $this->user_eppn = "";
             }
-        } 
-        else {
+        } else {
             $this->user_eppn = "u0124029@kuleuven.be";
+        }
+
+        if ($this->user_eppn == "" || $this->user_eppn == Null) {
+            $this->user_eppn = "publicuser";
         }
 
         if (config('app.debug')) {

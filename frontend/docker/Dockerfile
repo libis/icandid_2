@@ -37,7 +37,7 @@ RUN chmod -R 777 /var/www/html/api/storage
 RUN sed -e "s/http:\/\/localhost:88//g" -i.backup /var/www/html/front/js/*.js
 
 
-COPY ./docker/docker-php-ext-memory.ini /usr/local/etc/php/conf.d/
+COPY ./docker/docker-php-ext-*.ini /usr/local/etc/php/conf.d/
 
 COPY ./docker/etc/exim4/update-exim4.conf.conf /etc/exim4/
 RUN update-exim4.conf

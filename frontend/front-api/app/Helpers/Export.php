@@ -10,8 +10,8 @@ use App\User;
 class Export {
     private $queue;
 
-    private $mailbody = Array("nl"=>"Uw export van iCandid is klaar. U kan deze nu downloaden.<br><br>1) Log aan op https://icandid.libis.be (als u niet reeds ingelogd bent)<br><br>2) Klik nadien op volgende link : {url} <br><br><br>Deze link blijft 10 dagen geldig."
-                            ,"en"=>"Your export from iCandid is ready. You can now download it.<br><br>1) Log on to https://icandid.libis.be (if you are not logged in yet)<br><br>2) Next click the following hyperlink : {url}<br><br><br>This hyperlink will remain valid for 10 days.");
+    private $mailbody = Array("nl"=>"Uw export van {app_name} is klaar. U kan deze nu downloaden.<br><br>1) Log aan op {app_url} (als u niet reeds ingelogd bent)<br><br>2) Klik nadien op volgende link : {url} <br><br><br>Deze link blijft 10 dagen geldig."
+                            ,"en"=>"Your export from {app_name} is ready. You can now download it.<br><br>1) Log on to {app_url} (if you are not logged in yet)<br><br>2) Next click the following hyperlink : {url}<br><br><br>This hyperlink will remain valid for 10 days.");
 
     public function __construct() {
         $this->queue = Queue::where("status",0)->orderBy('created_at','ASC')->first();
@@ -85,10 +85,14 @@ class Export {
             // mail with link to id
 
             if ($id != Null) {
-                $url = "https://icandid.libis.be/export/" . $id;
+                $url = config('app.url').'/export/' . $id;
                 $msg = $this->mailbody[$job->language];
-                $body = str_replace("{url}",$url, $msg);
-                $subject = "iCandid export " . $this->queue->created_at . " UTC";
+
+                $search = ["{url}","{app_name}","{app_url}"];
+                $replace = [$url,config('app.name'),config('app.url')];
+
+                $body = str_replace($search,$replace,$msg);
+                $subject = config('app.name') . " export " . $this->queue->created_at . " UTC";
 
                 Mail::to($this->queue->email)->send(new Email($body,$subject));
             }

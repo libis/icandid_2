@@ -197,7 +197,8 @@ class Flattener {
             case "array":
                 $ret = Array();
                 foreach($data as $k => $v) {
-                    $ret = array_merge($ret, self::process($v));
+                    $add = self::process($v);
+                    if ($add != Null) $ret = array_merge($ret, $add);
                 }
                 return $ret;
                 break;
