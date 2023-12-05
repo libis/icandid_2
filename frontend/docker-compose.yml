@@ -7,3 +7,10 @@ services:
     ports:
       - "4201:4201"
       - "4202:4202"
+  resilience_front:
+    build: 
+        context: .
+        dockerfile: docker/Dockerfile_resilience
+    ports:
+      - "4201:4201"
+      - "4202:4202"
