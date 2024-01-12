@@ -11,13 +11,15 @@
         aria-label="menu"
         aria-expanded="false"
         data-target="navbarBasicExample"
+        @click="navbarburgerToggle()"
+        ref="navbarburger"
       >
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
       </a>
     </div>
-    <div id="navbarBasicExample" class="navbar-menu">
+    <div id="navbarBasicExample"  ref="navbarBasicExample" class="navbar-menu">
       <div class="navbar-start"></div>
 
       <div class="navbar-end">
@@ -60,6 +62,11 @@
 import { mapGetters } from "vuex";
 export default {
     props:['auth','menu','lang'],
+    data() {
+        return {
+            burgerstatus: false
+        }
+    },    
     watch: {
         auth: {
             handler: 'updateMenu'  
@@ -73,6 +80,16 @@ export default {
       ...mapGetters(["getAuthenticated","getPermissions"]),
     },
     methods: {
+        navbarburgerToggle(){
+          if (this.burgerstatus) {
+            this.$refs.navbarburger.classList.remove('is-active')
+            this.$refs.navbarBasicExample.classList.remove('is-active')
+          } else {
+            this.$refs.navbarburger.classList.add('is-active')
+            this.$refs.navbarBasicExample.classList.add('is-active')
+          }
+          this.burgerstatus=!this.burgerstatus
+        },      
         updateMenu() {
             this.$parent.updateMenu();
             for (var i in this.$refs.mi) {
