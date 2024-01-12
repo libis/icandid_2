@@ -35,7 +35,14 @@ class Kernel extends ConsoleKernel
             $threshold = time() - (12*24*60*60); // files older than 12 days delete
             foreach (glob(storage_path('app/export')."/*") as $file) {
                 if (filemtime($file) < $threshold) {
-                    unlink($file);
+                    if (is_dir($file)) {
+                        foreach (glob(storage_path('app/export')."/".$file."/*") as $fil) {
+                            unlink($fil);
+                        }
+                        rmdir($file);
+                    } else {
+                        unlink($file);
+                    }
                 }
             }
         })->daily();

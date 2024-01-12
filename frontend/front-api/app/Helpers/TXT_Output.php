@@ -7,7 +7,12 @@ class TXT_Output {
 
     public function __construct() {
         $this->tmpname = tempnam(storage_path('app/export'),'');
-        $this->fhandle = fopen($this->tmpname, 'w');
+        unlink($this->tmpname);
+        mkdir($this->tmpname);
+        $this->maxnumber = 100000;
+        $this->recordcount = 0;
+        $this->filenumber = 1;
+        $this->fhandle = fopen($this->tmpname."/".sprintf('file_%06d.txt', $this->filenumber), 'w');
     }
     
     
@@ -20,19 +25,42 @@ class TXT_Output {
             if (isset($d->_source->text)) $article .= Flattener::process($d->_source->text)[0] . "\n";
             if ($article !="" ) $article .= "\n";
             fwrite($this->fhandle, $article);
+            $this->recordcount++;
+            if ($this->recordcount >= $this->maxnumber) {
+                $this->nextfile();
+            }
         }
     }
     
+    private function nextfile() {
+        fclose($this->fhandle);
+        $this->filenumber++;
+        $this->recordcount = 0;
+        $this->fhandle = fopen($this->tmpname."/".sprintf('file_%06d.txt', $this->filenumber), 'w');
+    }
+
     public function save($job) {
-        $fhandle = fopen($this->tmpname."_query.txt", 'w');
+        $fhandle = fopen($this->tmpname."/query.txt", 'w');
         fwrite($fhandle, json_encode($job, JSON_PRETTY_PRINT));
         fclose($fhandle);
 
         fclose($this->fhandle);
-        rename($this->tmpname, $this->tmpname.".txt");
-        $cmd = "zip -m -j " . $this->tmpname . ".zip " . $this->tmpname . ".txt" . " " . $this->tmpname."_query.txt";
+        $cmd = "zip -m -j " . $this->tmpname . ".zip " . $this->tmpname . "/*";
         exec($cmd);
+        $this->cleanup();
         return basename($this->tmpname);
+    }
+
+    private function cleanup() {
+        $files = scandir($this->tmpname);
+        if ($files) {
+            foreach ($files as $file) {
+                if (!is_dir("$this->tmpname/$file")) {
+                    unlink("$this->tmpname/$file");
+                }
+            }
+        }
+        rmdir($this->tmpname);
     }
 
     /*

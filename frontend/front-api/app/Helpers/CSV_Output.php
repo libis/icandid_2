@@ -8,11 +8,18 @@ class CSV_Output {
 
     public function __construct() {
         $this->tmpname = tempnam(storage_path('app/export'),'');
-        $this->fhandle = fopen($this->tmpname, 'w');
+        unlink($this->tmpname);
+        mkdir($this->tmpname);
+        $this->maxnumber = 100000;
+        $this->recordcount = 0;
+        $this->filenumber = 1;
         $this->first = True;
         $this->separator = chr(9);
+        $this->open();
     }
-    
+    public function open() {
+        $this->fhandle = fopen($this->tmpname."/".sprintf('file_%06d.csv', $this->filenumber), 'w');
+    }
     public function add($data) {
        
         if ($this->first) {
@@ -25,19 +32,47 @@ class CSV_Output {
                 $rec[$k] = str_replace(array("\n","\r","\t",),array(" "," "," "), $v);
             }
             fputcsv($this->fhandle, $rec, $this->separator);
+            $this->recordcount++;
+            if ($this->recordcount >= $this->maxnumber) {
+                $this->nextfile();
+                if ($this->first) {
+                    fputcsv($this->fhandle, self::$header, $this->separator);
+                    $this->first = false;
+                }
+            }            
         }
     }
-    
+
+    private function nextfile() {
+        fclose($this->fhandle);
+        $this->filenumber++;
+        $this->recordcount = 0;
+        $this->first=True;
+        $this->fhandle = fopen($this->tmpname."/".sprintf('file_%06d.csv', $this->filenumber), 'w');
+    }    
+
     public function save($job) {
-        $fhandle = fopen($this->tmpname."_query.txt", 'w');
+        $fhandle = fopen($this->tmpname."/query.txt", 'w');
         fwrite($fhandle, json_encode($job, JSON_PRETTY_PRINT));
         fclose($fhandle);
 
         fclose($this->fhandle);
-        rename($this->tmpname, $this->tmpname.".csv");
-        $cmd = "zip -m -j " . $this->tmpname . ".zip " . $this->tmpname . ".csv" . " " . $this->tmpname."_query.txt";
+        $cmd = "zip -m -j " . $this->tmpname . ".zip " . $this->tmpname . "/*";
         exec($cmd);
+        $this->cleanup();
         return basename($this->tmpname);
+    }
+
+    protected function cleanup() {
+        $files = scandir($this->tmpname);
+        if ($files) {
+            foreach ($files as $file) {
+                if (!is_dir("$this->tmpname/$file")) {
+                    unlink("$this->tmpname/$file");
+                }
+            }
+        }
+        rmdir($this->tmpname);
     }
 
     static function selectfields($d) {
