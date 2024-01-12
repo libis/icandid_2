@@ -213,7 +213,7 @@ class Searcher {
         $content = $response->getBody()->getContents();
         $r = json_decode($content);
         Log::info($response->getStatusCode() . " " . $response->getReasonPhrase() . " " . strlen($content)); // . " : " . count($r->hits->hits));   
-        Log::info($content);                                 
+        //Log::info($content);                                 
         $this->_scroll_id = $r->_scroll_id;
         if (count($r->hits->hits) > 0) {
             $this->hits = $r->hits->total->value;
@@ -258,7 +258,7 @@ class Searcher {
         $content = $response->getBody()->getContents();
         $r = json_decode($content);
         Log::info($response->getStatusCode() . " " . $response->getReasonPhrase() . " " . strlen($content)); // . " : " . count($r->hits->hits));   
-        Log::info($content);
+        //Log::info($content);
         $this->_scroll_id = $r->_scroll_id;
         if (count($r->hits->hits) > 0) {
             Log::info($r->hits->total->value);
