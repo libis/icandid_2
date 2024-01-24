@@ -31,7 +31,11 @@ export default {
         sortedOptions() {
             if (this.options == undefined) return []
             var o = JSON.parse(JSON.stringify(this.options));
-            return o.sort((a,b) => a['name_'+this.$ml.current].toUpperCase() >= b['name_'+this.$ml.current].toUpperCase())
+            var f = 'name'
+            if (o[0].name == undefined) {
+                f = 'name_'+this.$ml.current
+            }
+            return o.sort((a,b) => a[f].toUpperCase() >= b[f].toUpperCase())
         }                
     },
     methods: {
