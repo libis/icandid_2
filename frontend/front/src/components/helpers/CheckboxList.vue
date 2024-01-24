@@ -6,7 +6,7 @@
             <a v-if="selectedList.length != 0" @click.prevent.stop="deselectAll()" style="font-size:12px">{{ $ml.get('selectnone')}}</a>
         </div>
         <div class="scrollable">
-            <div v-for="(v,k) in options" :key="k">
+            <div v-for="(v,k) in sortedOptions" :key="k">
                 <input v-if="v.via != undefined && v.via.length > 0" type="checkbox" class="checkbox" checked disabled style="" > 
                 <input v-else type="checkbox" class="checkbox" v-model="selectedList" :value="v.id" :id="label+v.id"> 
                 <label :for="label+v.id"> {{ format(v) }}</label>
@@ -27,6 +27,13 @@ export default {
             this.$emit('select', this.options.filter(x => this.selectedList.includes(x.id) ))
         }
     },
+    computed:{
+        sortedOptions() {
+            if (this.options == undefined) return []
+            var o = JSON.parse(JSON.stringify(this.options));
+            return o.sort((a,b) => a['name_'+this.$ml.current].toUpperCase() >= b['name_'+this.$ml.current].toUpperCase())
+        }                
+    },
     methods: {
         selectAll() {
             this.selectedList = this.options.map(x => x.id)                
@@ -45,7 +52,7 @@ export default {
                 }
             }
             return f
-        }        
+        }
     },
     created() {
         this.selectedList = this.selected.map(x => x.id)
