@@ -29,6 +29,34 @@ export default {
   data() {
     return {
       aggs: {
+        "filtered": {
+          "filters": {
+            "filters": {
+              "entities": {
+                "term": {
+                  "prov:wasAttributedTo.name.keyword": "SpaCy"
+                }
+              }
+            }
+          },
+          "aggs": {
+            "ENRICHMENTS": {
+              "nested": {
+                "path": "prov:wasAttributedTo.prov:wasAssociatedFor"
+              },
+              "aggs": {
+                "ALL": {
+                  "terms": {
+                    "field": "prov:wasAttributedTo.prov:wasAssociatedFor._generated.ALL.keyword",
+                    "size": 100
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+/*      aggs: {
         "named_entities": {
           "filter": {
               "terms": {
@@ -44,7 +72,7 @@ export default {
               }
           }
         }
-      },
+      }, */
       defaultWords:[],
       loading:false,
     }
@@ -66,7 +94,8 @@ export default {
       axios
         .post(this.getApiQueryUrl, es_query)
         .then(res => {
-            this.data = res.data["aggregations"]["named_entities"]["text"]["buckets"]
+//            this.data = res.data["aggregations"]["named_entities"]["text"]["buckets"]
+            this.data = res.data["aggregations"]["filtered"]["buckets"]["entities"]["ENRICHMENTS"]["ALL"]["buckets"]
             this.calculateChartData()
             this.loading = false
         })

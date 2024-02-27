@@ -14,7 +14,7 @@
         <div class="column" v-if="data['named_entities']">
             <b>Top 10 named entities</b>
             <table class="table is-striped is-hoverable fullwidth" width=100%>
-                <tr v-for="(ne, idx) in data['named_entities']['text']['buckets']" :key="idx">
+                <tr v-for="(ne, idx) in data['named_entities']['buckets']" :key="idx">
                     <td>{{ ne["key"] }}</td>
                     <td style="text-align:right">{{ ne["doc_count"] }}</td>
                 </tr>
@@ -51,7 +51,9 @@ export default {
       axios
         .post(this.getApiQueryUrl, es_query)
         .then(res => {
-            this.data = res.data["aggregations"]
+            
+            this.data["newssources"] = res.data["aggregations"]["newssources"]
+            this.data["named_entities"] = res.data["aggregations"]["filtered"]["buckets"]["entities"]["ENRICHMENTS"]["ALL"]
             this.loading = false
         })
         .catch(error => console.log(error));
@@ -62,6 +64,42 @@ export default {
   },
   data() {
     return {
+      aggs: {
+        "filtered": {
+          "filters": {
+            "filters": {
+              "entities": {
+                "term": {
+                  "prov:wasAttributedTo.name.keyword": "SpaCy"
+                }
+              }
+            }
+          },
+          "aggs": {
+            "ENRICHMENTS": {
+              "nested": {
+                "path": "prov:wasAttributedTo.prov:wasAssociatedFor"
+              },
+              "aggs": {
+                "ALL": {
+                  "terms": {
+                    "field": "prov:wasAttributedTo.prov:wasAssociatedFor._generated.ALL.keyword",
+                    "size": 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "newssources": {
+          "terms": {
+            "field": "publisher.name.keyword",
+            "size": 10
+          }
+        }
+      },
+/*
+
       aggs:{
           "named_entities": {
               "filter": {
@@ -96,7 +134,7 @@ export default {
                     "size": 10
                 }
             }
-        },
+        }, */
       loading:false,
       data:[]
     }

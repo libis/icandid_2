@@ -60,40 +60,97 @@ esquery={
     }
   }
 }
+esquery2={
+    "_source": [
+        "name",
+        "@id",
+        "@type",
+        "headline",
+        "description",
+        "articleBody",
+        "text",
+        "prov:wasAttributedTo",
+        "inLanguage",
+        "@context"
+    ],
+    "sort": {
+        "sdDatePublished": {"order": "desc"}
+    },
+    "size": 1,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "terms": {
+                        "prov:wasAttributedTo.name.keyword": ["SpaCy"]
+                    }
+                },
+                {
+                    "bool": {
+                        "should": []
+                    }
+                },
+                {
+                    "bool": {
+                        "should": []
+                    }
+                }
+            ],
+            "must_not": {
+                "terms": {
+                    "prov:wasAttributedTo.version.keyword": ["3.7.1"]
+                }
+            }
+        }
+    }
+}
 
 newblock = {
-    "prov:wasAssociatedFor": [],
-    "@type": [
-        "prov:Agent",
-        "agent"
-    ],
-    "prov:type": "prov:SoftwareAgent",
-    "name": "SpaCy",
-    "description": "Free open-source library for Natural Language Processing in Python",
-    "@id": "spacy",
-    "version": "",
-    "url": "https://spacy.io/"
+  "prov:wasAssociatedFor": [],
+  "@type": [
+      "prov:Agent",
+      "agent"
+  ],
+  "prov:type": "prov:SoftwareAgent",
+  "name": "SpaCy",
+  "description": "Free open-source library for Natural Language Processing in Python",
+  "@id": "spacy",
+  "version": "",
+  "url": "https://spacy.io/"
 }
 newblock["version"] = spacy.__version__
 
-
 newblock2 = {
-          "prov:used": {
-              "name": "French pipeline",
-              "@id": "fr_core_news_lg",
-              "version": "3.2.0",
-              "url": "https://spacy.io/models/fr"
-          },
-          "prov:generatedAtTime": "2023-08-20T05:16:20.112756",
-          "@type": [
-              "prov:Activity",
-              "action"
-          ],
-          "name": "French Named Entity Recognition",
-          "@id": "spacy_ner_fr_core_web_lg",
-          "_generated": {},
-          "prov:generated": []
-      }
+  "prov:used" : [
+    {
+      "itemListElement" : [
+        "headline",
+        "description",
+        "articleBody",
+        "text"
+      ],
+      "@type" : "itemListElement",
+      "name" : "Used fields from the attributed entity",
+      "description" : "list of fields from the record that are used in this enrichment process",
+      "@id" : "used_fields_for_enrichment"
+    },
+    {
+      "name" : "English pipeline",
+      "@id" : "en_core_web_lg",
+      "version" : "3.2.0",
+      "url" : "https://spacy.io/models/en"
+    }
+  ],
+  "prov:generatedAtTime": "2023-08-20T05:16:20.112756",
+  "@type": [
+      "prov:Activity",
+      "action"
+  ],
+  "name": "French Named Entity Recognition",
+  "@id": "spacy_ner_fr_core_web_lg",
+  "_generated": {},
+  "prov:generated": []
+}
 
 config_file = './' + sys.argv[1]
 print(datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Opening configuration " + config_file);
@@ -106,6 +163,8 @@ update_url = config["elastic_url"] + config["elastic_index"] + '/_update/'
 user = config["elastic_user"]
 passwd = config["elastic_password"]
 esquery["size"] = config["querysize"]
+esquery2["size"] = config["querysize"]
+esquery2["query"]["bool"]["must_not"]["terms"]["prov:wasAttributedTo.version.keyword"] = [spacy.__version__] 
 
 headers = {"Content-Type":"application/json", "Accept":"application/json"}
 
@@ -118,7 +177,7 @@ def run_once():
     try:
         fcntl.flock(fh,fcntl.LOCK_EX|fcntl.LOCK_NB)
     except:
-        print("Still busy so not going to start again");
+        print(datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Still busy so not going to start again");
         os._exit(0)
 
 def findinout(text, label, l) :
@@ -136,13 +195,17 @@ if __name__ == '__main__':
 
     starttime = datetime.now()
 
+    
+
     for model in models:
       mod = {"term":{"prov:wasAttributedTo.prov:wasAssociatedFor.@id":"spacy_ner_"+models[model]["@id"]}}
       esquery["query"]["bool"]["must_not"][0]["nested"]["query"]["bool"]["should"].append(mod)
       for f in ["name","headline","description","articleBody","text"]:
-          esquery["query"]["bool"]["must"][0]["bool"]["should"].append({"term":{f+".@language.keyword":model}})
-      for f in process_fields:
-          esquery["query"]["bool"]["must"][1]["bool"]["should"].append({"exists":{"field":f}})
+        esquery["query"]["bool"]["must"][0]["bool"]["should"].append({"term":{f+".@language.keyword":model}})
+        esquery2["query"]["bool"]["must"][1]["bool"]["should"].append({"term":{f+".@language.keyword":model}})
+    for f in process_fields:
+      esquery["query"]["bool"]["must"][1]["bool"]["should"].append({"exists":{"field":f}})
+      esquery2["query"]["bool"]["must"][2]["bool"]["should"].append({"exists":{"field":f}})
 
 #    print(json.dumps(esquery, indent=4))
 
@@ -152,11 +215,16 @@ if __name__ == '__main__':
     data = json.loads(res.text)
 #    print(json.dumps(data, indent=4, sort_keys=True))
     if (data["hits"]["total"]["value"] == 0):
+      print(json.dumps(esquery2, indent=4))
+      exit()
+      res = requests.post(elastic_url, auth=(user, passwd), data=json.dumps(esquery2), verify=False, headers=headers)  
+      data = json.loads(res.text)
+      if (data["hits"]["total"]["value"] == 0):
         exit()
 
     for article in data["hits"]["hits"]:
         doc_id = article["_id"]
-        print("NER : " + doc_id)        
+        print(datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "NER : " + doc_id)        
 
         texts = {}
 
@@ -165,12 +233,13 @@ if __name__ == '__main__':
         except KeyError:
           euquery = []
         
+        newblock["prov:wasAssociatedFor"] = []
+
+
         # if already exists remove it because we will update
         for i, x in reversed(list(enumerate(euquery))):
             if x["@id"] == "spacy":
                 del(euquery[i])
-
-        
 
         for f in process_fields:
 
@@ -224,11 +293,10 @@ if __name__ == '__main__':
                         else: 
                             out[idx]["count"] += 1
 #                print(json.dumps(out, indent=4, sort_keys=True))
-
-                newblock2["prov:used"]["name"] = models[lang]["name"] + " pipeline"
-                newblock2["prov:used"]["@id"] = models[lang]["@id"]
-                newblock2["prov:used"]["version"] = get_compatibility()[models[lang]["@id"]]
-                newblock2["prov:used"]["url"] = models[lang]["url"]
+                newblock2["prov:used"][1]["name"] = models[lang]["name"] + " pipeline"
+                newblock2["prov:used"][1]["@id"] = models[lang]["@id"]
+                newblock2["prov:used"][1]["version"] = get_compatibility()[models[lang]["@id"]][0]
+                newblock2["prov:used"][1]["url"] = models[lang]["url"]
                 newblock2["prov:generatedAtTime"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
                 newblock2["name"] = models[lang]["longname"]
                 newblock2["@id"] = "spacy_ner_" + models[lang]["@id"]
@@ -241,7 +309,7 @@ if __name__ == '__main__':
                 newblock2["prov:generated"] = list(map(lambda x: {"additionalType":x["label"],"name":{"@value":x["value"],"@language":lang},"value":x["count"]}, out))
                 newblock["prov:wasAssociatedFor"].append(newblock2)
 
-                euquery.append(newblock) 
+        euquery.append(newblock) 
 
 #        print(update_url + doc_id)
 #        print(json.dumps(out, indent=4, sort_keys=True))
@@ -251,9 +319,9 @@ if __name__ == '__main__':
           res2 = requests.post(update_url + doc_id, auth=(user, passwd), data=json.dumps({"doc":{"prov:wasAttributedTo":euquery}}), verify=False, headers=headers)
 
 #              print(str(res2.status_code) + " " + res2.reason)
-          if (res2.status_code != 200):
+        if (res2.status_code != 200):
             print(res2.text)
 
     stoptime = datetime.now()
     delta = stoptime - starttime
-    print('% 2d.%06d' %(delta.seconds,delta.microseconds))
+    print(datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Runtime : " + '% 2d.%06d' %(delta.seconds,delta.microseconds))
