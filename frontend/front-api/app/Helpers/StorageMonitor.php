@@ -18,7 +18,7 @@ class StorageMonitor {
         foreach($this->users as $user) {
             $size = strlen(json_encode(User::with('queries')->with('eshelves.items')->where('id',$user->id)->first()));
             if ($size > (10*1024*1024)) {
-                $body .= $user->eppn. "\t" . floor($size/1024/1024) . "MB\n";
+                $body .= $user->eppn. "\t" . $user->firstname . " " . $user->lastname . "\t" . $user->email . "\t"  . floor($size/1024/1024) . "MB\n";
             }
         }
         if ($body !="") {

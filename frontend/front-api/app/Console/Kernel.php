@@ -58,9 +58,6 @@ class Kernel extends ConsoleKernel
         })->everyThirtyMinutes();
 
         $schedule->call(function() {
-            $sm = new StorageMonitor;  // calculate how much storage every user is using and report this
-            $sm->exec();
-
             if (config(app.updateperiods)) {  // update the dataset from and until fields based on updatetime in ES
                 $pu = new PeriodUpdater;
                 $pu->exec();
@@ -68,6 +65,9 @@ class Kernel extends ConsoleKernel
         })->daily();
 
         $schedule->call(function() {
+            $sm = new StorageMonitor;  // calculate how much storage every user is using and report this
+            $sm->exec();
+    
             $site = new Sitemap();
             if ($site != Null) $site->exec() ;
          })->weeklyOn(1,'12:00');
