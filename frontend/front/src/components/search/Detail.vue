@@ -165,7 +165,7 @@ export default {
                   }
                 }
                 if (dat[i]["@type"] == "MediaObject" || dat[i]["@type"] == "ImageObject") {
-                  if (dat[i].contentUrl.substring(0,downloadFormat.length) == downloadFormat) {
+                  if (dat[i].contentUrl != undefined && dat[i].contentUrl.substring(0,downloadFormat.length) == downloadFormat) {
                     out += "<a download=\"" + dat[i].name + "\" href=\"" + dat[i].contentUrl+ "\">" + dat[i].name + "</a><br />"
                   } else {
                     if (dat[i].url != undefined) {
