@@ -236,6 +236,23 @@ class Flattener {
                             }
                             return array($str);
                             break;
+                        case "PerformanceRole":
+                            if (isset($data["characterName"])) {
+                                $str = "(" . $data["characterName"] . ")";
+                            }
+                            if (isset($data["actor"]) && isset(((array)$data["actor"])["name"])){
+                                $str = ((array)$data["actor"])["name"] . " " . $str;
+                            }
+                            return array($str);
+                            break;
+                        case "Review":
+                            $name = $author = $date = $body = "";
+                            if (isset($data["dateCreated"])) $date = $data["dateCreated"];
+                            if (isset($data["name"])) $name = $data["name"];
+                            if (isset($data["author"]) && isset(((array)$data["author"])["name"])) $author = ((array)$data["author"])["name"];
+                            if (isset($data["reviewBody"]) && isset(((array)$data["reviewBody"])["@value"])) $body = ((array)$data["reviewBody"])["@value"];
+                            return array($name . " - " . $author . " - " . $date . " - " . $body);
+                            break;
                         default:
                             $name = $url = $thumbnailurl = "";
                             if (isset($data["name"]) && isset(((array)$data["name"])["@value"])) {

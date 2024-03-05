@@ -30,7 +30,16 @@ export default {
         datePublished:  this.$ml.get('publicationdate'),
         dateline: this.$ml.get('dateline'),
         headline: this.$ml.get('title'),
-        creator: this.$ml.get('author'),
+        genre:this.$ml.get('genre'),
+        creator: this.$ml.get('creator'),
+        author: this.$ml.get('author'),
+        director: this.$ml.get('director'),
+        producer: this.$ml.get('producer'),
+        productionCompany: this.$ml.get('productionCompany'),
+        actor:this.$ml.get('actor'),
+        editor:this.$ml.get('editor'),
+        contributor:this.$ml.get('contributor'),
+        musicBy:this.$ml.get('musicBy'),
         sender:  this.$ml.get('sender'),
         recipient:  this.$ml.get('recipient'),
         legislationPassedBy: this.$ml.get('legislationPassedBy'),
@@ -49,6 +58,8 @@ export default {
         inLanguage:this.$ml.get('language'),
         contentLocation:this.$ml.get('location'),
         associatedMedia:this.$ml.get('media'),
+        trailer:this.$ml.get('trailer'),
+        review:this.$ml.get('review'),
         sameAs: this.$ml.get('link'),
         url: this.$ml.get('permalink'),
         provider: this.$ml.get('provider'),
@@ -159,7 +170,16 @@ export default {
                       out += "<div>" + this.format(dat[i].name,idx) + " (" + dat[i].memberOf.name + ")</div>"
                     } else {
                       if (dat[i].contentUrl == undefined || dat[i].contentUrl.substring(0,downloadFormat.length) != downloadFormat) {
-                        out += "<div>" + this.format(dat[i].name,idx) + "</div>"
+                        if (dat[i]["url"] == undefined || dat[i]["url"] == null || dat[i]["url"] == "") {
+
+                          if (dat[i]["sameAs"] == undefined || dat[i]["sameAs"] == null || dat[i]["sameAS"] == "") {
+                            out += "<div>" + this.format(dat[i].name,idx) + "</div>"
+                          } else {
+                            out += "<div><a href='" + dat[i]["sameAs"] + "' target='_blank'>" + this.format(dat[i].name,idx) + "</a></div>"  
+                          }
+                        } else {
+                          out += "<div><a href='" + dat[i]["url"] + "' target='_blank'>" + this.format(dat[i].name,idx) + "</a></div>"
+                        }
                       }
                     }
                   }
@@ -169,7 +189,7 @@ export default {
                     out += "<a download=\"" + dat[i].name + "\" href=\"" + dat[i].contentUrl+ "\">" + dat[i].name + "</a><br />"
                   } else {
                     if (dat[i].url != undefined) {
-                      out += '<a target="_blank" href="' + dat[i].url + '">' + dat[i].url + '</a><br/>'
+                      //out += '<a target="_blank" href="' + dat[i].url + '">' + dat[i].url + '</a><br/>'
                     }
                     if (dat[i].contentUrl != undefined) {
                       out += '<a target="_blank" href="' + dat[i].contentUrl + '">' + dat[i].contentUrl + '</a><br/>'
@@ -185,6 +205,41 @@ export default {
                     } */
                   }
                 }
+
+                if (dat[i]['@type'] == "PerformanceRole") {
+                  if (dat[i]["actor"]["url"] == undefined || dat[i]["actor"]["url"] == null || dat[i]["actor"]["url"] == "") {
+                    out += "<div>" + dat[i]['actor']['name']
+                  } else {
+                    out += "<div><a href='" + dat[i]["actor"]["url"] + "' target='_blank'>" + dat[i]['actor']['name'] + "</a>"
+                  }
+                  if (dat[i]["characterName"] != undefined && dat[i]["characterName"] != null && dat[i]["characterName"] != "") out += "&nbsp;(" + dat[i]["characterName"] + ")"
+                  out += "</div>"
+                }
+
+                if(dat[i]["@type"] == "Review") {
+                  out += "<div>"
+                  if (dat[i]["author"]["name"] != undefined && dat[i]["author"]["name"] != null && dat[i]["author"]["name"] != "") {
+                    if (dat[i]["author"]["url"] != undefined && dat[i]["author"]["url"] != null && dat[i]["author"]["url"] != "") {
+                      out += "<div><a href='" + dat[i]["author"]["url"] + "' target='_blank'>" + dat[i]["author"]["name"] + "</a></div>"
+                    } else {
+                      out += "<div>" + dat[i]["author"]["name"] + "</div>"
+                    }
+                  }
+                  if (dat[i]["dateCreated"] != undefined && dat[i]["dateCreated"] != null && dat[i]["dateCreated"]) {
+                    out += "<div>"+dat[i]["dateCreated"]+"</div>"
+                  }
+                  if (dat[i]["reviewBody"]["@value"] != undefined && dat[i]["reviewBody"]["@value"] != null && dat[i]["reviewBody"]["@value"] != "") {
+                    out += "<div>" + dat[i]["reviewBody"]["@value"] + "</div>"
+                  }
+
+                  out += "</div><br/>"
+                }
+                if(dat[i]["@type"] == "VideoObject") {
+                  if(dat[i]["description"] != undefined || dat[i]["description"] != null || dat[i]["description"] != "") {
+                    out += "<div>" + dat[i]["description"] + "</div>"
+                  }
+                }     
+
               }
             }
           } else {
@@ -192,7 +247,15 @@ export default {
               if ((idx == "legislationPassedBy" || idx == "legislationResponsible") && dat.memberOf != undefined && dat.memberOf.name != undefined) {
                 out += this.format(dat.name,idx) + " (" + dat.memberOf.name + ")"
               } else {
-                out = this.format(dat.name, idx)
+                if (dat["url"] == undefined || dat["url"] == null || dat["url"] == "") {
+                  if (dat["sameAs"] == undefined || dat["sameAs"] == null || dat["sameAS"] == "") {
+                    out += "<div>" + this.format(dat.name,idx) + "</div>"
+                  } else {
+                    out += "<div><a href='" + dat["sameAs"] + "' target='_blank'>" + this.format(dat.name,idx) + "</a></div>"  
+                  }
+                } else {
+                  out += "<a href='" + dat["url"] + "' target='_blank'>" + this.format(dat.name,idx) + "</a>"
+                }
               }
             }
             if (dat["@value"] != undefined) {
@@ -233,7 +296,7 @@ export default {
 
           if (dat['@type'] == "MediaObject" || dat['@type'] == "ImageObject") {
             if (dat.url != undefined) {
-              out += '<a target="_blank" href="' + dat.url + '">' + dat.url + '</a><br/>'
+              // out += '<a target="_blank" href="' + dat.url + '">' + dat.url + '</a><br/>'
             }
             if (dat.contentUrl != undefined) {
               out += '<a target="_blank" href="' + dat.contentUrl + '">' + dat.contentUrl + '</a><br/>'
@@ -249,6 +312,51 @@ export default {
             }*/
             
           }
+
+          if (dat['@type'] == "PerformanceRole") {
+            if (dat["actor"]["url"] == undefined || dat["actor"]["url"] == null || dat["actor"]["url"] == "") {
+              out += "<div>" + dat['actor']['name']
+            } else {
+              out += "<div><a href='" + dat["actor"]["url"] + "' target='_blank'>" + dat['actor']['name'] + "</a>"
+            }
+            if (dat["characterName"] != undefined && dat["characterName"] != null && dat["characterName"] != "")  out += "&nbsp;(" + dat["characterName"] + ")"
+            out += "</div>"
+          }
+
+          if(dat["@type"] == "Review") {
+            out += "<div>"
+            if (dat["author"]["name"] != undefined && dat["author"]["name"] != null && dat["author"]["name"] != "") {
+              if (dat["author"]["url"] != undefined && dat["author"]["url"] != null && dat["author"]["url"] != "") {
+                out += "<div><a href='" + dat["author"]["url"] + "' target='_blank'>" + dat["author"]["name"] + "</a></div>"
+              } else {
+                out += "<div>" + dat["author"]["name"] + "</div>"
+              }
+            }
+            if (dat["dateCreated"] != undefined && dat["dateCreated"] != null && dat["dateCreated"]) {
+              out += "<div>"+dat["dateCreated"]+"</div>"
+            }
+
+            if (dat["name"] != undefined && dat["name"] != null && dat["name"]) {
+              if (dat["sameAs"] != undefined  && dat["sameAs"] != null && dat["sameAs"]) {
+                out += "<div><a href='"+dat["sameAs"]+"' target='_blank'>"+dat["name"]+"</a></div>"
+              } else {
+                out += "<div>"+dat["name"]+"</div>"
+              }
+            }
+
+            if (dat["reviewBody"]["@value"] != undefined && dat["reviewBody"]["@value"] != null && dat["reviewBody"]["@value"] != "") {
+              out += "<div>" + dat["reviewBody"]["@value"] + "</div>"
+            }
+
+            out += "</div><br/>"
+          }
+
+          if(dat["@type"] == "VideoObject") {
+            if(dat["description"] != undefined || dat["description"] != null || dat["description"] != "") {
+              out += "<div>" + dat["description"] + "</div>"
+            }
+          }
+
 
           return out
         } else {
@@ -299,7 +407,16 @@ export default {
       this.fields.datePublished=  this.$ml.get('publicationdate')
       this.fields.dateline= this.$ml.get('dateline')
       this.fields.headline= this.$ml.get('title')
-      this.fields.creator= this.$ml.get('author')
+      this.fields.genre= this.$ml.get('genre')
+      this.fields.creator= this.$ml.get('creator')
+      this.fields.author= this.$ml.get('author')
+      this.fields.director= this.$ml.get('director')
+      this.fields.producer= this.$ml.get('producer')
+      this.fields.productionCompany= this.$ml.get('productionCompany')
+      this.fields.actor= this.$ml.get('actor')
+      this.fields.editor=this.$ml.get('editor')
+      this.fields.contributor=this.$ml.get('contributor')
+      this.fileds.musicBy=this.$ml.get('musicBy')
       this.fields.sender=  this.$ml.get('sender')
       this.fields.recipient=  this.$ml.get('recipient')
       this.fields.description= this.$ml.get('description')
@@ -316,6 +433,8 @@ export default {
       this.fields.inLanguage= this.$ml.get('language')
       this.fields.contentLocation= this.$ml.get('location')
       this.fields.associatedMedia= this.$ml.get('media')
+      this.fields.trailer= this.$ml.get('trailer')
+      this.fields.review= this.$ml.get('review'),
       this.fields.sameAs= this.$ml.get('link')
       this.fields.url= this.$ml.get('permalink')
       this.fields.provider= this.$ml.get('provider')

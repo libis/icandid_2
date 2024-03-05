@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Log;
     
 class CSV_Output {
 
-    public static $header = array("id","type","legislationType","author","author_alternateName","name","description","articleBody","text","printEdition","articleSection","sender","sender_alternateName","recipient","recipient_alternateName","legislationPassedBy","legislationResponsible","retweet","datePublished","url","provider","publisher","link","pagination","keywords","mentions","duration","contentUrl","about","inLanguage","contentLocation","associatedMedia","sdDatePublished","updatetime");
+    public static $header = array("id","type","legislationType","author","author_alternateName","creator","creator_alternateName","name","genre","description","articleBody","text","director","editor","producer","productionCompany","actor","contributor","musicBy","trailerName","trailerDescription","printEdition","articleSection","sender","sender_alternateName","recipient","recipient_alternateName","legislationPassedBy","legislationResponsible","retweet","datePublished","url","provider","publisher","link","pagination","review","keywords","mentions","duration","contentUrl","about","inLanguage","contentLocation","associatedMedia","sdDatePublished","updatetime");
 
     public function __construct() {
         $this->tmpname = tempnam(storage_path('app/export'),'');
@@ -80,15 +80,27 @@ class CSV_Output {
         $disp["id"] = ((array)$d->_source)["@id"];
         $disp["type"] = ((array)$d->_source)["@type"];
         if (isset($d->_source->legislationType)) $disp["legislationType"] = Flattener::process($d->_source->legislationType);
-        if (isset($d->_source->creator)) $disp["author"] = Flattener::process($d->_source->creator);
-        else if (isset($d->_source->author)) $disp["author"] = Flattener::process($d->_source->author);
-
-        if (isset($d->_source->creator->alternateName)) $disp["author_alternateName"] = Flattener::process($d->_source->creator->alternateName);
-        else if (isset($d->_source->author->alternateName)) $disp["author_alternateName"] = Flattener::process($d->_source->author->alternateName);
+        if (isset($d->_source->creator)) $disp["creator"] = Flattener::process($d->_source->creator);
+        if (isset($d->_source->author)) $disp["author"] = Flattener::process($d->_source->author);
+        if (isset($d->_source->creator->alternateName)) $disp["creator_alternateName"] = Flattener::process($d->_source->creator->alternateName);
+        if (isset($d->_source->author->alternateName)) $disp["author_alternateName"] = Flattener::process($d->_source->author->alternateName);
         if (isset($d->_source->name)) $disp["name"] = Flattener::process($d->_source->name);
+        if (isset($d->_source->genre)) $disp["genre"] = Flattener::process($d->_source->genre);
         if (isset($d->_source->description)) $disp["description"] = Flattener::process($d->_source->description);
         if (isset($d->_source->articleBody)) $disp["articleBody"] = Flattener::process($d->_source->articleBody);
         if (isset($d->_source->text)) $disp["text"] = Flattener::process($d->_source->text);
+        if (isset($d->_source->director)) $disp["director"] = Flattener::process($d->_source->director);
+        if (isset($d->_source->editor)) $disp["editor"] = Flattener::process($d->_source->editor);
+        if (isset($d->_source->producer)) $disp["producer"] = Flattener::process($d->_source->producer);
+        if (isset($d->_source->productionCompany)) $disp["productionCompany"] = Flattener::process($d->_source->productionCompany);
+        if (isset($d->_source->actor)) $disp["actor"] = Flattener::process($d->_source->actor);
+
+        if (isset($d->_source->contributor)) $disp["contributor"] = Flattener::process($d->_source->contributor);
+        if (isset($d->_source->musicBy)) $disp["musicBy"] = Flattener::process($d->_source->musicBy);
+        if (isset($d->_source->trailer->name)) $disp["trailerName"] = Flattener::process($d->_source->trailer->name);
+        if (isset($d->_source->trailer->description)) $disp["trailerDescription"] = Flattener::process($d->_source->trailer->description);
+
+
         if (isset($d->_source->printEdition)) $disp["printEdition"] = Flattener::process($d->_source->printEdition);
         if (isset($d->_source->articleSection)) $disp["articleSection"] = Flattener::process($d->_source->articleSection);
         if (isset($d->_source->sender)) $disp["sender"] = Flattener::process($d->_source->sender);
@@ -103,7 +115,7 @@ class CSV_Output {
         if (isset($d->_source->sameAs)) $disp["link"] = Flattener::process($d->_source->sameAs);
         if (isset($d->_source->pagination)) $disp["pagination"] = Flattener::process($d->_source->pagination);
 
-
+        if (isset($d->_source->review)) $disp["review"] = Flattener::process($d->_source->review);
 
 
         if (isset($d->_source->keywords)) $disp["keywords"] = Flattener::process($d->_source->keywords);
@@ -171,10 +183,28 @@ class CSV_Output {
             join(", ", (isset($disp["legislationType"])?self::nonl($disp["legislationType"]):[])),
             join(", ", (isset($disp["author"])?self::nonl($disp["author"]):[])),
             join(", ", (isset($disp["author_alternateName"])?self::nonl($disp["author_alternateName"]):[])),
+            join(", ", (isset($disp["creator"])?self::nonl($disp["creator"]):[])),
+            join(", ", (isset($disp["creator_alternateName"])?self::nonl($disp["creator_alternateName"]):[])),
             join(" ",  (isset($disp["name"])?self::nonl($disp["name"]):[])),
+            join(", ",  (isset($disp["genre"])?self::nonl($disp["genre"]):[])),
             join(" ",  (isset($disp["description"])?self::nonl($disp["description"]):[])),
             join(" ", (isset($disp["articleBody"])?self::nonl($disp["articleBody"]):[])),
             join(" ", (isset($disp["text"])?self::nonl($disp["text"]):[])),
+
+            join(", ",  (isset($disp["director"])?self::nonl($disp["director"]):[])),
+            join(", ",  (isset($disp["editor"])?self::nonl($disp["editor"]):[])),
+            join(", ",  (isset($disp["producer"])?self::nonl($disp["producer"]):[])),
+            join(", ",  (isset($disp["productionCompany"])?self::nonl($disp["productionCompany"]):[])),
+
+            join(", ",  (isset($disp["actor"])?self::nonl($disp["actor"]):[])),
+
+
+
+            join(", ",  (isset($disp["contributor"])?self::nonl($disp["contributor"]):[])),
+            join(", ",  (isset($disp["musicBy"])?self::nonl($disp["musicBy"]):[])),
+            join(" ",  (isset($disp["trailerName"])?self::nonl($disp["trailerName"]):[])),
+            join(" ",  (isset($disp["trailerDescription"])?self::nonl($disp["trailerDescription"]):[])),
+
             join(" ", (isset($disp["printEdition"])?self::nonl($disp["printEdition"]):[])),
             join(" ", (isset($disp["articleSection"])?self::nonl($disp["articleSection"]):[])),
             join(", ", (isset($disp["sender"])?self::nonl($disp["sender"]):[])),
@@ -191,6 +221,7 @@ class CSV_Output {
             join(", ", (isset($disp["link"])?self::nonl($disp["link"]):[])),
             join(", ", (isset($disp["pagination"])?self::nonl($disp["pagination"]):[])),
 
+            join(" --- ", (isset($disp["review"])?self::nonl($disp["review"]):[])),
 
 
 

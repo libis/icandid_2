@@ -288,7 +288,18 @@ export default new MLCreate({
         showmore:"Show more",
         showless:"Show less",
         requestAccessTitle:"Request access to iCANDID",
-        requestAccessInfo:"To request access to iCANDID, complete the details below. More info on the process can be found <a target='_blank' href='https://icandid.helpdocs.com/account/creating-an-account'>here</a>."
+        requestAccessInfo:"To request access to iCANDID, complete the details below. More info on the process can be found <a target='_blank' href='https://icandid.helpdocs.com/account/creating-an-account'>here</a>.",
+        actor:"Actor",
+        creator:"Creator",
+        director:"Director",
+        editor:"Editor",
+        producer:"Producer",
+        productionCompany:"Productioncompany",
+        contributor:"Contributor",
+        musicBy:"Music by",
+        genre:"Genre",
+        trailer:"Trailer",
+        review:"Review"
     }),
  
     new MLanguage('nl').create({
@@ -572,7 +583,18 @@ export default new MLCreate({
         showmore:"Toon meer",
         showless:"Toon minder",
         requestAccessTitle:"Vraag toegang tot iCANDID",
-        requestAccessInfo:"Om toegang te vragen tot iCANDID, vul uw gegevens in hieronder. Meer informatie over de procedure om toegang te krijgen, kan u <a target='_blank' href='https://icandid.helpdocs.com/account/creating-an-account'>hier</a> vinden."
+        requestAccessInfo:"Om toegang te vragen tot iCANDID, vul uw gegevens in hieronder. Meer informatie over de procedure om toegang te krijgen, kan u <a target='_blank' href='https://icandid.helpdocs.com/account/creating-an-account'>hier</a> vinden.",
+        actor:"Acteur",
+        creator:"Maker",
+        director:"Regisseur",
+        editor:"Bewerker",
+        producer:"Producent",
+        productionCompany:"Productiehuis",
+        contributor:"Bijdrager",
+        musicBy:"Muziek door",
+        genre:"Genre",
+        trailer:"Trailer",
+        review:"Bespreking"
     })
   ]
 })
