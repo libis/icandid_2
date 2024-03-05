@@ -172,7 +172,7 @@ export default {
                       if (dat[i].contentUrl == undefined || dat[i].contentUrl.substring(0,downloadFormat.length) != downloadFormat) {
                         if (dat[i]["url"] == undefined || dat[i]["url"] == null || dat[i]["url"] == "") {
 
-                          if (dat[i]["sameAs"] == undefined || dat[i]["sameAs"] == null || dat[i]["sameAS"] == "") {
+                          if (dat[i]["sameAs"] == undefined || dat[i]["sameAs"] == null || dat[i]["sameAs"] == "") {
                             out += "<div>" + this.format(dat[i].name,idx) + "</div>"
                           } else {
                             out += "<div><a href='" + dat[i]["sameAs"] + "' target='_blank'>" + this.format(dat[i].name,idx) + "</a></div>"  
@@ -235,7 +235,7 @@ export default {
                   out += "</div><br/>"
                 }
                 if(dat[i]["@type"] == "VideoObject") {
-                  if(dat[i]["description"] != undefined || dat[i]["description"] != null || dat[i]["description"] != "") {
+                  if(dat[i]["description"] != undefined && dat[i]["description"] != null && dat[i]["description"] != "") {
                     out += "<div>" + dat[i]["description"] + "</div>"
                   }
                 }     
@@ -248,7 +248,7 @@ export default {
                 out += this.format(dat.name,idx) + " (" + dat.memberOf.name + ")"
               } else {
                 if (dat["url"] == undefined || dat["url"] == null || dat["url"] == "") {
-                  if (dat["sameAs"] == undefined || dat["sameAs"] == null || dat["sameAS"] == "") {
+                  if (dat["sameAs"] == undefined || dat["sameAs"] == null || dat["sameAs"] == "") {
                     out += "<div>" + this.format(dat.name,idx) + "</div>"
                   } else {
                     out += "<div><a href='" + dat["sameAs"] + "' target='_blank'>" + this.format(dat.name,idx) + "</a></div>"  
@@ -352,7 +352,7 @@ export default {
           }
 
           if(dat["@type"] == "VideoObject") {
-            if(dat["description"] != undefined || dat["description"] != null || dat["description"] != "") {
+            if(dat["description"] != undefined && dat["description"] != null && dat["description"] != "") {
               out += "<div>" + dat["description"] + "</div>"
             }
           }
@@ -416,7 +416,7 @@ export default {
       this.fields.actor= this.$ml.get('actor')
       this.fields.editor=this.$ml.get('editor')
       this.fields.contributor=this.$ml.get('contributor')
-      this.fileds.musicBy=this.$ml.get('musicBy')
+      this.fields.musicBy=this.$ml.get('musicBy')
       this.fields.sender=  this.$ml.get('sender')
       this.fields.recipient=  this.$ml.get('recipient')
       this.fields.description= this.$ml.get('description')
