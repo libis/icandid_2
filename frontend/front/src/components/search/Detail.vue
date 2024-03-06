@@ -30,6 +30,7 @@ export default {
         datePublished:  this.$ml.get('publicationdate'),
         dateline: this.$ml.get('dateline'),
         headline: this.$ml.get('title'),
+        alternateName: this.$ml.get('alternateName'),
         genre:this.$ml.get('genre'),
         creator: this.$ml.get('creator'),
         author: this.$ml.get('author'),
@@ -126,18 +127,6 @@ export default {
         if (this.activeResult._source[idx] != undefined) {
           dat = this.activeResult._source[idx]
         }
-
-        if (this.highlights) {
-          if (this.activeResult.highlight != undefined && this.activeResult.highlight[idx+'.@value'] != undefined) {
-            dat = this.activeResult.highlight[idx+'.@value']
-          } 
-
-          if (this.activeResult.highlight != undefined && this.activeResult.highlight[idx+'.name'] != undefined) {
-            dat = this.activeResult.highlight[idx+'.name']
-          }
-
-        }
-
         if (typeof dat == 'string') {
           out = this.format(dat, idx);
           
@@ -153,9 +142,9 @@ export default {
           return out
         }
         if (typeof dat == 'object') {
-          
           if (Array.isArray(dat)) {
             for (var i in dat) {
+
               if (typeof dat[i] == 'string') {
                 out += "<div>" + this.format(dat[i],idx) + "</div>"
               } else {
@@ -383,12 +372,52 @@ export default {
           }
         }
       }
+    },
+    highlighter() {
+      for (const i in this.activeResult.highlight) {
+          for (const j in this.activeResult.highlight[i]) {
+              this.changeByIndex(this.activeResult._source,i.split("."),this.activeResult.highlight[i][j])
+          }
+      }
+    },
+    isset(v) {
+      return (v != undefined && v != null && v != "")
+    },
+    stripHTML(v) {
+        return v.replace(/(<([^>]+)>)/gi, "");
+    },
+    changeByIndex(rec , idx, to) {
+        if (this.isset(rec[idx[0]])){
+            if (idx.length > 1) {
+                if (typeof rec[idx[0]] === 'object') {
+                    if (rec[idx[0]] instanceof Array){
+                        for (let i = 0; i < rec[idx[0]].length; i++) {
+                            this.changeByIndex(rec[idx[0]][i],idx.slice(1),to)
+
+                        }
+                    } else {
+                        this.changeByIndex(rec[idx[0]],idx.slice(1),to)
+                    }
+                } else {
+                    if (this.stripHTML(rec[idx[0]]) == this.stripHTML(to)) {
+                        rec[idx[0]] = to
+                    }
+                }
+            } else {
+                if (this.stripHTML(rec[idx[0]]) == this.stripHTML(to)) {
+                    rec[idx[0]] = to
+                }
+            }
+        }
     }
   },
   watch : {
     activeResult : function() {
       this.setExtraTweets()
       if (this.activeResult != undefined) {
+        if (this.highlights) {
+          this.highlighter()
+        }
         if (this.activeResult._source.headline == undefined && this.activeResult._source.title == undefined) {
           this.activeResult._source.headline = this.activeResult._source.name
           if (this.highlights) {
@@ -407,6 +436,7 @@ export default {
       this.fields.datePublished=  this.$ml.get('publicationdate')
       this.fields.dateline= this.$ml.get('dateline')
       this.fields.headline= this.$ml.get('title')
+      this.fields.alternateName= this.$ml.get('alternateName')
       this.fields.genre= this.$ml.get('genre')
       this.fields.creator= this.$ml.get('creator')
       this.fields.author= this.$ml.get('author')

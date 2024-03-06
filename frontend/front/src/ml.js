@@ -299,7 +299,8 @@ export default new MLCreate({
         musicBy:"Music by",
         genre:"Genre",
         trailer:"Trailer",
-        review:"Review"
+        review:"Review",
+        alternateName:"Alternative title"
     }),
  
     new MLanguage('nl').create({
@@ -594,7 +595,8 @@ export default new MLCreate({
         musicBy:"Muziek door",
         genre:"Genre",
         trailer:"Trailer",
-        review:"Bespreking"
+        review:"Bespreking",
+        alternateName:"Alternatieve titel"
     })
   ]
 })
