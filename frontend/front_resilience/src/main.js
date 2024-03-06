@@ -201,6 +201,7 @@ const store = new Vuex.Store(
           if (data[i]._source.name == undefined) {
             data[i]._source.name = {"@value":""}
           }
+          delete data[i].highlight["@type"]
         }
         commit('addResults', data)
       },

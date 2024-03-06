@@ -30,6 +30,7 @@ export default {
         datePublished:  this.$ml.get('publicationdate'),
         dateline: this.$ml.get('dateline'),
         headline: this.$ml.get('title'),
+        name: this.$ml.get('title'),
         alternateName: this.$ml.get('alternateName'),
         genre:this.$ml.get('genre'),
         creator: this.$ml.get('creator'),
@@ -384,7 +385,8 @@ export default {
       return (v != undefined && v != null && v != "")
     },
     stripHTML(v) {
-        return v.replace(/(<([^>]+)>)/gi, "");
+      if (typeof v != 'string') return v
+      return v.replace(/(<([^>]+)>)/gi, "").replace(/[^0-9a-zA-Z]/gi, '');
     },
     changeByIndex(rec , idx, to) {
         if (this.isset(rec[idx[0]])){
@@ -418,11 +420,8 @@ export default {
         if (this.highlights) {
           this.highlighter()
         }
-        if (this.activeResult._source.headline == undefined && this.activeResult._source.title == undefined) {
-          this.activeResult._source.headline = this.activeResult._source.name
-          if (this.highlights) {
-            this.activeResult.highlight["headline.@value"] = this.activeResult.highlight["name.@value"]
-          }
+        if (this.activeResult._source.name != undefined && this.activeResult._source.headline != undefined) {
+          delete this.activeResult._source.headline
         }
       }
     },
@@ -436,6 +435,7 @@ export default {
       this.fields.datePublished=  this.$ml.get('publicationdate')
       this.fields.dateline= this.$ml.get('dateline')
       this.fields.headline= this.$ml.get('title')
+      this.fields.name= this.$ml.get('title')
       this.fields.alternateName= this.$ml.get('alternateName')
       this.fields.genre= this.$ml.get('genre')
       this.fields.creator= this.$ml.get('creator')

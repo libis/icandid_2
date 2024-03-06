@@ -59,31 +59,31 @@ export default {
       if (Array.isArray(v)) {
         var l = Array()
         for (var i in v) {
-          l.push(this.parse(v[i]))
+          l.push(this.stripHTML(this.parse(v[i])))
         }
         return l.join('<br>')
       } else {
         if ((typeof v === 'string' || v instanceof String)) {
-          return v
+          return this.stripHTML(v)
         } else {
           if (v instanceof Object) {
             if (v.name != undefined) {
               if (v.name instanceof Object) {
                 if (v.name["@value"] != undefined) {
-                  return v.name["@value"]
+                  return this.stripHTML(v.name["@value"])
                 } else {
                   if (typeof v.name == 'string') {
-                    return v.name
+                    return this.stripHTML(v.name)
                   }                  
                 }
               } else {
                 if (typeof v.name == 'string') {
-                  return v.name
+                  return this.stripHTML(v.name)
                 }
               }
             }
             if (v["@value"] != undefined) {
-              return v["@value"]
+              return this.stripHTML(v["@value"])
             }
           }
         }
@@ -99,6 +99,10 @@ export default {
       var r = '<i class="' + f + '" style="font-size:35px"></i>'
 
       return r
+    },
+    stripHTML(v) {
+        if (typeof v != 'string') return v
+        return v.replace(/(<([^>]+)>)/gi, "");
     }
 
 

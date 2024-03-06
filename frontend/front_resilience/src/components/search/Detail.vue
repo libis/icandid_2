@@ -195,12 +195,12 @@ export default {
           //console.log('b')
           dat = this.activeResult._source[idx]
         } 
-        console.log(idx)
+        //console.log(idx)
         if (idx.includes("_")) {
-          console.log('foobar')
+          //console.log('foobar')
           var idxs = idx.split("_")
           dat = this.activeResult._source[idxs[0]][idxs[1]]
-          console.log(dat)
+          //console.log(dat)
         }
 
         if (typeof dat == 'string') {
@@ -255,7 +255,7 @@ export default {
                 }
                 if (dat[i]["@type"] == "MediaObject" || dat[i]["@type"] == "ImageObject") {
                   //console.log('t')
-                  if (dat[i].contentUrl.substring(0,downloadFormat.length) == downloadFormat) {
+                  if (dat[i].contentUrl != undefined && dat[i].contentUrl.substring(0,downloadFormat.length) == downloadFormat) {
                     //console.log('u')
                     out += "<a download=\"" + dat[i].name + "\" href=\"" + dat[i].contentUrl+ "\">" + dat[i].name + "</a><br />"
                   } else {
@@ -361,7 +361,7 @@ export default {
             }*/
             
           }
-          console.log(out)
+          //console.log(out)
           return out
         } else {
           //console.log('P')
@@ -400,44 +400,45 @@ export default {
         }
       }
       return arr
-    }
-  },
-  highlighter() {
-    for (const i in this.activeResult.highlight) {
-        for (const j in this.activeResult.highlight[i]) {
-            this.changeByIndex(this.activeResult._source,i.split("."),this.activeResult.highlight[i][j])
-        }
-    }
-  },
-  isset(v) {
-    return (v != undefined && v != null && v != "")
-  },
-  stripHTML(v) {
-      return v.replace(/(<([^>]+)>)/gi, "");
-  },
-  changeByIndex(rec , idx, to) {
-      if (this.isset(rec[idx[0]])){
-          if (idx.length > 1) {
-              if (typeof rec[idx[0]] === 'object') {
-                  if (rec[idx[0]] instanceof Array){
-                      for (let i = 0; i < rec[idx[0]].length; i++) {
-                          this.changeByIndex(rec[idx[0]][i],idx.slice(1),to)
-
-                      }
-                  } else {
-                      this.changeByIndex(rec[idx[0]],idx.slice(1),to)
-                  }
-              } else {
-                  if (this.stripHTML(rec[idx[0]]) == this.stripHTML(to)) {
-                      rec[idx[0]] = to
-                  }
-              }
-          } else {
-              if (this.stripHTML(rec[idx[0]]) == this.stripHTML(to)) {
-                  rec[idx[0]] = to
-              }
+    },
+    highlighter() {
+      for (const i in this.activeResult.highlight) {
+          for (const j in this.activeResult.highlight[i]) {
+              this.changeByIndex(this.activeResult._source,i.split("."),this.activeResult.highlight[i][j])
           }
       }
+    },
+    isset(v) {
+      return (v != undefined && v != null && v != "")
+    },
+    stripHTML(v) {
+        if (typeof v != 'string') return v
+        return v.replace(/(<([^>]+)>)/gi, "").replace(/[^0-9a-zA-Z]/gi, '');
+    },
+    changeByIndex(rec , idx, to) {
+      if (this.isset(rec[idx[0]])){
+        if (idx.length > 1) {
+            if (typeof rec[idx[0]] === 'object') {
+                if (rec[idx[0]] instanceof Array){
+                    for (let i = 0; i < rec[idx[0]].length; i++) {
+                        this.changeByIndex(rec[idx[0]][i],idx.slice(1),to)
+
+                    }
+                } else {
+                    this.changeByIndex(rec[idx[0]],idx.slice(1),to)
+                }
+            } else {
+                if (this.stripHTML(rec[idx[0]]) == this.stripHTML(to)) {
+                    rec[idx[0]] = to
+                }
+            }
+        } else {
+            if (this.stripHTML(rec[idx[0]]) == this.stripHTML(to)) {
+                rec[idx[0]] = to
+            }
+        }
+      }
+    }
   },
   watch : {
     activeResult : function() {
@@ -445,11 +446,8 @@ export default {
         if (this.highlights) {
           this.highlighter()
         }
-        if (this.activeResult._source.headline == undefined && this.activeResult._source.title == undefined) {
-          this.activeResult._source.headline = this.activeResult._source.name
-          if (this.highlights) {
-            this.activeResult.highlight["headline.@value"] = this.activeResult.highlight["name.@value"]
-          }
+        if (this.activeResult._source.name != undefined && this.activeResult._source.headline != undefined) {
+          delete this.activeResult._source.headline
         }
       }
     }
