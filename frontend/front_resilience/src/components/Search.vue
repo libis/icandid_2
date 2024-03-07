@@ -91,9 +91,9 @@ export default {
                 .then(res => {
                   this.processData(res)
                 })
-                .catch(function() {
+                .catch(error => {
                   this.setSearchStatus(false);
-                  //console.log(error);
+                  console.log(error);
                 })
             } else {
               this.setSearchStatus(false);
@@ -178,9 +178,9 @@ export default {
                     this.processData(res)
                     this.setElasticQuery(res.data.elastic_query)      
                   })
-                  .catch(function() {
+                  .catch(error => {
                     this.setSearchStatus(false);
-                    //console.log(error);
+                    console.log(error);
                   })
               } else {
                 this.setSearchStatus(false);
