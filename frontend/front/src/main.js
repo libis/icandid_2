@@ -371,6 +371,22 @@ const router = new VueRouter(
         component: Page
       },
       {
+        path: '/en/*',
+        redirect: to => {
+          document.cookie = "lang=en"; 
+          router.app.$ml.change("en")
+          return '/' + to.params.pathMatch
+        }
+      },
+      {
+        path: '/nl/*',
+        redirect: to => {
+          document.cookie = "lang=nl"; 
+          router.app.$ml.change("nl")
+          return '/' + to.params.pathMatch
+        }
+      },
+      {
         path: '/eula',
         name: 'EULA',
         component: EULA,
@@ -465,7 +481,8 @@ const router = new VueRouter(
         path: '/collections',
         name: 'Collections',
         component: Collections
-      }
+      },
+
     ]
   }
 );
