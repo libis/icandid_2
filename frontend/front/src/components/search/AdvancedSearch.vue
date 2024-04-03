@@ -24,22 +24,23 @@
                   <option value="text">{{ $ml.get('text') }}</option>
                   <option value="publicationdate">{{ $ml.get('publicationdate') }}</option>
                   <option value="period">{{ $ml.get('period') }}</option>
-                  <!--<option value="publisher">{{ $ml.get('publisher') }}</option> -->
-                  <option value="provider">{{ $ml.get('provider') }}</option>
+                  <!--<option v-if="ddlists.publishers != undefined && ddlists.publishers.length > 0" value="publisher">{{ $ml.get('publisher') }}</option> -->
+                  <option v-if="ddlists.providers != undefined && ddlists.providers.length > 0" value="provider">{{ $ml.get('provider') }}</option>
                   <option value="dataset">{{ $ml.get('dataset') }}</option>
-                  <option value="edition">{{ $ml.get('edition') }}</option>
+                  <option v-if="ddlists.editions != undefined && ddlists.editions.length > 0" value="edition">{{ $ml.get('edition') }}</option>
                   <option value="volume">{{ $ml.get('volume') }}</option>
                   <option value="issue">{{ $ml.get('issue') }}</option>
+                  <option v-if="ddlists.genres != undefined && ddlists.genres.length > 0" value="genre">{{ $ml.get('genre') }}</option>
                   <option value="retweet">{{ $ml.get('retweet') }}</option>
-                  <option value="language">{{ $ml.get('language') }}</option>
+                  <option v-if="ddlists.languages != undefined && ddlists.languages.length > 0" value="language">{{ $ml.get('language') }}</option>
                   <option value="label">{{ $ml.get('label') }}</option>
-                  <option value="legislationType">{{ $ml.get('legislationType') }}</option>
+                  <option v-if="ddlists.legislationTypes != undefined && ddlists.legislationTypes.length > 0" value="legislationType">{{ $ml.get('legislationType') }}</option>
                   
                 </select>
               </div>
             </td>
             <td>
-              <div class="select" v-if="!['period', 'publicationdate','provider','publisher','dataset','edition','language','label','retweet','legislationType'].includes(advancedQ.field) ">
+              <div class="select" v-if="!['period', 'publicationdate','provider','publisher','dataset','edition','language','label','genre','retweet','legislationType'].includes(advancedQ.field) ">
                 <select v-model="advancedQ.condition">
                   <option value="contains">{{ $ml.get('containsthewords') }}</option>
                   <option value="phrase">{{ $ml.get('containsexactphrase') }}</option>
@@ -53,7 +54,7 @@
                 v-model="advancedQ.query"
                 v-on:keyup.enter="search()"
                 style="width:57%"
-                v-if="!['period', 'publicationdate','provider','publisher','dataset','edition','language','label','retweet','legislationType'].includes(advancedQ.field)" />
+                v-if="!['period', 'publicationdate','provider','publisher','dataset','edition','language','label','genre','retweet','legislationType'].includes(advancedQ.field)" />
               <!-- <datepicker class="input" style="width:130px" :format="dateformat" input-class="noborder" :language="nl" v-model="advancedQ.query" name="dp_pubdate" v-if="advancedQ.field == 'publicationdate'"></datepicker>                -->
               <input type="date" class="input" style="width:150px" v-model="advancedQ.query" v-if="advancedQ.field == 'publicationdate'" name="dp_pubdate" />
 <!--              <div v-if="advancedQ.field == 'period'" >
@@ -96,6 +97,15 @@
               </select>
               </div>
  -->
+
+            <div class="select" v-if="advancedQ.field == 'genre'">
+              <select style="width:315px" v-model="advancedQ.query" >
+                  <!-- <option v-for="item in $parent.languages" :value="item.id" :key="'lang_' + item.id">{{ item['name_'+$ml.current] }}</option> -->
+                  <option v-for="item in ddlists.genres" :value="item" :key="'genre_' + item">{{ item }}</option>
+              </select>
+              </div>
+
+
               <div class="select" v-if="advancedQ.field == 'language'">
               <select style="width:315px" v-model="advancedQ.query" >
                   <!-- <option v-for="item in $parent.languages" :value="item.id" :key="'lang_' + item.id">{{ item['name_'+$ml.current] }}</option> -->
