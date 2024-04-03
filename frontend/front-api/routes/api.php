@@ -23,6 +23,8 @@ Route::get('/version', function (Request $request) {
     return array("name"=>"iCandid API", "version" => "2.0");
 });
 
+Route::get('/ping', "SearchController@ping");
+
 Route::get('/profile/info', "UserController@info");
 
 Route::post('/query','QueryController@query');
