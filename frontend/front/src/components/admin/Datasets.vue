@@ -11,18 +11,20 @@
                     <th>{{ $ml.get("provider") }}</th>
                     <th>{{ $ml.get("labels") }}</th>
                     <th></th>
+                    <th></th>
                 </tr>
                 <tr v-for="(v,k) in setlist" :key="k">
                     <td>{{ v.name }} </td>
                     <td>{{ v.provider }} </td>
                     <td>{{ v['labels_'+$ml.current]}} </td>
-                    <td><button class="button" @click="edit(k)">{{ $ml.get('edit')}}</button></td>
+                    <td><button class="button" @click="edit(k,false)">{{ $ml.get('edit')}}</button></td>
+                    <td><button class="button" @click="edit(k,true)">{{ $ml.get('users')}}</button></td>
                 </tr>
             </table>
             <button class="button" style="float:right" @click="edit(setlist.length)">{{ $ml.get('newdataset') }}</button>
             <br/><br/>
         </div>
-        <div class="box" v-if="activeidx >= 0">
+        <div class="box" v-if="activeidx >= 0 && !showUsers">
             <div class="columns">
                 <div class="column is-half">
                     <div class="field">
@@ -119,13 +121,42 @@
                 </div>
                 <div class="column is-one-quarter">
                     <a class="button is-primary" @click="save()">{{ $ml.get('save') }}</a>&nbsp;
-                    <a class="button" @click="edit(-1)">{{ $ml.get('cancel') }}</a>
+                    <a class="button" @click="edit(-1,false)">{{ $ml.get('cancel') }}</a>
                 </div>
                 <div class="column is-one-quarter">
                     
                 </div>
             </div>            
             
+        </div>
+        <div class="box" v-if="activeidx >=0 && showUsers">
+            
+            <span>
+                <button class="delete" style="float:right" @click="edit(-1,false)"></button>
+                <h4 class="title is-4">{{ $ml.get('users') }} : {{ activeset.name }}</h4>
+                
+            </span>
+
+            <table class="table">
+                <thead>
+                    <th>{{ $ml.get("fullname") }}</th>
+                    <th>{{ $ml.get("group") }}</th>
+                    <th>{{ $ml.get("institution") }} - {{ $ml.get("researchgroup") }}</th>
+                </thead>
+                <tbody>
+                    <tr v-for="(user) in activeset.access" :key="user.id">
+                        <td>
+                            {{user.firstname}} {{user.lastname}}
+                        </td>
+                        <td>
+                            {{user.via}}
+                        </td>
+                        <td>
+                            {{user.institution}} - {{user.researchgroup}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <br/>
     </div>    
@@ -147,7 +178,8 @@ export default {
             },
             options:[],
             selectedLangidx:-1,
-            selectedLabelidx:-1
+            selectedLabelidx:-1,
+            showUsers:false
         }
     },
     components:{
@@ -166,7 +198,8 @@ export default {
                 this.setlist = []
             }
         },
-        edit(idx) {
+        edit(idx,su) {
+            
             if (idx == -1) this.update();
             this.activeidx = idx
             if(this.setlist[this.activeidx] != null) {
@@ -177,6 +210,7 @@ export default {
                 this.activeset.languages = [];
                 this.activeset.labels = [];
             }
+            this.showUsers = su
             axios
                 .get(this.getApiAdminUrl + '/options')
                 .then(res => {

@@ -178,6 +178,28 @@ class AdminController extends Controller
 
             $datasets[$k]->labels_nl = implode(", ", $labels_nl);
             $datasets[$k]->labels_en = implode(", ", $labels_en);
+            $users = $datasets[$k]->users->all();
+
+            foreach ($datasets[$k]->roles->all() as $role) {
+                foreach ($role->users->all() as $user) {
+                    $user->via = $role->name;
+                    $users[] = $user;
+                }
+            }
+
+            usort($users,function($a,$b) {
+                    if ($a->lastname === $b->lastname) {
+                        if ($a->firstname === $b->firstname) {
+                            return 0;
+                        } else {
+                            return ($a->firstname > $b->firstname);
+                        }
+                    } else {
+                        return ($a->lastname > $b->lastname);
+                    }
+                }
+            );
+            $datasets[$k]->access = $users;
         }
         return $datasets;
     }
