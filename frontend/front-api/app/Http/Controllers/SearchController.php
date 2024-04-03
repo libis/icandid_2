@@ -12,7 +12,7 @@ use App\Helpers\Flattener as Flattener;
 use App\Eshelf;
 use Illuminate\Support\Facades\Cache;
 use Config;
-
+use Illuminate\Support\Facades\DB;
 
 class SearchController extends Controller
 {
@@ -212,6 +212,13 @@ class SearchController extends Controller
             $lists["editions"][] = $b->key;
         }
 
+        $lists["genres"] = [];
+        foreach ($r->aggregations->genres->buckets as $b) {
+            $lists["genres"][] = $b->key;
+        }
+
+
+
         $lists["editions"] = array_diff($lists["editions"], array("ALL")); // verwarrend element verwijderen
 
         usort($lists["editions"],
@@ -239,6 +246,14 @@ class SearchController extends Controller
         return $lists;
     }
 
+    public function ping() {
+        $this->authorize('search');
+        $status = DB::table('status')->distinct()->get();
+
+        $r = $this->searcher->ping($this->user->apikey);
+        if (!$r->hits) abort(500);
+        return ["OK"];
+    }
 
 }
 

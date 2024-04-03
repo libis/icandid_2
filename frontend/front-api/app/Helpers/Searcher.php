@@ -51,7 +51,8 @@ class Searcher {
         'subject' => ['keywords.@value'],
         'isbn' => ['isbn'],
         'issn' => ['issn'],
-        'locationcreated' => ['locationCreated.name']
+        'locationcreated' => ['locationCreated.name'],
+        'genre' => ['genre.@value.keyword']
     ];
     private $sortmapping = [
         'relevance' => ["_score"=>"desc"],
@@ -731,6 +732,67 @@ class Searcher {
         
     }
 
+    public function ping($apikey) {
+        $client = new Client();
+        $randomStr = base64_encode(random_bytes(30));
+        $query = '{
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "multi_match": {
+                                "query": "' . $randomStr . '",
+                                "fields": [
+                                    "*_name",
+                                    "*_headline",
+                                    "isBasedOn.provider.name.keyword",
+                                    "isBasedOn.provider.alternateName.keyword",
+                                    "publisher.name.keyword",
+                                    "*_articleBody",
+                                    "creator.name",
+                                    "author.name",
+                                    "creator.alternateName",
+                                    "author.alternateName",
+                                    "sender.name",
+                                    "sender.alternateName",
+                                    "creator.name.@value",
+                                    "author.name.@value",
+                                    "creator.alternateName.@value",
+                                    "author.alternateName.@value",
+                                    "*_description",
+                                    "*_keywords",
+                                    "*_text"
+                                ],
+                                "operator": "and"
+                            }
+                        }
+                    ]
+                }
+            },
+            "size": 0
+        }';
+        Log::info("POST " . $this->url);
+        Log::info($query);
+        $response = $client->request(   'POST', 
+                                        $this->url,
+                                        [
+                                            'body' => $query, 
+                                            'headers' => [
+                                                'Content-Type' => 'application/json',
+                                                'APIKEY' => $apikey
+                                            ], 
+                                            'auth' => [
+                                                $this->username, 
+                                                $this->password
+                                            ], 
+                                            'verify' => false
+                                        ]
+                                    );
+        
+        return json_decode($response->getBody()->getContents());
+    }
+            
+
     public function ddlists($apikey) {
         
         $client = new Client();
@@ -767,6 +829,12 @@ class Searcher {
                 "legislationTypes":{
                     "terms": {
                         "field":"legislationType.keyword",
+                        "size":5000
+                    }
+                },
+                "genres":{
+                    "terms": {
+                        "field":"genre.@value.keyword",
                         "size":5000
                     }
                 },
