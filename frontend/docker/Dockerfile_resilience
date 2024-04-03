@@ -4,8 +4,8 @@ FROM php:8.1-apache
 RUN apt-get upgrade -y
 
 RUN apt-get update  && \
-    apt-get install -y net-tools rsyslog mailutils \
-    apt-utils default-mysql-client git zip unzip curl libzip-dev vim iputils-ping net-tools netcat less libxml2 libxml2-dev cron sqlite3 \
+    apt-get install -y net-tools systemctl mailutils \
+    apt-utils default-mysql-client git zip unzip curl libzip-dev vim iputils-ping net-tools less libxml2 libxml2-dev cron sqlite3 \
     libpq-dev libonig-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
     && apt-get clean \
     && docker-php-ext-install -j$(nproc) iconv \
@@ -42,8 +42,6 @@ COPY ./docker/docker-php-ext-*.ini /usr/local/etc/php/conf.d/
 
 COPY ./docker/etc/exim4/update-exim4.conf.conf /etc/exim4/
 RUN update-exim4.conf
-
-RUN /etc/init.d/rsyslog start
 
 RUN crontab -l -u root | { cat; echo "SHELL=/bin/bash"; } | crontab -u root -
 RUN crontab -l -u root | { cat; echo "0 3 * * * cd /var/www/html/api/ && /usr/local/bin/php -d memory_limit=4G artisan cache:clear >> /dev/null 2>&1"; } | crontab -u root -
