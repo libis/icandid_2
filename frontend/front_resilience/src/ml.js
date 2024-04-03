@@ -234,6 +234,7 @@ export default new MLCreate({
         query:"Detailed description"  , 
         available:"Available",
         groups:"Groups",
+        group:"Group",
         newgroup:"New group",
         newlabel:"New label",
         accessrights:"Accessrights",
