@@ -108,9 +108,9 @@ export default {
     visiblefilters() {
       var som = 0
       for (const value of Object.values(this.getAggregations)){
-
-        som += value.buckets.length
-        
+        if (value.buckets != undefined) {
+          som += value.buckets.length
+        }        
       }
 
       return (som != 0)
