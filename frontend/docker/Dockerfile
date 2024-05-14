@@ -4,7 +4,7 @@ FROM php:8.1-apache
 RUN apt-get upgrade -y
 RUN apt-get update -y && \
     apt-get install -y net-tools mailutils \
-    apt-utils default-mysql-client git zip unzip curl libzip-dev vim iputils-ping net-tools less libxml2 libxml2-dev cron sqlite3 \
+    apt-utils default-mysql-client git zip unzip curl libzip-dev vim net-tools less libxml2 libxml2-dev cron sqlite3 \
     libpq-dev libonig-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
     && apt-get clean \
     && docker-php-ext-install -j$(nproc) iconv \
