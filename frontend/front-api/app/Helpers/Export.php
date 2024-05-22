@@ -38,15 +38,14 @@ class Export {
                 $searcher = new Searcher($job->query);
             }
 
-
-
-            
+           
             // select output channel based on format
             Log::info($job->format);
             switch($job->format) {
                 case 'json':
                 case 'jsonld':
-                    $output = new JSON_Output();
+                case 'json-ld':                    
+                    $output = new JSON_Output(array_map(fn($value): string => $value->name ,(array)$job->enrichments));
                 break;
                 case 'csv':
                     $output = new CSV_Output();
@@ -64,7 +63,6 @@ class Export {
             
             // get first set ofo data
             $data = $searcher->first($this->user->apikey);
-
 
             // loop while there is more data
             while ($data) {

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Log;
 
 class JSON_Output {
 
-    public function __construct() {
+    public function __construct($enrichments = []) {
         $this->tmpname = tempnam(storage_path('app/export'),'');
         unlink($this->tmpname);
         mkdir($this->tmpname);
@@ -13,6 +13,8 @@ class JSON_Output {
         $this->filenumber = 1;
         $this->fhandle = fopen($this->tmpname."/".sprintf('file_%06d.jsonld', $this->filenumber), 'w');
         $this->first = True;
+        $this->enrichments = $enrichments;
+        
     }
     
     public function add($data) {
@@ -24,6 +26,41 @@ class JSON_Output {
                 fwrite($this->fhandle, ",\n");
             }
             unset($d->highlight);
+            // sometimes prov:wasAttributedTo and/or prov:wasAssociatedFor are objects and not arrays of objects.
+            // this fixes that problem, makes next step (remove unwanted) easier
+            
+            if (is_object($d->_source->{'prov:wasAttributedTo'})){
+                $tmp = clone $d->_source->{'prov:wasAttributedTo'};
+                $d->_source->{'prov:wasAttributedTo'} = Array();
+                $d->_source->{'prov:wasAttributedTo'}[] = $tmp;
+            }
+            foreach($d->_source->{'prov:wasAttributedTo'} as $k => $v) {
+                if(is_object($v->{'prov:wasAssociatedFor'})) {
+                    $tmp = clone $v->{'prov:wasAssociatedFor'};
+                    $d->_source->{'prov:wasAttributedTo'}[$k]->{'prov:wasAssociatedFor'} = Array();
+                    $d->_source->{'prov:wasAttributedTo'}[$k]->{'prov:wasAssociatedFor'}[] = $tmp;
+                }
+            }
+
+            // remove unwanted enrichments
+            if (isset($d->_source->{'prov:wasAttributedTo'})){
+                for($i = count($d->_source->{'prov:wasAttributedTo'})-1 ; $i >= 0; $i--) {
+                    for($j = count($d->_source->{'prov:wasAttributedTo'}[$i]->{'prov:wasAssociatedFor'})-1 ; $j >= 0; $j--) {
+                        if (!in_array($d->_source->{'prov:wasAttributedTo'}[$i]->{'prov:wasAssociatedFor'}[$j]->name,$this->enrichments)){
+                            unset($d->_source->{'prov:wasAttributedTo'}[$i]->{'prov:wasAssociatedFor'}[$j]);
+                        }
+                    }
+                    //cleanup prov:wasAssociatedFor als er niks meer in zit
+                    if (count($d->_source->{'prov:wasAttributedTo'}[$i]->{'prov:wasAssociatedFor'}) == 0) {
+                        unset($d->_source->{'prov:wasAttributedTo'}[$i]);
+                    }
+                }
+                // cleanup prov:wasAttributedTo als er niks meer in zit
+                if (!isset($d->_source->{'prov:wasAttributedTo'}[0]->{'prov:wasAssociatedFor'})) {
+                    unset($d->_source->{'prov:wasAttributedTo'});
+                }
+            }
+            
             fwrite($this->fhandle,json_encode($d, JSON_PRETTY_PRINT+JSON_UNESCAPED_SLASHES));
             $this->recordcount++;
             if ($this->recordcount >= $this->maxnumber) {
@@ -31,6 +68,7 @@ class JSON_Output {
             }            
         }
     }
+
 
     private function nextfile() {
         fwrite($this->fhandle, "\n]");

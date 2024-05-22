@@ -174,8 +174,20 @@ class Searcher {
             "max" => [
                 "field"=>"datePublished_time_frame_till"
             ]
+        ],
+        "ENRICHMENTS_PER_TYPE"=> [
+            "nested"=> [
+              "path"=> "prov:wasAttributedTo.prov:wasAssociatedFor"
+            ],
+            "aggs"=> [
+              "ACTION_NAME"=> [
+                    "terms"=> [
+                      "field"=> "prov:wasAttributedTo.prov:wasAssociatedFor.name",
+                      "size"=> 100
+                    ]
+                ]
+            ]
         ]
-
     ];
     private $source = [
         "exclude" => ["*-*_*"]
@@ -196,6 +208,7 @@ class Searcher {
 //        $this->esquery->sort['datePublished'] = 'asc';
         Log::info("POST " . $this->url . "&scroll=" . $this->scroll . "s");
         Log::info(json_encode($this->esquery, JSON_PRETTY_PRINT));
+        Log::info("==========================================");
         $response = $client->request(   'POST', 
                                         $this->url . "&scroll=". $this->scroll, 
                                         [
@@ -213,7 +226,7 @@ class Searcher {
                                     );
         $content = $response->getBody()->getContents();
         $r = json_decode($content);
-        Log::info($response->getStatusCode() . " " . $response->getReasonPhrase() . " " . strlen($content)); // . " : " . count($r->hits->hits));   
+        Log::info($response->getStatusCode() . " " . $response->getReasonPhrase() . " " . strlen($content) . " : " . count($r->hits->hits));   
         //Log::info($content);                                 
         $this->_scroll_id = $r->_scroll_id;
         if (count($r->hits->hits) > 0) {
@@ -235,6 +248,7 @@ class Searcher {
         $client = new Client();
 
         $p = parse_url($this->url);
+
         $url = $p["scheme"] . "://" . $p["host"] . ((isset($p["port"]) && $p["port"] != "")?(":" . $p["port"]):"") . "/_search/scroll";
         Log::info("POST " . $url);
 
@@ -258,8 +272,9 @@ class Searcher {
                                     );
         $content = $response->getBody()->getContents();
         $r = json_decode($content);
-        Log::info($response->getStatusCode() . " " . $response->getReasonPhrase() . " " . strlen($content)); // . " : " . count($r->hits->hits));   
+        Log::info($response->getStatusCode() . " " . $response->getReasonPhrase() . " " . strlen($content) . " : " . count($r->hits->hits));   
         //Log::info($content);
+
         $this->_scroll_id = $r->_scroll_id;
         if (count($r->hits->hits) > 0) {
             Log::info($r->hits->total->value);
