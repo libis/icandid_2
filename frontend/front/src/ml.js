@@ -47,11 +47,14 @@ export default new MLCreate({
         exportcsv:'Export the full result as CSV',
         exporttxt:'Export the full result as TXT',
         exportxlsx:'Export the full result as Excel',
-        exportjson:'Export the full result as JSON-LD',
+        exportjson:'Export the full result as JSON-LD without enrichments',
+        exportjsonplus:'Export the full result as JSON-LD with enrichments',
         exportsetcsv:'Export collection as CSV',
         exportsetxlsx:'Export collection as Excel',
         exportsettxt:'Export collection as TXT',
         exportsetjson:'Export collection as JSON-LD',
+        export:"Export",
+        exportrecords:"Export # records",
         platformby:'Platform by',
         type: 'Type',
         identifier: 'Identifier',
@@ -301,7 +304,9 @@ export default new MLCreate({
         genre:"Genre",
         trailer:"Trailer",
         review:"Review",
-        alternateName:"Alternative title"
+        alternateName:"Alternative title",
+        format:"Format",
+        enrichments:"Enrichments"
     }),
  
     new MLanguage('nl').create({
@@ -344,11 +349,14 @@ export default new MLCreate({
         exportcsv:'Exporteer het volledige resultaat als CSV',
         exporttxt:'Exporteer het volledige resultaat als TXT',
         exportxlsx:'Exporteer het volledige resultaat als Excel',
-        exportjson:'Exporteer het volledige resultaat als JSON-LD',
+        exportjson:'Exporteer het volledige resultaat als JSON-LD zonder verrijkingen',
+        exportjsonplus:'Exporteer het volledige resultaat als JSON-LD met verrijkingen',
         exportsetcsv:'Exporteer collectie als CSV',
         exportsetxlsx:'Exporteer collectie als Excel',
         exportsettxt:'Exporteer collectie als TXT',
         exportsetjson:'Exporteer collectie als JSON-LD',
+        export:"Exporteer",
+        exportrecords:"Exporteer # records",
         platformby:'Platform door',
         type: 'Type',
         identifier: 'Identificator',
@@ -598,7 +606,10 @@ export default new MLCreate({
         genre:"Genre",
         trailer:"Trailer",
         review:"Bespreking",
-        alternateName:"Alternatieve titel"
+        alternateName:"Alternatieve titel",
+        format:"Formaat",
+        enrichments:"Verrijkingen"
+
     })
   ]
 })
