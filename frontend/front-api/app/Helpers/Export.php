@@ -44,8 +44,12 @@ class Export {
             switch($job->format) {
                 case 'json':
                 case 'jsonld':
-                case 'json-ld':                    
-                    $output = new JSON_Output(array_map(fn($value): string => $value->name ,(array)$job->enrichments));
+                case 'json-ld':
+                    if (isset($job->enrichments) ){                   
+                        $output = new JSON_Output(array_map(fn($value): string => $value->name ,(array)$job->enrichments));
+                    } else {
+                        $output = new JSON_Output();
+                    }
                 break;
                 case 'csv':
                     $output = new CSV_Output();
