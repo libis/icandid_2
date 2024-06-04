@@ -37,6 +37,21 @@ class UuidChecker {
                     }
                     
                 }
+                sleep(0.3);
+                if (isset($v->_source->{'@id'})) {
+                    $this->c++;
+                    $url = "https://icandid.libis.be/_/" . $v->_source->{'@id'};
+
+                    $response = $client->request('GET', $url); 
+                    //print($response->getStatusCode() . " " . $url . "\n");
+
+                    if ($response->getStatusCode() == 404) {
+                        print($url . "\n");
+                    }
+                    
+                }
+                sleep(0.3);
+
             }
             $data = $this->searcher->next($this->apikey);
         }
