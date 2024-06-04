@@ -6,7 +6,7 @@ import { marked } from 'marked'
 const renderer = {
   heading(text, level) {
     return `
-            <h${level} class="title is-${level}" style="margin-top:10px;color: #757763;">
+            <h${level} class="title is-${level}" style="margin-top:10px;">
               ${text}
             </h${level}>`;
   },
@@ -83,7 +83,7 @@ export default {
     padding:12px
 }
 #markdown strong {
-    color:#757763
+    /* color:#757763 */
 }
 #markdown p {
     padding-bottom:0rem

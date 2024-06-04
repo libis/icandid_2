@@ -18,7 +18,7 @@
                 
             </div>
             <div class="column is-one-quarter">
-                <a class="button is-primary" @click="save()">{{ $ml.get('save') }}</a>&nbsp;
+                <a class="button is-primary" style="color:White" @click="save()">{{ $ml.get('save') }}</a>&nbsp;
             </div>
             <div class="column is-one-quarter">
                 <a class="button is-danger"  @click="del()">{{ $ml.get('delete') }}</a>

@@ -34,8 +34,8 @@
                         
         </section>
         <footer class="modal-card-foot" style="justify-content: flex-end;">
-          <button  class="button is-danger" @click="no()">{{ $ml.get('cancel') }}</button>
           <button  class="button is-success" :disable="(format=='')" @click="yes()">{{ $ml.get('export') }}</button>
+          <button  class="button is-danger" @click="no()">{{ $ml.get('cancel') }}</button>
         </footer>
       </div>
     </div>    

@@ -1,8 +1,8 @@
 <template>
   <nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
+    <div class="navbar-brand is-hidden">
       <a class="navbar-item" href="/#/">
-        <img src="/img/iCANDID_logo.png" height="28" />
+        
       </a>
 
       <a
@@ -20,11 +20,9 @@
       </a>
     </div>
     <div id="navbarBasicExample" ref="navbarBasicExample" class="navbar-menu">
-      <div class="navbar-start"></div>
-
-      <div class="navbar-end">
+      <div class="navbar-start">
         <div v-for="m in menu" :key="m.id">
-          <a v-if="m.route" class="navbar-item is-hidden" :href="m.route" ref="mi" :id="m.vis" :target="((m.route.substring(0, 4) == 'http')?'_blank':'')">{{ m.name }}</a>
+          <a v-if="m.route" class="navbar-item " :href="m.route" ref="mi" :id="m.vis" :target="((m.route.substring(0, 4) == 'http')?'_blank':'')">{{ m.name }}</a>
           <div v-if="m.submenu" class="navbar-item has-dropdown is-hoverable is-hidden" ref="mi" :id="m.vis">
             <a class="navbar-link">{{ m.name }}</a>
             <div class="navbar-dropdown">
@@ -42,6 +40,10 @@
             </div>
           </div>
         </div>
+        
+      </div>
+
+      <div class="navbar-end">
         <div>
 
           <div class="navbar-item has-dropdown is-hoverable">

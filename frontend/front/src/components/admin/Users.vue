@@ -156,7 +156,7 @@
                     
                 </div>
                 <div class="column is-one-quarter">
-                    <a class="button is-primary" @click="save()">{{ $ml.get('save') }}</a>&nbsp;
+                    <a class="button is-primary" style="color:White" @click="save()">{{ $ml.get('save') }}</a>&nbsp;
                     <a class="button" @click="edit(-1)">{{ $ml.get('cancel') }}</a>
                 </div>
                 <div class="column is-one-quarter">

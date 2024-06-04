@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="container">
-    <div class="block">
+    <div class="block" style="margin-bottom:0px">
       <NavBar :auth="getAuthenticated" :menu="navmenu" :lang="$ml.current" ref="navbar"></NavBar>
     </div>
     <Message ref="popupwarnmessage"></Message>
@@ -11,14 +11,16 @@
     </transition>
     <footer class="footer">
       <div class="columns ">
-        <div class="column is-one-quarter">
+        <div class="column is-one-third">
           <p>
-            {{ $ml.get('platformby') }}<br/><a href="http://www.libis.be" target="_blank"><img src="/img/libis.png" width=85 valign="center"></a>
+            <a href="http://www.libis.be" target="_blank"><img src="https://assets.libis.be/libis/libisnewkuljr.png" style="height:56px" valign="center"></a>
           </p>
         </div>
-        <div class="column has-text-right">
-          <a href="https://www.fwo.be/" target="_blank"><img src="/img/FWO_logo.png" style="margin-right:20px"></a>
-          <a href="https://www.kuleuven.be" target="_blank"><img src="/img/KULeuven_logo.svg" style="margin-right:20px"></a>
+        <div class="column has-one-third has-text-center">
+          <a href="https://www.fwo.be/" target="_blank"><img src="/img/FWO_logo.png"></a>
+        </div>
+        <div class="column has-on-third has-text-right">
+          <a href="https://www.kuleuven.be" target="_blank"><img src="/img/KULeuven_logo.svg" style="margin-right:10px"></a>
           <a href="https://soc.kuleuven.be/ims" target="_blank"><img src="/img/IMS-Logo-fullcolour.png" style="height:56px"></a>
         </div>
       </div>
