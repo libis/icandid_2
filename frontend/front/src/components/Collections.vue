@@ -71,8 +71,8 @@
                     <label class="label">{{ $ml.get("period") }} : </label>
                 </div>
                 <div class="column" >
-                        <span class="vertalign" style="font-size:12px">{{ $ml.get('from') }} : </span><input type="date" class="input" style="width:150px" v-model="search.from" name="dp_fromdate" />
-                        <span class="vertalign" style="margin-left:5px;font-size:12px">{{ $ml.get('toandincluding') }} : </span><input type="date" class="input" style="width:150px" v-model="search.until" name="dp_untildate" />
+                        <span class="vertalign" style="font-size:12px">{{ $ml.get('from') }} : </span><input type="date" class="input" style="width:170px" v-model="search.from" name="dp_fromdate" />
+                        <span class="vertalign" style="margin-left:5px;font-size:12px">{{ $ml.get('toandincluding') }} : </span><input type="date" class="input" style="width:170px" v-model="search.until" name="dp_untildate" />
                         <button class="button" @click="cleardates()" style="margin-left:15px;font-size:12px;margin-top:6px;height:24px">{{ $ml.get('cleardates') }}</button>
                 </div>
             </div>

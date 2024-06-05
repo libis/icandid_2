@@ -56,14 +56,14 @@
                 style="width:57%"
                 v-if="!['period', 'publicationdate','provider','publisher','dataset','edition','language','label','genre','retweet','legislationType'].includes(advancedQ.field)" />
               <!-- <datepicker class="input" style="width:130px" :format="dateformat" input-class="noborder" :language="nl" v-model="advancedQ.query" name="dp_pubdate" v-if="advancedQ.field == 'publicationdate'"></datepicker>                -->
-              <input type="date" class="input" style="width:150px" v-model="advancedQ.query" v-if="advancedQ.field == 'publicationdate'" name="dp_pubdate" />
+              <input type="date" class="input" style="width:170px" v-model="advancedQ.query" v-if="advancedQ.field == 'publicationdate'" name="dp_pubdate" />
 <!--              <div v-if="advancedQ.field == 'period'" >
                 <span class="vertalign">{{ $ml.get('from') }} : </span><datepicker class="input" style="width:130px" :format="dateformat" input-class="noborder" :language="nl" v-model="advancedQ.queryfrom" name="dp_fromdate" ></datepicker>&nbsp;
                 <span class="vertalign">{{ $ml.get('toandincluding') }} : </span><datepicker class="input" style="width:130px" :format="dateformat" input-class="noborder" :language="nl" v-model="advancedQ.queryto" name="dp_todate" ></datepicker>
               </div> -->
               <div v-if="advancedQ.field == 'period'" >
-                <span class="vertalign">{{ $ml.get('from') }} : </span><input type="date" class="input" style="width:150px" v-model="advancedQ.queryfrom" name="dp_fromdate" />&nbsp;
-                <span class="vertalign">{{ $ml.get('toandincluding') }} : </span><input type="date" class="input" style="width:150px" v-model="advancedQ.queryto" name="dp_todate" />
+                <span class="vertalign">{{ $ml.get('from') }} : </span><input type="date" class="input" style="width:170px" v-model="advancedQ.queryfrom" name="dp_fromdate" />&nbsp;
+                <span class="vertalign">{{ $ml.get('toandincluding') }} : </span><input type="date" class="input" style="width:170px" v-model="advancedQ.queryto" name="dp_todate" />
               </div>
 
               <div class="select" v-if="advancedQ.field == 'provider'">

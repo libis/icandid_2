@@ -99,8 +99,8 @@
                     <div class="field">
                         <label class="label">{{ $ml.get("validityperiod") }}</label>
                         <div class="control">
-                        <span class="vertalign">{{ $ml.get('from') }} : </span><input type="date" class="input" style="width:150px" v-model="activeuser.startdate" name="dp_fromdate" />
-                        <span class="vertalign" style="margin-left:5px">{{ $ml.get('toandincluding') }} : </span><input type="date" class="input" style="width:150px" v-model="activeuser.enddate" name="dp_untildate" />
+                        <span class="vertalign">{{ $ml.get('from') }} : </span><input type="date" class="input" style="width:170px" v-model="activeuser.startdate" name="dp_fromdate" />
+                        <span class="vertalign" style="margin-left:5px">{{ $ml.get('toandincluding') }} : </span><input type="date" class="input" style="width:170px" v-model="activeuser.enddate" name="dp_untildate" />
                         </div>
                         <p class="help is-danger is-hidden" ref="validityperiodwarn">{{ $ml.get('fieldrequired') }}</p>
                     </div>

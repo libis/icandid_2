@@ -48,8 +48,8 @@
             <div class="field">
                 <label class="label">{{ $ml.get('requestduration') }}</label>
                 <div class="control" style="flex-direction:inherit">
-                    <span class="vertalign">{{ $ml.get('from') }} : </span><input type="date" class="input" style="width:150px" v-model="formdata.from" name="dp_fromdate" />
-                    <span class="vertalign" style="margin-left:5px">{{ $ml.get('toandincluding') }} : </span><input type="date" class="input" style="width:150px" v-model="formdata.until" name="dp_untildate" />
+                    <span class="vertalign">{{ $ml.get('from') }} : </span><input type="date" class="input" style="width:170px" v-model="formdata.from" name="dp_fromdate" />
+                    <span class="vertalign" style="margin-left:5px">{{ $ml.get('toandincluding') }} : </span><input type="date" class="input" style="width:170px" v-model="formdata.until" name="dp_untildate" />
                 </div>
                 <p class="help is-danger is-hidden" ref="duration">{{ $ml.get('requestduration_warn') }}</p>
             </div>

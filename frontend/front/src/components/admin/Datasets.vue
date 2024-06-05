@@ -97,8 +97,8 @@
                     <div class="field">
                         <label class="label">{{ $ml.get('period') }}</label>
                         <div class="control" style="flex-direction:inherit">
-                            <span class="vertalign">{{ $ml.get('from') }} : </span><input type="date" class="input" style="width:150px" v-model="activeset.from" name="dp_fromdate" />
-                            <span class="vertalign" style="margin-left:5px">{{ $ml.get('toandincluding') }} : </span><input type="date" class="input" style="width:150px" v-model="activeset.until" name="dp_untildate" />
+                            <span class="vertalign">{{ $ml.get('from') }} : </span><input type="date" class="input" style="width:170px" v-model="activeset.from" name="dp_fromdate" />
+                            <span class="vertalign" style="margin-left:5px">{{ $ml.get('toandincluding') }} : </span><input type="date" class="input" style="width:170px" v-model="activeset.until" name="dp_untildate" />
                         </div>
                     </div>
 
