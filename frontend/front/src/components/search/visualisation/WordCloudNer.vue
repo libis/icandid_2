@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app2">
     <wordcloud
       v-if="!loading"
       :data="defaultWords"
@@ -21,7 +21,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 export default {
-  name: 'app',
+  name: 'app2',
   components: {
     wordcloud,
     Loader

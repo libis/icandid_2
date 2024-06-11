@@ -61,6 +61,7 @@ Arial, sans-serif;
 svg {
 display: block;
 margin: 0 auto;
+height:100%
 }
 
 .flower {
