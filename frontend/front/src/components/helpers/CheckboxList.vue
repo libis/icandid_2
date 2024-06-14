@@ -89,4 +89,7 @@ export default {
 .disabled {
     color:LightGray;
 }
+input {
+    margin-right:4px
+}
 </style>
