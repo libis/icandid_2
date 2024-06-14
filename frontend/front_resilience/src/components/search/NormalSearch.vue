@@ -212,7 +212,8 @@ export default {
     clear() {
       this.searchterm = "";
       this.selectedType = "all";
-      this.selectedTypes = ["Book","Article"],
+      //this.selectedTypes = ["Book","Article"],
+      this.selectedTypes = [...this.options["types"]];  // every type selected for users without eyeballs
       this.onlineonly = false;
       //this.selectedPeriod = "year";
 //      this.selectedPublications = [];
@@ -281,13 +282,13 @@ export default {
   created() {
     axios
       .get(this.getApiDdlistsUrl)
-      .then(function(response) { this.options = response.data}.bind(this))
+      .then(function(response) { this.options = response.data; this.selectedTypes = [...this.options["types"]];}.bind(this))
       .catch(error => {
         //console.log(error);
         if (error.response.status === 401) {
           axios
           .get(this.getApiDdlistsUrl + "/public")
-          .then(function(response) { this.options = response.data}.bind(this))
+          .then(function(response) { this.options = response.data; this.selectedTypes = [...this.options["types"]];}.bind(this))
         }
       })
     this.unsubscribe ==
