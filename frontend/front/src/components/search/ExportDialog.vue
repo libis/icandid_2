@@ -22,8 +22,8 @@
             </div>
             <div class="columns" >
                 <div class="column is-4">
-                    <br/>
-                    {{ $ml.get('enrichments') }} :
+                    <div style="padding-top:2.4rem;padding-bottom:1rem">{{ $ml.get('enrichments') }}* :</div>                    
+                    <p class="is-size-7">* {{ $ml.get('onlywithjsonld') }}</p>
                 </div>
                 <div class="column is-8">
                     <fieldset :disabled="(format!='json-ld')"> 
