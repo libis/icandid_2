@@ -306,7 +306,8 @@ export default new MLCreate({
         review:"Review",
         alternateName:"Alternative title",
         format:"Format",
-        enrichments:"Enrichments"
+        enrichments:"Enrichments",
+        onlywithjsonld:"Only available with JSON-LD export"
     }),
  
     new MLanguage('nl').create({
@@ -608,7 +609,8 @@ export default new MLCreate({
         review:"Bespreking",
         alternateName:"Alternatieve titel",
         format:"Formaat",
-        enrichments:"Verrijkingen"
+        enrichments:"Verrijkingen",
+        onlywithjsonld:"Enkel beschikbaar bij JSON-LD export"
 
     })
   ]
