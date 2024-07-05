@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="container">
-    <div class="block" style="margin-bottom:0px">
+    <div class="block" style="margin-bottom:20px">
       <NavBar :auth="getAuthenticated" :menu="navmenu" :lang="$ml.current" ref="navbar"></NavBar>
     </div>
     <Message ref="popupwarnmessage"></Message>
