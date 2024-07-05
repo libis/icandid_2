@@ -58,6 +58,7 @@ export default new MLCreate({
         platformby:'Platform by',
         type: 'Type',
         identifier: 'Identifier',
+        originalidentifier:'Original Identifier',
         publication:'Publication',
         edition:"Edition",
         publicationdate: 'Publicationdate',
@@ -307,7 +308,10 @@ export default new MLCreate({
         alternateName:"Alternative title",
         format:"Format",
         enrichments:"Enrichments",
-        onlywithjsonld:"Only available with JSON-LD export"
+        onlywithjsonld:"Only available with JSON-LD export",
+        copyright:"Copyrights",
+        collection:"Collection(s)",
+        aggregator:"Aggregator"
     }),
  
     new MLanguage('nl').create({
@@ -361,6 +365,7 @@ export default new MLCreate({
         platformby:'Platform door',
         type: 'Type',
         identifier: 'Identificator',
+        originalidentifier:'Originele Identificator',
         publication:'Publicatie',
         edition:"Editie",
         publicationdate: 'Publicatiedatum',
@@ -610,7 +615,10 @@ export default new MLCreate({
         alternateName:"Alternatieve titel",
         format:"Formaat",
         enrichments:"Verrijkingen",
-        onlywithjsonld:"Enkel beschikbaar bij JSON-LD export"
+        onlywithjsonld:"Enkel beschikbaar bij JSON-LD export",
+        copyright:"Copyrights",
+        collection:"Collectie(s)",
+        aggregator:"Aggregator"
 
     })
   ]
