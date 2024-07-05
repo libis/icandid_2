@@ -11,21 +11,16 @@
             </article>
         -->
         <h2 class="title is-2">{{ $ml.get('home_title') }}</h2>
-        <div class="columns">
-            <div class="column is-half">
-                               
-                <div class="box">
-                    <p><Content :lang="$ml.current" :contentcode="'home_intro'" :show_title="false"></Content></p>
-                    <p><Content :lang="$ml.current" :contentcode="'home_limited'" :show_title="false" ></Content></p>
-                    <p v-if="!getAuthenticated"><Content :lang="$ml.current" :contentcode="'home_notloggedin'" :show_title="false"></Content></p>
-                    <p><Content :lang="$ml.current" :contentcode="'home_moreinfo'" :show_title="false"></Content></p>
-
-                </div>
-            </div>
-            <div class="column is-half">
+        <div class="box">
+            <div class="is-pulled-right" style="margin-left:15px">
                 <!-- <img style="transform: rotate(-5deg);padding-top: 25px" src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" width="100%"> -->
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/rtA-XQG78Rg?si=x4-kfCG8neqm7zGh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>                
+                <iframe width="500" height="281" src="https://www.youtube.com/embed/rtA-XQG78Rg?si=x4-kfCG8neqm7zGh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>                
             </div>
+            <p><Content :lang="$ml.current" :contentcode="'home_intro'" :show_title="false"></Content></p>
+            <p><Content :lang="$ml.current" :contentcode="'home_limited'" :show_title="false" ></Content></p>
+            <p v-if="!getAuthenticated"><Content :lang="$ml.current" :contentcode="'home_notloggedin'" :show_title="false"></Content></p>
+            <p><Content :lang="$ml.current" :contentcode="'home_moreinfo'" :show_title="false"></Content></p>
+
         </div>
     </div>
 </template>
@@ -81,5 +76,5 @@ export default {
 }
 </script>
 <style scoped>
-p { padding-bottom:16px}
+p { padding-bottom:16px; text-align: justify}
 </style>
