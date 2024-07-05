@@ -213,16 +213,20 @@ export default {
       this.searchterm = "";
       this.selectedType = "all";
       //this.selectedTypes = ["Book","Article"],
-      this.selectedTypes = [...this.options["types"]];  // every type selected for users without eyeballs
       this.onlineonly = false;
       //this.selectedPeriod = "year";
 //      this.selectedPublications = [];
       this.selectedDatasets = this.$parent.datasets.map (x => x.internalident);
+
       //this.selectedLanguages = this.$parent.languages.map(x => x.id);
       //this.selectedLabels = this.$parent.labels.map(x => x.id);
       // this.allSelectedCb = false;
       this.clearResultset();
       this.clearAggregations()
+      if (this.options["types"] != undefined) {
+        this.selectedTypes = [... this.options["types"]];  // every type selected for users without eyeballs
+      }
+
     },
     selectDatasets() {
       this.selectedDatasets = [];
