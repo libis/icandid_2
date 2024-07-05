@@ -2,7 +2,7 @@
   <div>
     <div v-if="activeResult != undefined">
       <div v-for="(field,idx) in fields" :key="idx">
-          <div style="margin-bottom:.5em" v-if="activeResult._source[idx] != undefined">
+          <div style="margin-bottom:.5em" v-if="showfield(idx)">
             <div class="has-text-weight-semibold" >{{ field }} <button style="border:0px;background-color:transparent;font-size:16px" v-if="idx=='sameAs'" v-tooltip="info"><i class="fa fa-info"></i></button></div>
             <div v-if="idx != '@id' && idx != 'associatedMedia'" v-html="show(idx)" style="word-wrap:break-word" v-linkified></div>
             <div v-else v-html="show(idx)" style="word-wrap:break-word"></div>
@@ -22,8 +22,10 @@ export default {
       fields: {
         "@type": this.$ml.get('type'),
         "@id":  this.$ml.get('identifier'),
+        identifier: this.$ml.get('originalidentifier'),
         legislationType: this.$ml.get('legislationType'),
         publisher: this.$ml.get('publication'),
+        "_aggregator": this.$ml.get('aggregator'),
         printEdition: this.$ml.get('edition'),
         articleSection: this.$ml.get('articlesection'),
         pagination: this.$ml.get('pagination'),
@@ -50,6 +52,7 @@ export default {
         articleBody:  this.$ml.get('text'),
         text:  this.$ml.get('text'),
         keywords: this.$ml.get('keywords'),
+        isPartOf:this.$ml.get('collection'),
         mentions: this.$ml.get('mentions'),
         duration: this.$ml.get('duration'),
 //        retweeted_tweet: this.$ml.get('retweeted_tweet'),
@@ -65,8 +68,11 @@ export default {
         sameAs: this.$ml.get('link'),
         url: this.$ml.get('permalink'),
         provider: this.$ml.get('provider'),
+        license: this.$ml.get('license'),
+        copyrightNotice:this.$ml.get('copyright'),
         sdDatePublished: this.$ml.get('sdDatePublished'),
-        updatetime:this.$ml.get('updatetime')
+        updatetime:this.$ml.get('updatetime'),
+        
       },
       menuitems: [{ label: "Save item in set", name: "save" }],
       info: {
@@ -103,8 +109,8 @@ export default {
         str = str.replaceAll(search2,replace2)
       }
 
-        str = str.replaceAll("<","&lt;")
-        str = str.replaceAll(">","&gt;")
+      str = str.replaceAll("<","&lt;")
+      str = str.replaceAll(">","&gt;")
 
       if (this.getElasticQuery.highlight != undefined) {
         str = str.replaceAll(replace1,search1)
@@ -130,7 +136,6 @@ export default {
         }
         if (typeof dat == 'string') {
           out = this.format(dat, idx);
-          
           if (idx == '@type') {
             if (this.activeResult._source['additionalType'] != undefined && this.activeResult._source['additionalType'] != '') {
               out += ", " + this.activeResult._source['additionalType'];
@@ -145,33 +150,42 @@ export default {
         if (typeof dat == 'object') {
           if (Array.isArray(dat)) {
             for (var i in dat) {
-
               if (typeof dat[i] == 'string') {
                 out += "<div>" + this.format(dat[i],idx) + "</div>"
               } else {
                 var downloadFormat = "data:"+dat[i].encodingFormat + ";base64"
-
-
                 if (dat[i]["@value"] != undefined) {
                   out += "<div>" + this.format(dat[i]["@value"],idx) + "</div>"
                 } else {
                   if (dat[i].name != undefined) {
                     if ((idx == "legislationPassedBy" || idx == "legislationResponsible") && dat[i].memberOf != undefined && dat[i].memberOf.name != undefined) {
                       out += "<div>" + this.format(dat[i].name,idx) + " (" + dat[i].memberOf.name + ")</div>"
-                    } else {
-                      if (dat[i].contentUrl == undefined || dat[i].contentUrl.substring(0,downloadFormat.length) != downloadFormat) {
-                        if (dat[i]["url"] == undefined || dat[i]["url"] == null || dat[i]["url"] == "") {
-
-                          if (dat[i]["sameAs"] == undefined || dat[i]["sameAs"] == null || dat[i]["sameAs"] == "") {
-                            out += "<div>" + this.format(dat[i].name,idx) + "</div>"
-                          } else {
-                            out += "<div><a href='" + dat[i]["sameAs"] + "' target='_blank'>" + this.format(dat[i].name,idx) + "</a></div>"  
-                          }
+                    } else if(idx == "isPartOf") {
+                      if (dat[i]["@type"] == "Collection") {
+                        if (dat[i]["@id"] != undefined) {
+                          out += '<div><a href="' + dat[i]["@id"] + '" target="_blank">' + dat[i].name["@value"] + '</a></div>';
                         } else {
-                          out += "<div><a href='" + dat[i]["url"] + "' target='_blank'>" + this.format(dat[i].name,idx) + "</a></div>"
+                          out += '<div>' + dat[i].name["@value"] + '</div>';
                         }
                       }
-                    }
+                    } else if(idx == "identifier")  {
+                      if (dat[i]['@id'] == "original_provider_id") {
+                        out += "<div>" + this.format(dat[i].value,idx) + "</div>"
+                      } 
+                    } else {
+                        if (dat[i].contentUrl == undefined || dat[i].contentUrl.substring(0,downloadFormat.length) != downloadFormat) {
+                          if (dat[i]["url"] == undefined || dat[i]["url"] == null || dat[i]["url"] == "") {
+
+                            if (dat[i]["sameAs"] == undefined || dat[i]["sameAs"] == null || dat[i]["sameAs"] == "") {
+                              out += "<div>" + this.format(dat[i].name,idx) + "</div>"
+                            } else {
+                              out += "<div><a href='" + dat[i]["sameAs"] + "' target='_blank'>" + this.format(dat[i].name,idx) + "</a></div>"  
+                            }
+                          } else {
+                            out += "<div><a href='" + dat[i]["url"] + "' target='_blank'>" + this.format(dat[i].name,idx) + "</a></div>"
+                          }
+                        }
+                      }
                   }
                 }
                 if (dat[i]["@type"] == "MediaObject" || dat[i]["@type"] == "ImageObject") {
@@ -179,7 +193,7 @@ export default {
                     out += "<a download=\"" + dat[i].name + "\" href=\"" + dat[i].contentUrl+ "\">" + dat[i].name + "</a><br />"
                   } else {
                     if (dat[i].url != undefined) {
-                      //out += '<a target="_blank" href="' + dat[i].url + '">' + dat[i].url + '</a><br/>'
+                      out += '<a target="_blank" href="' + dat[i].url + '">' + dat[i].url + '</a><br/>'
                     }
                     if (dat[i].contentUrl != undefined) {
                       out += '<a target="_blank" href="' + dat[i].contentUrl + '">' + dat[i].contentUrl + '</a><br/>'
@@ -236,6 +250,18 @@ export default {
             if (dat.name != undefined) {
               if ((idx == "legislationPassedBy" || idx == "legislationResponsible") && dat.memberOf != undefined && dat.memberOf.name != undefined) {
                 out += this.format(dat.name,idx) + " (" + dat.memberOf.name + ")"
+              } else if(idx == "isPartOf") {
+                if (dat["@type"] == "Collection") {
+                  if (dat["@id"] != undefined) {
+                    out += '<div><a href="' + dat["@id"] + '" target="_blank">' + dat.name["@value"] + '</a></div>';
+                  } else {
+                    out += '<div>' + dat.name["@value"] + '</div>';
+                  }
+                }
+              } else if(idx == "identifier")  {
+                if (dat['@id'] == "original_provider_id") {
+                  out += "<div>" + this.format(dat.value,idx) + "</div>"
+                }
               } else {
                 if (dat["url"] == undefined || dat["url"] == null || dat["url"] == "") {
                   if (dat["sameAs"] == undefined || dat["sameAs"] == null || dat["sameAs"] == "") {
@@ -286,7 +312,7 @@ export default {
 
           if (dat['@type'] == "MediaObject" || dat['@type'] == "ImageObject") {
             if (dat.url != undefined) {
-              // out += '<a target="_blank" href="' + dat.url + '">' + dat.url + '</a><br/>'
+              out += '<a target="_blank" href="' + dat.url + '">' + dat.url + '</a><br/>'
             }
             if (dat.contentUrl != undefined) {
               out += '<a target="_blank" href="' + dat.contentUrl + '">' + dat.contentUrl + '</a><br/>'
@@ -355,6 +381,17 @@ export default {
       }
 
       return idx + " : " + typeof dat;
+    },
+    showfield(idx) {
+      if (this.activeResult._source[idx] != undefined) {
+        if(idx == 'identifier') {
+          if (this.activeResult._source[idx]['@id'] != 'original_provider_id') {
+            return false
+          }
+        }
+        return true
+      }
+      return false
     },
     setExtraTweets() {
       if (this.activeResult != undefined) {
@@ -428,10 +465,12 @@ export default {
     currentLang: function(){
       this.fields["@type"]= this.$ml.get('type')
       this.fields["@id"]= this.$ml.get('identifier')
+      this.fields.identifier = this.$ml.get('originalidentifier')
       this.fields.publisher= this.$ml.get('publication')
+      this.fields["_aggregator"] = this.$ml.get('aggregator')
       this.fields.printEdition= this.$ml.get('edition')
       this.fields.articleSection= this.$ml.get('articlesection')
-      this.pagination= this.$ml.get('pagination'),
+      this.fields.pagination= this.$ml.get('pagination'),
       this.fields.datePublished=  this.$ml.get('publicationdate')
       this.fields.dateline= this.$ml.get('dateline')
       this.fields.headline= this.$ml.get('title')
@@ -453,6 +492,7 @@ export default {
       this.fields.articleBody=  this.$ml.get('text')
       this.fields.text=  this.$ml.get('text')
       this.fields.keywords= this.$ml.get('keywords')
+      this.fields.isPartOf = this.$ml.get('collection')
       this.fields.mentions= this.$ml.get('mentions')
       this.fields.duration= this.$ml.get('duration')
 //        this.fields.retweeted_tweet= this.$ml.get('retweeted_tweet')

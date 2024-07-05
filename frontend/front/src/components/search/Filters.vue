@@ -31,8 +31,8 @@ export default {
     data() {
       return {
         nbspace:"&nbsp;",
-        filterOrder:["provider","author","publisher","edition","retweets"],
-        filterMore:[false,false,false,false,false],
+        filterOrder:["provider","author","publisher","aggregator","edition","retweets"],
+        filterMore:[false,false,false,false,false,false],
         filterSize:6
       }
     },

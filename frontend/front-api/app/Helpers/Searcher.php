@@ -29,7 +29,7 @@ class Searcher {
         'provider' => ['isBasedOn.provider.name.keyword','isBasedOn.provider.alternateName.keyword'],
         'dataset' => ['isBasedOn.isPartOf.name.keyword','isBasedOn.isPartOf.@id'],
         'type' => ['@type'] */
-        'any' => ["*_name", "*_headline", "isBasedOn.provider.name.keyword",'isBasedOn.provider.alternateName.keyword', 
+        'any' => ["@id","identifier.value","*_name", "*_headline", "isBasedOn.provider.name.keyword",'isBasedOn.provider.alternateName.keyword', 
             "publisher.name.keyword", "*_articleBody", "creator.name",'author.name','creator.alternateName','author.alternateName','sender.name','sender.alternateName', 'creator.name.@value','author.name.@value','creator.alternateName.@value','author.alternateName.@value',
             "*_description","*_keywords", "*_text"],
         'title' => ["*_name", "*_headline"],
@@ -52,7 +52,10 @@ class Searcher {
         'isbn' => ['isbn'],
         'issn' => ['issn'],
         'locationcreated' => ['locationCreated.name'],
-        'genre' => ['genre.@value.keyword']
+        'genre' => ['genre.@value.keyword'],
+        'identifier' => ['@id'],
+        'originalidentifier' => ['identifier.value']
+
     ];
     private $sortmapping = [
         'relevance' => ["_score"=>"desc"],
@@ -71,12 +74,19 @@ class Searcher {
         'type' => '@type',
         'contributor' => 'contributor.name.keyword',
         'dataset' => 'isBasedOn.isPartOf.name.keyword',
-        'locationcreated' => 'locationCreated.name.keyword'
+        'locationcreated' => 'locationCreated.name.keyword',
+        'aggregator' => '_aggregator.keyword'
     ];
     private $aggs = [
     	"publisher" => [
     		"terms" => [
     			"field"=>"publisher.name.keyword",
+    			"size"=>3000
+            ]
+        ],
+        "aggregator" => [
+    		"terms" => [
+    			"field"=>"_aggregator.keyword",
     			"size"=>3000
             ]
         ],
@@ -404,7 +414,7 @@ class Searcher {
                 }
             }
         }');
-        $query->query->query_string->query = $req->q;
+        $query->query->query_string->query = ltrim($req->q, "-");
         $query->query->query_string->fields = $this->fieldmapping['any'];
 
 
@@ -478,7 +488,7 @@ class Searcher {
             $req->q = "";                   // make it so no results are returned
         }
 
-        $query->query->bool->must[0]->multi_match->query = $req->q;
+        $query->query->bool->must[0]->multi_match->query = ltrim($req->q, "-");
         $query->query->bool->must[0]->multi_match->fields = $this->fieldmapping['any'];        
         if ($req->type == 'all') $query->query->bool->must[0]->multi_match->operator = "and";
         if ($req->type == 'one') $query->query->bool->must[0]->multi_match->operator = "or";
@@ -575,6 +585,9 @@ class Searcher {
                     $tmpq->query->bool->filter[] = ["bool"=>["must_not"=>["terms"=>["identifier.name.keyword"=>array("retweeted_tweet_id")]]]];
                 }
             } else {
+                if ($v->field == 'originalidentifier') {
+                    $v->condition = 'phrase';
+                }
                 $tmpq->query->query_string = (object)[];
                 $tmpq->query->query_string->fields = $this->fieldmapping[$v->field];
                 switch ($v->condition) {

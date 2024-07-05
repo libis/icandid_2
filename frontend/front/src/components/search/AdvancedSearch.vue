@@ -20,6 +20,7 @@
                   <option value="any">{{ $ml.get('any') }}</option>
                   <option value="title">{{ $ml.get('title') }}</option>
                   <option value="author">{{ $ml.get('author') }}</option>
+                  <option value="originalidentifier">{{ $ml.get('originalidentifier') }}</option>
                   <option value="sender">{{ $ml.get('sender') }}</option>
                   <option value="text">{{ $ml.get('text') }}</option>
                   <option value="publicationdate">{{ $ml.get('publicationdate') }}</option>
@@ -40,7 +41,7 @@
               </div>
             </td>
             <td>
-              <div class="select" v-if="!['period', 'publicationdate','provider','publisher','dataset','edition','language','label','genre','retweet','legislationType'].includes(advancedQ.field) ">
+              <div class="select" v-if="!['period', 'publicationdate','provider','publisher','dataset','edition','language','label','genre','retweet','legislationType','originalidentifier'].includes(advancedQ.field) ">
                 <select v-model="advancedQ.condition">
                   <option value="contains">{{ $ml.get('containsthewords') }}</option>
                   <option value="phrase">{{ $ml.get('containsexactphrase') }}</option>
