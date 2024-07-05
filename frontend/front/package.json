@@ -13,6 +13,7 @@
     "@syncfusion/ej2-vue-treemap": "^19.2.60",
     "@vue/runtime-dom": "^3.2.47",
     "axios": "^0.21.4",
+    "caniuse-lite": "^1.0.30001637",
     "core-js": "^3.6.4",
     "marked": "^4.0.17",
     "sass-loader": "^8.0.2",
