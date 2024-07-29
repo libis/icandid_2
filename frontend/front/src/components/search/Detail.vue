@@ -24,7 +24,7 @@ export default {
         "@id":  this.$ml.get('identifier'),
         identifier: this.$ml.get('originalidentifier'),
         legislationType: this.$ml.get('legislationType'),
-        publisher: this.$ml.get('publication'),
+        publisher: this.$ml.get('publisher'),
         "_aggregator": this.$ml.get('aggregator'),
         printEdition: this.$ml.get('edition'),
         articleSection: this.$ml.get('articlesection'),
@@ -466,7 +466,7 @@ export default {
       this.fields["@type"]= this.$ml.get('type')
       this.fields["@id"]= this.$ml.get('identifier')
       this.fields.identifier = this.$ml.get('originalidentifier')
-      this.fields.publisher= this.$ml.get('publication')
+      this.fields.publisher= this.$ml.get('publisher')
       this.fields["_aggregator"] = this.$ml.get('aggregator')
       this.fields.printEdition= this.$ml.get('edition')
       this.fields.articleSection= this.$ml.get('articlesection')
