@@ -387,7 +387,7 @@ export default new MLCreate({
         saveiteminset:'Bewaar record(s) in \'Opgeslagen records\'',
         filters:"Filters",
         hits:"Aantal",
-        publisher:"Publicatie",
+        publisher:"Uitgever",
         enternameofset:'Voer de naam van de collectie, waaraan je deze records wil toevoegen, in.',
         alternativeclick:'Of dubbelklik hieronder om een lijst van reeds bestaande collecties te krijgen.',
         save:'Opslaan',
