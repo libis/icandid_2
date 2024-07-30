@@ -31,8 +31,8 @@ export default {
     data() {
       return {
         nbspace:"&nbsp;",
-        filterOrder:["provider","author","publisher","aggregator","edition","retweets"],
-        filterMore:[false,false,false,false,false,false],
+        filterOrder:["provider","author","publisher","aggregator","color","edition","retweets"],
+        filterMore:[false,false,false,false,false,false,false],
         filterSize:6
       }
     },
@@ -48,6 +48,8 @@ export default {
       makelabel(v,type) {
           if (type == "retweet") {
             return this.$ml.get(v.key) + '&nbsp;('+ v.doc_count + ')'
+          } else if (type == "color") {
+            return '<div class="color-container"><div title="' + v.key + '" class="colorbox2" style="background-color:' + v.key + '"></div><div>' + this.$func.getColorName(v.key)  + '&nbsp;('+ v.doc_count + ')' + '</div></div>'
           } else {
             return v.key + '&nbsp;('+ v.doc_count + ')'
           }
@@ -73,7 +75,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style>
 .tablerow {
     display:table-row;
 }
@@ -87,5 +89,15 @@ export default {
 }
 .hidden {
   display:none
+}
+.field {
+  display:flex
+}
+.colorbox2 {
+	border:1px solid Black;
+	width:10px;
+	height:10px;
+	margin-right:3px;
+	margin-top:3px;
 }
 </style>

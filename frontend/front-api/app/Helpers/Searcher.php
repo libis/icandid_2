@@ -75,7 +75,8 @@ class Searcher {
         'contributor' => 'contributor.name.keyword',
         'dataset' => 'isBasedOn.isPartOf.name.keyword',
         'locationcreated' => 'locationCreated.name.keyword',
-        'aggregator' => '_aggregator.keyword'
+        'aggregator' => '_aggregator.keyword',
+        'color' => 'color.keyword',
     ];
     private $aggs = [
     	"publisher" => [
@@ -197,6 +198,12 @@ class Searcher {
                     ]
                 ]
             ]
+        ],
+        "color"=>[
+            "terms" => [
+    			"field"=>"color.keyword",
+    			"size"=>3000
+            ]            
         ]
     ];
     private $source = [

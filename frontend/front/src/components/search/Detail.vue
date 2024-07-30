@@ -52,6 +52,7 @@ export default {
         articleBody:  this.$ml.get('text'),
         text:  this.$ml.get('text'),
         keywords: this.$ml.get('keywords'),
+        color: this.$ml.get('color'),
         isPartOf:this.$ml.get('collection'),
         mentions: this.$ml.get('mentions'),
         duration: this.$ml.get('duration'),
@@ -80,7 +81,8 @@ export default {
         html:true,
         trigger:'hover',
         autoHide:false,
-      }
+      },
+      colorNames:[]
     };
   },
   props:['activeResult','currentLang','highlights'],
@@ -124,6 +126,10 @@ export default {
         out = str.replace(URLMatcher, match => `<a href="${match}">${match}</a>`);
       } else {
         out = str.replace(URLMatcher, match => `<a href="${match}" target="_blank">${match}</a>`);
+      }
+
+      if (idx == 'color') {
+        out  = '<div class="color-container"><div title="' + str + '" class="color-box" style="background-color:' + str + '"></div><div>' + this.$func.getColorName(str) + '</div></div>'
       }
       return out;
     },
@@ -492,6 +498,7 @@ export default {
       this.fields.articleBody=  this.$ml.get('text')
       this.fields.text=  this.$ml.get('text')
       this.fields.keywords= this.$ml.get('keywords')
+      this.fields.color= this.$ml.get('color')
       this.fields.isPartOf = this.$ml.get('collection')
       this.fields.mentions= this.$ml.get('mentions')
       this.fields.duration= this.$ml.get('duration')
@@ -514,6 +521,7 @@ export default {
   },
   created() {
     this.setExtraTweets();
+    
   },
   computed: {
     ...mapGetters(["getElasticQuery"]),
@@ -526,6 +534,16 @@ export default {
   background-color: Yellow;
   padding-left:3px;
   padding-right:3px
-}
 
+}
+.color-container {
+	display:flex;
+}
+.color-box {
+	border:1px solid Black;
+	width:10px;
+	height:10px;
+	margin-right:3px;
+	margin-top:6px;
+}
 </style>
