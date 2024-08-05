@@ -79,7 +79,7 @@ class StatisticsController extends Controller
                 "order": {
                   "_count": "desc"
                 },
-                "size": 50
+                "size": 20
               }
             }
           },
