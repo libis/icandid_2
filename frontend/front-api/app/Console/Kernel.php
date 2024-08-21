@@ -36,7 +36,7 @@ class Kernel extends ConsoleKernel
             foreach (glob(storage_path('app/export')."/*") as $file) {
                 if (filemtime($file) < $threshold) {
                     if (is_dir($file)) {
-                        foreach (glob(storage_path('app/export')."/".$file."/*") as $fil) {
+                        foreach (glob($file."/*") as $fil) {
                             unlink($fil);
                         }
                         rmdir($file);
