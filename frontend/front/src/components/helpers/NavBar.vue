@@ -1,6 +1,6 @@
 <template>
-  <nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand is-hidden">
+  <nav class="navbar" role="navigation" aria-label="main navigation"  style="display:flex;justify-content: flex-end;">
+    <div class="navbar-brand">
       <a class="navbar-item" href="/#/">
         
       </a>
