@@ -26,7 +26,7 @@
             <div v-if="language=='nl'">
                 <div v-if="!preview" class="field">
                     <div class="control">
-                        <input  class="input" type="text" v-model="active.title_nl" style="width:1112px" maxlength="128">
+                        <input  class="input" type="text" v-model="active.title_nl" style="width:1092px" maxlength="128">
                     </div>
                 </div>
                 <textarea v-if="!preview" class="markdownedit" id="editor_nl" v-model="active.content_nl" maxlength="65535"></textarea>
@@ -38,7 +38,7 @@
             <div v-if="language=='en'">
                 <div v-if="!preview" class="field">
                     <div class="control">
-                        <input  class="input" type="text" v-model="active.title_en" style="width:1112px" maxlength="128">
+                        <input  class="input" type="text" v-model="active.title_en" style="width:1092px" maxlength="128">
                     </div>
                 </div>
                 <textarea v-if="!preview" class="markdownedit" id="editor_en" v-model="active.content_en" maxlength="65535"></textarea>
