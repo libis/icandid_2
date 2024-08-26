@@ -383,11 +383,17 @@ export default {
 </script>
 <style scoped>
 input[type=text] {
-    width:400px
+    width:400px;
+    border-radius: 4px
 }
 input[type=email] {
-    width:400px
+    width:400px;
+    border-radius: 4px
 }
+input[type=date] {
+    border-radius: 4px
+}
+
 input[type=radio] {
     margin-left:10px
 }
@@ -395,7 +401,8 @@ textarea {
     width:400px;
 }
 .field {
-    margin-bottom:20px
+    margin-bottom:20px;
+    display:block
 }
 .hidden {
     display:none;
@@ -404,4 +411,5 @@ textarea {
     color:Black;
     display:block
 }
+
 </style>

@@ -148,4 +148,7 @@ export default {
     margin-left:4px;
     
 }
+input[type="text"] {
+    border-radius: 4px;
+}
 </style>

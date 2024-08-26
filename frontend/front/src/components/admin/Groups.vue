@@ -144,7 +144,8 @@ export default {
 </script>
 <style scoped>
 input[type=text] {
-    width:400px
+    width:400px;
+    border-radius: 4px;
 }
 input[type=email] {
     width:400px
@@ -153,7 +154,8 @@ input[type=radio] {
     margin-left:10px
 }
 .field {
-    margin-bottom:20px
+    margin-bottom:20px;
+    display:block
 }
 textarea {
     width:540px;

@@ -74,5 +74,7 @@ export default {
 }
 </script>
 <style scoped>
-
+input {
+    border-radius: 4px;
+}
 </style>

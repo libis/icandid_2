@@ -131,11 +131,14 @@ export default {
 </script>
 <style scoped>
 input[type=text] {
-    width:400px
+    width:400px;
+    border-radius: 4px
 }
 input[type=email] {
-    width:400px
+    width:400px;
+    border-radius: 4px
 }
+
 input[type=radio] {
     margin-left:10px
 }

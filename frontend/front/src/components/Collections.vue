@@ -316,4 +316,7 @@ export default {
 .extraspace {
     margin-right:6px
 }
+input {
+    border-radius: 4px;
+}
 </style>
