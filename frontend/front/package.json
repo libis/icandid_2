@@ -8,9 +8,6 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@syncfusion/ej2-treemap": "^19.2.60",
-    "@syncfusion/ej2-vue-heatmap": "^19.2.60",
-    "@syncfusion/ej2-vue-treemap": "^19.2.60",
     "@vue/runtime-dom": "^3.2.47",
     "axios": "^0.21.4",
     "caniuse-lite": "^1.0.30001637",
@@ -19,9 +16,10 @@
     "sass-loader": "^8.0.2",
     "v-tooltip": "^2.0.3",
     "vue": "^2.6.11",
+    "vue-apexcharts": "^1.6.2",
     "vue-chart": "^2.0.0",
     "vue-chartjs": "^3.5.0",
-    "vue-class-component": "^8.0.0-rc.1",
+    "vue-class-component": "^7.2.6",
     "vue-context": "^5.1.0",
     "vue-cookies": "^1.7.4",
     "vue-d3-network": "^0.1.28",
