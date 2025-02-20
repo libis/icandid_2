@@ -100,23 +100,24 @@ export default {
         d = d + duration._data.minutes.toString().padStart(2, "0") + ":" + duration._data.seconds.toString().padStart(2, "0");
         str = d;
       }
+      if (idx != "identifier") {
+        if (this.getElasticQuery.highlight != undefined) {
+          var search1 = this.getElasticQuery.highlight.pre_tags[0]
+          var search2 = this.getElasticQuery.highlight.post_tags[0]
+          var replace1 = search1.replace("<","[").replace(">","]")
+          var replace2 = search2.replace("<","[").replace(">","]")
 
-      if (this.getElasticQuery.highlight != undefined) {
-        var search1 = this.getElasticQuery.highlight.pre_tags[0]
-        var search2 = this.getElasticQuery.highlight.post_tags[0]
-        var replace1 = search1.replace("<","[").replace(">","]")
-        var replace2 = search2.replace("<","[").replace(">","]")
+          str = str.replaceAll(search1,replace1)
+          str = str.replaceAll(search2,replace2)
+        }
 
-        str = str.replaceAll(search1,replace1)
-        str = str.replaceAll(search2,replace2)
-      }
+        str = str.replaceAll("<","&lt;")
+        str = str.replaceAll(">","&gt;")
 
-      str = str.replaceAll("<","&lt;")
-      str = str.replaceAll(">","&gt;")
-
-      if (this.getElasticQuery.highlight != undefined) {
-        str = str.replaceAll(replace1,search1)
-        str = str.replaceAll(replace2,search2)
+        if (this.getElasticQuery.highlight != undefined) {
+          str = str.replaceAll(replace1,search1)
+          str = str.replaceAll(replace2,search2)
+        }
       }
 
       let out = "";
@@ -154,7 +155,8 @@ export default {
           return out
         }
         if (typeof dat == 'object') {
-          if (Array.isArray(dat)) {
+            if (Array.isArray(dat)) {
+
             for (var i in dat) {
               if (typeof dat[i] == 'string') {
                 out += "<div>" + this.format(dat[i],idx) + "</div>"
@@ -175,9 +177,14 @@ export default {
                         }
                       }
                     } else if(idx == "identifier")  {
-                      if (dat[i]['@id'] == "original_provider_id") {
+                      /*if (dat[i]['@id'] == "original_provider_id") {
                         out += "<div>" + this.format(dat[i].value,idx) + "</div>"
-                      } 
+                      }*/
+                      if (dat[i].name != undefined) {
+                        out += "<div>" + this.format(dat[i].name,idx) + "&nbsp:&nbsp;" + this.format(dat[i].value,idx) + "</div>"
+                      } else {
+                        out += "<div>" + this.format(dat[i].value,idx) + "</div>"
+                      }
                     } else {
                         if (dat[i].contentUrl == undefined || dat[i].contentUrl.substring(0,downloadFormat.length) != downloadFormat) {
                           if (dat[i]["url"] == undefined || dat[i]["url"] == null || dat[i]["url"] == "") {
@@ -265,7 +272,12 @@ export default {
                   }
                 }
               } else if(idx == "identifier")  {
-                if (dat['@id'] == "original_provider_id") {
+                /*if (dat['@id'] == "original_provider_id") {
+                  out += "<div>" + this.format(dat.value,idx) + "</div>"
+                }*/
+                if (dat.name != undefined) {
+                  out += "<div>" + this.format(dat.name,idx) + "&nbsp:&nbsp;" + this.format(dat.value,idx) + "</div>"
+                } else {
                   out += "<div>" + this.format(dat.value,idx) + "</div>"
                 }
               } else {
@@ -390,11 +402,11 @@ export default {
     },
     showfield(idx) {
       if (this.activeResult._source[idx] != undefined) {
-        if(idx == 'identifier') {
+/*        if(idx == 'identifier') {
           if (this.activeResult._source[idx]['@id'] != 'original_provider_id') {
             return false
           }
-        }
+        }*/
         return true
       }
       return false

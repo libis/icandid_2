@@ -253,6 +253,9 @@ class Flattener {
                             if (isset($data["reviewBody"]) && isset(((array)$data["reviewBody"])["@value"])) $body = ((array)$data["reviewBody"])["@value"];
                             return array($name . " - " . $author . " - " . $date . " - " . $body);
                             break;
+                        case "PropertyValue":
+                            return array($data["value"]);
+                            break;
                         default:
                             $name = $url = $thumbnailurl = "";
                             if (isset($data["name"]) && isset(((array)$data["name"])["@value"])) {

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Log;
     
 class CSV_Output {
 
-    public static $header = array("id","type","legislationType","author","author_alternateName","creator","creator_alternateName","name","genre","description","articleBody","text","director","editor","producer","productionCompany","actor","contributor","musicBy","trailerName","trailerDescription","printEdition","articleSection","sender","sender_alternateName","recipient","recipient_alternateName","legislationPassedBy","legislationResponsible","retweet","datePublished","url","provider","publisher","link","pagination","review","keywords","mentions","duration","contentUrl","about","inLanguage","contentLocation","associatedMedia","sdDatePublished","updatetime");
+    public static $header = array("id","type","identifier","legislationType","author","author_alternateName","creator","creator_alternateName","name","genre","description","articleBody","text","director","editor","producer","productionCompany","actor","contributor","musicBy","trailerName","trailerDescription","printEdition","articleSection","sender","sender_alternateName","recipient","recipient_alternateName","legislationPassedBy","legislationResponsible","retweet","datePublished","url","provider","publisher","link","pagination","review","keywords","mentions","duration","contentUrl","about","inLanguage","contentLocation","associatedMedia","sdDatePublished","updatetime");
 
     public function __construct() {
         $this->tmpname = tempnam(storage_path('app/export'),'');
@@ -79,6 +79,7 @@ class CSV_Output {
         $disp = [];
         $disp["id"] = ((array)$d->_source)["@id"];
         $disp["type"] = ((array)$d->_source)["@type"];
+        if (isset($d->_source->identifier)) $disp["identifier"] = Flattener::process($d->_source->identifier);
         if (isset($d->_source->legislationType)) $disp["legislationType"] = Flattener::process($d->_source->legislationType);
         if (isset($d->_source->creator)) $disp["creator"] = Flattener::process($d->_source->creator);
         if (isset($d->_source->author)) $disp["author"] = Flattener::process($d->_source->author);
@@ -180,6 +181,7 @@ class CSV_Output {
         return array(
             $disp["id"],
             $disp["type"],
+            join(", ", (isset($disp["identifier"])?self::nonl($disp["identifier"]):[])),
             join(", ", (isset($disp["legislationType"])?self::nonl($disp["legislationType"]):[])),
             join(", ", (isset($disp["author"])?self::nonl($disp["author"]):[])),
             join(", ", (isset($disp["author_alternateName"])?self::nonl($disp["author_alternateName"]):[])),
