@@ -8,8 +8,8 @@
 <script>
 import Loader from '../../helpers/Loader.vue'
 import PackedCircle from "../../helpers/PackedCircle.vue";
-import axios from "axios";
-import { mapGetters } from "vuex";
+import axios from "../../../../node_modules/axios";
+import { mapGetters } from "../../../../node_modules/vuex/dist/vuex.mjs";
 axios.defaults.withCredentials = true;
 export default {
     data() {

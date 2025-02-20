@@ -26,8 +26,8 @@
 </template>
 <script>
 import Loader from '../../helpers/Loader.vue'
-import { mapGetters } from "vuex";
-import axios from "axios";
+import { mapGetters } from "../../../../node_modules/vuex/dist/vuex.mjs";
+import axios from "../../../../node_modules/axios";
 axios.defaults.withCredentials = true;
 
 export default {
@@ -47,11 +47,9 @@ export default {
       es_query.size = 0;
       es_query.from = 0;
       es_query.aggs = this.aggs;    
-      
       axios
         .post(this.getApiQueryUrl, es_query)
         .then(res => {
-            
             this.data["newssources"] = res.data["aggregations"]["newssources"]
             this.data["named_entities"] = res.data["aggregations"]["filtered"]["buckets"]["entities"]["ENRICHMENTS"]["ALL"]
             this.loading = false

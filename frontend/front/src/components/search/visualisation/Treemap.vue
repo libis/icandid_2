@@ -7,9 +7,9 @@
 </template>
 <script>
 import Loader from '../../helpers/Loader.vue'
-import { TreeMapComponent, TreeMapTooltip } from "@syncfusion/ej2-vue-treemap";
-import axios from "axios";
-import { mapGetters } from "vuex";
+import { TreeMapComponent, TreeMapTooltip } from "../../../../node_modules/@syncfusion/ej2-vue-treemap";
+import axios from "../../../../node_modules/axios";
+import { mapGetters } from "../../../../node_modules/vuex/dist/vuex.mjs";
 axios.defaults.withCredentials = true;
 
 export default {
@@ -111,6 +111,7 @@ export default {
           .post(this.getApiQueryUrl, es_query)
           .then(res => {
             this.data = res.data.aggregations;
+            console.log(this.data)
             this.calculateChartData();
             this.loading = false
           })

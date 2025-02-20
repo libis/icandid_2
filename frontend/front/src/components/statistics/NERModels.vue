@@ -1,6 +1,6 @@
 <template>
   <div class="group" >
-    <Bar :chart-data="chartData" :options="options" :height="120" v-if="!loading"></Bar>
+    <Bar :chartdata="chartData" :options="options" :height="120" v-if="!loading"></Bar>
     <input type="Button" :value="$ml.get('refresh')" @click="update()" v-if="!loading">
     <br/><br/>
     <Loader v-if="loading" style="margin:100px"></Loader>

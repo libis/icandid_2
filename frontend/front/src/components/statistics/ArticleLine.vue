@@ -1,6 +1,6 @@
 <template>
   <div class="group">
-    <LineGraph :chart-data="chartData" :options="options" v-if="!loading"></LineGraph>
+    <LineGraph :chartdata="chartData" :options="options" v-if="!loading"></LineGraph>
     <Loader v-if="loading" style="margin:100px"></Loader>
   </div>
 </template>

@@ -14,10 +14,10 @@
   </div>
 </template>
 <script>
-import wordcloud from 'vue-wordcloud'
+import wordcloud from '../../../../node_modules/vue-wordcloud/dist/word-cloud'
 import Loader from '../../helpers/Loader.vue'
-import { mapGetters } from "vuex";
-import axios from "axios";
+import { mapGetters } from "../../../../node_modules/vuex/dist/vuex.mjs";
+import axios from "../../../../node_modules/axios";
 axios.defaults.withCredentials = true;
 
 export default {

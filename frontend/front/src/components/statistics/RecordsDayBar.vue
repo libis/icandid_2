@@ -1,6 +1,6 @@
 <template>
   <div class="group">
-    <Bar :chart-data="chartData" :options="options" :height="600" v-if="!loading"></Bar>
+    <Bar :chartdata="chartData" :options="options" :height="600" v-if="!loading"></Bar>
     <div class="level" v-if="!loading">
       <div class="level-left"></div>
       <div class="level-right">

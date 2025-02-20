@@ -2,7 +2,7 @@
   <div class="group">
     <div class="columns">
       <div class="column is-9">
-        <Bar :chart-data="chartData" :options="options" v-if="!loading"></Bar>
+        <Bar :chartdata="chartData" :options="options" v-if="!loading"></Bar>
         <Loader v-if="loading" style="margin:100px"></Loader>
       </div>
       <div class="column is-3">
@@ -21,8 +21,8 @@
 <script>
 import Bar from "../../statistics/BarChart.js";
 import Loader from '../../helpers/Loader.vue'
-import axios from "axios";
-import { mapGetters } from "vuex";
+import axios from "../../../../node_modules/axios/index.js";
+import { mapGetters } from "../../../../node_modules/vuex/dist/vuex.mjs";
 axios.defaults.withCredentials = true;
 
 export default {

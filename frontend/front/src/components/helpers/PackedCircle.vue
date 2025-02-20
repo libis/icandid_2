@@ -20,7 +20,7 @@ transform: `translate(${datum.x}px, ${datum.y}px)`
 </template>
 
 <script>
-import { hierarchy, pack } from 'd3-hierarchy'
+import { hierarchy, pack } from '../../../node_modules/d3-hierarchy/build/d3-hierarchy'
 export default {
     name: "PackedCircle",
     props: ["data"],    

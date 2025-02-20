@@ -6,10 +6,10 @@
     </div>
 </template>
 <script>
-import D3Network from 'vue-d3-network'
+import D3Network from '../../../../node_modules/vue-d3-network/dist/vue-d3-network.umd'
 import Loader from '../../helpers/Loader.vue'
-import axios from "axios";
-import { mapGetters } from "vuex";
+import axios from "../../../../node_modules/axios";
+import { mapGetters } from "../../../../node_modules/vuex/dist/vuex.mjs";
 
   
 export default {
