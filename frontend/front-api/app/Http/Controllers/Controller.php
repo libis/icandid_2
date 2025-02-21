@@ -92,6 +92,8 @@ class Controller extends BaseController
                     abort(403);
                 }
             }
+        } else {
+            Log::info($this->user_eppn . " not authorized");
         }
     }
 
