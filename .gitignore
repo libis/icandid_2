@@ -2,3 +2,4 @@
 .env2.json
 volumes/*
 notes.txt
+frontend/front/public/sitemap/*
