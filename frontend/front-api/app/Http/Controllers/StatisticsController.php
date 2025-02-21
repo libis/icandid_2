@@ -104,7 +104,7 @@ class StatisticsController extends Controller
                 "aggs": {
                   "date": {
                     "date_histogram": {
-                      "field": "datePublished",
+                      "field": "_datePublished",
                       "calendar_interval": "1d",
                       "time_zone": "Europe/Brussels",
                       "min_doc_count": 1
@@ -119,7 +119,7 @@ class StatisticsController extends Controller
                 "filter": [
                   {
                     "range": {
-                      "datePublished": {
+                      "_datePublished": {
                         "gte": "2020-01-01",
                         "lt": "2020-01-01"
                       }
@@ -135,8 +135,8 @@ class StatisticsController extends Controller
         
         $date = now();
         $date->modify('-' . $querybody->period . ' day');
-        $q->query->bool->filter[0]->range->datePublished->gte = date_format($date,"Y-m-d");
-        $q->query->bool->filter[0]->range->datePublished->lt = date_format(now(),"Y-m-d");  
+        $q->query->bool->filter[0]->range->_datePublished->gte = date_format($date,"Y-m-d");
+        $q->query->bool->filter[0]->range->_datePublished->lt = date_format(now(),"Y-m-d");  
 
         if (isset($querybody->paper)) {
           $q->query->bool->must = (object)[];
@@ -172,7 +172,7 @@ class StatisticsController extends Controller
             "aggs": {
               "date": {
                 "date_histogram": {
-                  "field": "datePublished",
+                  "field": "_datePublished",
                   "calendar_interval": "1w",
                   "time_zone": "Europe/Brussels",
                   "min_doc_count": 1
@@ -185,7 +185,7 @@ class StatisticsController extends Controller
                     "filter":[
                         {
                             "range": {
-                                "datePublished": {
+                                "_datePublished": {
                                     "gte":"2019-01-01",
                                     "lt":"2020-12-31"
                                 }
@@ -196,8 +196,8 @@ class StatisticsController extends Controller
             }}');
             $date = now();
             $date->modify('-364 day');
-            $q->query->bool->filter[0]->range->datePublished->gte = date_format($date,"Y-m-d");
-            $q->query->bool->filter[0]->range->datePublished->lt = date_format(now(),"Y-m-d");
+            $q->query->bool->filter[0]->range->_datePublished->gte = date_format($date,"Y-m-d");
+            $q->query->bool->filter[0]->range->_datePublished->lt = date_format(now(),"Y-m-d");
 
         return $this->query($q);
     }
