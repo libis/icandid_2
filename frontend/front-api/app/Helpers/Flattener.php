@@ -254,7 +254,9 @@ class Flattener {
                             return array($name . " - " . $author . " - " . $date . " - " . $body);
                             break;
                         case "PropertyValue":
-                            return array($data["value"]);
+                            $value = "";
+                            if (isset($data["value"])) $value = $data["value"];
+                            return array($value);
                             break;
                         default:
                             $name = $url = $thumbnailurl = "";
