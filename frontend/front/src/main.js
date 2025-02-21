@@ -16,6 +16,8 @@ import Searches from './components/Searches.vue'
 import SearchHistory from './components/SearchHistory.vue'
 import Collections from './components/Collections.vue'
 import Page from './components/about/Page.vue'
+import Collection from './components/Collection.vue'
+
 
 import AccessRequest from './components/requests/Access.vue'
 import NewDatasetRequest from './components/requests/Newdataset.vue'
@@ -141,7 +143,7 @@ const store = new Vuex.Store(
       getApiQueryUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.query,
       getApiSearchUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.search,
       getApiFormUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.form,
-      getApiUserUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.user,
+      getApiUserUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.user + "?r=" + Date.now(),
       getApiShelfUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.shelf,
       getApiShelvesUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.shelves,
       getApiProfileUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.profile,
@@ -482,16 +484,28 @@ const router = new VueRouter(
         name: 'Collections',
         component: Collections
       },
-
+      {
+        path: '/collection/:id',
+        name: 'Collection',
+        component: Collection
+      },
     ]
   }
 );
+
+
 Vue.use(VueGtag, {
   config: { id: "UA-203016416-1" }
 }, router);
+
+
+import {func} from './func.js'
+
+Vue.prototype.$func = func
 
 new Vue({
   store,
   router,
   render: h => h(App),
 }).$mount('#app')
+
