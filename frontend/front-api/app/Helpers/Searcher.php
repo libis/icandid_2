@@ -36,7 +36,7 @@ class Searcher {
         'author' => ['creator.name','author.name','creator.alternateName','author.alternateName','creator.name.@value','author.name.@value','creator.alternateName.@value','author.alternateName.@value'],
         'sender' => ['sender.name','sender.alternateName'],
         'text' => ["*_articleBody", "*_description", "*_text"],
-        'publicationdate' => ['datePublished'],
+        'publicationdate' => ['_datePublished'],
         'period' => ['period'],
         'publisher' => ['publisher.name.keyword'],
         'publisher_ft' => ['publisher.name'],
@@ -59,11 +59,11 @@ class Searcher {
     ];
     private $sortmapping = [
         'relevance' => ["_score"=>"desc"],
-        'datePublished' => ["datePublished"=>"desc"] ,
+        'datePublished' => ["_datePublished"=>"desc"] ,
         'author' => ["creator.name.keyword"=>"asc"],
         'title' => ["name.@value.keyword"=>"asc"],
-        'datePublishedAsc' => ["datePublished"=>"asc"],
-        'datePublishedDesc' => ["datePublished"=>"desc"]
+        'datePublishedAsc' => ["_datePublished"=>"asc"],
+        'datePublishedDesc' => ["_datePublished"=>"desc"]
     ];
     private $filtermapping = [
         'author' => 'creator.name.keyword',
@@ -105,7 +105,7 @@ class Searcher {
         ],
     	"datePublished" => [
     		"terms" => [ 
-    			"field"=>"datePublished",
+    			"field"=>"_datePublished",
     			"size"=>3000
             ]
         ],
@@ -178,12 +178,14 @@ class Searcher {
         ],
         "min_datePublished" => [
             "min" => [
-                "field"=>"datePublished_time_frame_from"
+                //"field"=>"datePublished_time_frame_from"
+                "field"=>"_datePublished"
             ]
         ],
         "max_datePublished" => [
             "max" => [
-                "field"=>"datePublished_time_frame_till"
+                //"field"=>"datePublished_time_frame_till"
+                "field"=>"_datePublished"
             ]
         ],
         "ENRICHMENTS_PER_TYPE"=> [
@@ -541,11 +543,70 @@ class Searcher {
             }
         
             if ($date != "") {
-                $query->query->bool->filter[] = ["range" => ["datePublished" => ["gte" => $date]]];
+                $query->query->bool->filter[] = ["range" => ["_datePublished" => ["gte" => $date]]];
             }
         }
         return $query;
     }
+
+    private function parseExtendedRequest($req) {
+        $query = json_decode('{
+            "query": {
+                "bool": {
+                    "must": [ 
+                        {
+                            "query_string": {
+                                "query": "",
+                                "default_operator": "AND"
+                            }
+                        }
+                    ],
+                    "should": [],
+                    "filter": []
+                }
+            }
+        }');
+
+
+        if (count($req->datasets) == 0) {   // if no datasets are selected 
+            $req->q = "";                   // make it so no results are returned
+        }
+        $query->query->bool->must[0]->query_string->query = str_replace(array("\n", "\r"), ' ', $req->q);
+
+        if (isset($req->types) && count($req->types) > 0) {
+            $query->query->bool->filter[] = ["terms"=>["@type"=>$req->types]];
+        }
+
+        if (isset($req->onlineonly) && $req->onlineonly) {
+            $query->query->bool->must[] = ["exists"=>["field"=>"associatedMedia.contentUrl"]];
+        }
+
+        if (isset($req->publications) && count($req->publications) > 0) {
+            $query->query->bool->filter[] = ["terms"=>["publisher.name.keyword"=>$req->publications]];
+        }
+        if (isset($req->datasets) && count($req->datasets) > 0) {
+            $query->query->bool->filter[] = ["terms"=>["isBasedOn.isPartOf.@id"=>$req->datasets]];
+        }
+
+        if (isset($req->period) && trim($req->period) != "") {
+            $filt = json_decode('{
+                "range": {
+                    "_datePublished" : {
+                        "gte" : "1970-01-01",
+                        "lte": "2100-12-31"
+                    }
+                }
+            }');
+            list($from,$to) = explode(" ",$req->period);
+            if (isset($from) && $from != "") $filt->range->_datePublished->gte = date("Y-m-d", strtotime($from));
+            if (isset($to) && $to != "")  $filt->range->_datePublished->lte = date("Y-m-d", strtotime($to));
+            $query->query->bool->filter[] = $filt;
+        }
+        
+        return $query;
+
+    }
+
 
     private function parseAdvancedRequest($req) {
         $q = $req->q;
@@ -564,14 +625,14 @@ class Searcher {
             } else if ($v->field == 'period') {
                 $tmpq->query = json_decode('{
                     "range": {
-                        "datePublished" : {
+                        "_datePublished" : {
                             "gte" : "1970-01-01",
                             "lte": "2100-12-31"
                         }
                     }
                 }');
-                if (isset($v->queryfrom) && $v->queryfrom != "") $tmpq->query->range->datePublished->gte = date("Y-m-d", strtotime($v->queryfrom));
-                if (isset($v->queryto) && $v->queryto != "")  $tmpq->query->range->datePublished->lte = date("Y-m-d", strtotime($v->queryto));
+                if (isset($v->queryfrom) && $v->queryfrom != "") $tmpq->query->range->_datePublished->gte = date("Y-m-d", strtotime($v->queryfrom));
+                if (isset($v->queryto) && $v->queryto != "")  $tmpq->query->range->_datePublished->lte = date("Y-m-d", strtotime($v->queryto));
 /*            } else if ($v->field == 'language') {
                 $tmpq->query->bool = (object)[];
                 $tmpq->query->bool->filter = [];
@@ -738,6 +799,9 @@ class Searcher {
             break;
             case "normal":
                 $query = $this->parseNormalRequest($req);
+            break;
+            case "extended":
+                $query = $this->parseExtendedRequest($req);
             break;
             case "advanced":
                 $query = $this->parseAdvancedRequest($req);
