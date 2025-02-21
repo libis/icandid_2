@@ -2,114 +2,16 @@
   <div>
     <textarea v-model="searchterm" class="textarea" rows="1" :placeholder="$ml.get('search')+'...'"></textarea>
     <button class="button is-rounded is-pulled-right" style="margin-top:10px" :title="$ml.get('savequery')"  @click="$parent.saveQuery()" v-if="getHits>0"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
-    <div class="tabs is-toggle is-small" style="margin:0px">
-      <ul>
-        <li v-bind:class="{'is-active': (selectedType=='all')}">
-          <a @click.prevent.stop="selectedType='all'">{{ $ml.get('allthewords') }}</a>
-        </li>
-        <li v-bind:class="{'is-active': (selectedType=='one')}">
-          <a @click.prevent.stop="selectedType='one'">{{ $ml.get('oneofwords') }}</a>
-        </li>
-        <li v-bind:class="{'is-active': (selectedType=='phrase')}">
-          <a @click.prevent.stop="selectedType='phrase'">{{ $ml.get('exactsentence') }}</a>
-        </li>
-      </ul>
-    </div>
-    <div class="tabs is-toggle is-small">
-      <ul>
-        <!--
-        <li v-bind:class="{'is-active': (selectedPeriod=='today')}">
-          <a @click.prevent.stop="selectedPeriod='today'">Today</a>
-        </li>
-        -->
-        <li v-bind:class="{'is-active': (selectedPeriod=='yesterday')}">
-          <a @click.prevent.stop="selectedPeriod='yesterday'">{{ $ml.get('yesterday') }}</a>
-        </li>
-        <li v-bind:class="{'is-active': (selectedPeriod=='week')}">
-          <a @click.prevent.stop="selectedPeriod='week'">{{ $ml.get('lastweek') }}</a>
-        </li>
-        <li v-bind:class="{'is-active': (selectedPeriod=='month')}">
-          <a @click.prevent.stop="selectedPeriod='month'">{{ $ml.get('lastmonth') }}</a>
-        </li>
-        <li v-bind:class="{'is-active': (selectedPeriod=='year')}">
-          <a @click.prevent.stop="selectedPeriod='year'">{{ $ml.get('oneyear') }}</a>
-        </li>
-        <li v-bind:class="{'is-active': (selectedPeriod=='entire')}">
-          <a @click.prevent.stop="selectedPeriod='entire'">{{ $ml.get('entirearchive') }}</a>
-        </li>
-        <li>
-          <button style="margin-bottom:20px;margin-left:5px;border:0px;background-color:transparent;font-size:16px" v-tooltip="info"><i class="fa fa-info"></i></button>
-        </li>
-      </ul>
-      
-    </div>
-    <div class="columns" style="padding-left:2em" v-if="$parent.languages.length > 1">
-      <div class="column">
-        <p class="control" v-for="language in $parent.languages" :key="'lang_'+language.id" style="margin:0px">
-            <input
-              class="is-checkradio is-small"
-              :id="'lang_'+language.id"
-              type="checkbox"
-              :name="'lang_'+language.id"
-              :value="language.id"
-              v-model="selectedLanguages"
-            />
-            <label :for="'lang_'+language.id" style="white-space: nowrap">{{ language['name_'+$ml.current]}}</label>
-          </p>
-      </div>
-    </div>
+    <TypeSelector :selectedType="selectedType" :lang="lang" @change="(v) => this.selectedType = v"></TypeSelector>
+    <PeriodSelector :selectedPeriod="selectedPeriod" :lang="lang" @change="(v) => this.selectedPeriod = v"></PeriodSelector>
+    <LanguageSelector :selectedLanguages="selectedLanguages" :lang="lang" @change="(v) => this.selectedLanguages = v"></LanguageSelector>
     <div class="columns" style="padding-left:2em">
       <div class="column is-2 with-scrollbar" >
-        <!-- <div class="field" v-if="$parent.datasets.length>0" style="padding-top:4px">
-          <input
-            class="is-checkradio is-small"
-            id="cbPublAll"
-            type="checkbox"
-            name="cbPublAll"
-            v-model="allSelectedCb"
-          />
-          <label for="cbPublAll">{{ $ml.get('all') }}</label>
-        </div> -->
-
-        <p class="control" v-for="label in $parent.labels" :key="'lbl_'+label.id" style="margin:0px">
-          <input
-            class="is-checkradio is-small"
-            :id="'lbl'+label.id"
-            type="checkbox"
-            :name="'lbl_'+label.id"
-            :value="label.id"
-            v-model="selectedLabels"
-          />
-          <label :for="'lbl'+label.id" style="white-space: nowrap">{{ label['name_'+$ml.current]}}</label>
-        </p>  
-
+        <LabelSelector :selectedLabels="selectedLabels" :lang="lang" @change="(v) => this.selectedLabels = v"></LabelSelector>
       </div>
       <div class="column is-9 with-scrollbar" style="border-left:1px solid Lightgrey;margin-right:20px">
         <div class="field is-grouped is-grouped-multiline">
-          <!--
-          <p class="control" v-for="pub in publications" :key="pub" style="width:160px;margin:0px">
-            <input
-              class="is-checkradio is-small"
-              :id="pub"
-              type="checkbox"
-              :name="pub"
-              :value="pub"
-              v-model="selectedPublications"
-            />
-            <label :for="pub" style="white-space: nowrap">{{pub}}</label>
-          </p> -->
-          <p class="control" v-for="dataset in $parent.datasets" :key="'ds_'+dataset.id" style="margin:0px">
-            <input
-              class="is-checkradio is-small"
-              :id="'ds_'+dataset.id"
-              type="checkbox"
-              :name="'ds_'+dataset.id"
-              :value="dataset.internalident"
-              v-model="selectedDatasets"
-              :alt="dataset.description"
-            />
-            <label :for="'ds_'+dataset.id" style="white-space: nowrap">{{ dataset.name }}</label>
-          </p>          
+          <DatasetSelector :selectedDatasets="selectedDatasets" :lang="lang" @change="(v) => this.selectedDatasets = v"></DatasetSelector>          
         </div>
       </div>
       <div class="column is-1"></div>
@@ -118,15 +20,22 @@
 </template>
 <script>
 import axios from "axios";
+import PeriodSelector from './PeriodSelector.vue';
+import LanguageSelector from "./LanguageSelector.vue";
+import LabelSelector from "./LabelSelector.vue";
+import DatasetSelector from "./DatasetSelector.vue";
+import TypeSelector from "./TypeSelector.vue";
 axios.defaults.withCredentials = true;
 import { mapGetters, mapActions } from 'vuex';
+
+
 export default {
   props:['lang'],
   data() {
     return {
       searchterm: "",
       selectedType: "all",
-      selectedPeriod: "year",
+      selectedPeriod: "entire",
 //      selectedPublications: [],
       selectedLabels:[],
       selectedLanguages:[],
@@ -158,6 +67,13 @@ export default {
       }
     };
   },
+  components: {
+    TypeSelector,
+    PeriodSelector,
+    LanguageSelector,
+    LabelSelector,
+    DatasetSelector
+  },
   methods: {
     ...mapActions(["clearResultset","clearAggregations","saveQuery","exportResultCsv","exportResultJsonLd"]),
     queryObj() {
@@ -185,7 +101,7 @@ export default {
     clear() {
       this.searchterm = "";
       this.selectedType = "all";
-      this.selectedPeriod = "year";
+      this.selectedPeriod = "entire";
 //      this.selectedPublications = [];
       this.selectedDatasets = this.$parent.datasets.map (x => x.internalident);
       this.selectedLanguages = this.$parent.languages.map(x => x.id);
@@ -281,11 +197,8 @@ export default {
     },
     allSelectedCb: {
             handler: 'selectDatasets'  
-    },
-    lang: function() {
-        this.info.content = this.$ml.get('periodinfotooltip');
-      }
     }
+  }
 }
 </script>
 <style>
@@ -294,115 +207,5 @@ export default {
   overflow-x:hidden;
   overflow-y:auto;
   padding-top:0px
-}
-
-.tooltip {
-  display: block !important;
-  z-index: 10000;
-}
-
-.tooltip .tooltip-inner {
-  background: black;
-  color: white;
-  border-radius: 8px;
-  padding: 5px 10px 4px;
-  font-size:12px;
-  line-height: 120%;
-  width:200px
-
-}
-
-.tooltip .tooltip-arrow {
-  width: 0;
-  height: 0;
-  border-style: solid;
-  position: absolute;
-  margin: 5px;
-  border-color: black;
-  z-index: 1;
-}
-
-.tooltip[x-placement^="top"] {
-  margin-bottom: 5px;
-}
-
-.tooltip[x-placement^="top"] .tooltip-arrow {
-  border-width: 5px 5px 0 5px;
-  border-left-color: transparent !important;
-  border-right-color: transparent !important;
-  border-bottom-color: transparent !important;
-  bottom: -5px;
-  left: calc(50% - 5px);
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.tooltip[x-placement^="bottom"] {
-  margin-top: 5px;
-}
-
-.tooltip[x-placement^="bottom"] .tooltip-arrow {
-  border-width: 0 5px 5px 5px;
-  border-left-color: transparent !important;
-  border-right-color: transparent !important;
-  border-top-color: transparent !important;
-  top: -5px;
-  left: calc(50% - 5px);
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.tooltip[x-placement^="right"] {
-  margin-left: 5px;
-}
-
-.tooltip[x-placement^="right"] .tooltip-arrow {
-  border-width: 5px 5px 5px 0;
-  border-left-color: transparent !important;
-  border-top-color: transparent !important;
-  border-bottom-color: transparent !important;
-  left: -5px;
-  top: calc(50% - 5px);
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.tooltip[x-placement^="left"] {
-  margin-right: 5px;
-}
-
-.tooltip[x-placement^="left"] .tooltip-arrow {
-  border-width: 5px 0 5px 5px;
-  border-top-color: transparent !important;
-  border-right-color: transparent !important;
-  border-bottom-color: transparent !important;
-  right: -5px;
-  top: calc(50% - 5px);
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.tooltip.popover .popover-inner {
-  background: #f9f9f9;
-  color: black;
-  padding: 24px;
-  border-radius: 5px;
-  box-shadow: 0 5px 30px rgba(black, .1);
-}
-
-.tooltip.popover .popover-arrow {
-  border-color: #f9f9f9;
-}
-
-.tooltip[aria-hidden='true'] {
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity .15s, visibility .15s;
-}
-
-.tooltip[aria-hidden='false'] {
-  visibility: visible;
-  opacity: 1;
-  transition: opacity .15s;
 }
 </style>
