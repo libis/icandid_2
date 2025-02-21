@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use DateTime;
@@ -232,6 +233,17 @@ class AdminController extends Controller
         if (isset($rc->hidden)) $dataset->hidden = $rc->hidden;
         // if (isset($rc->ismedia))$dataset->ismedia = $rc->ismedia;
 
+
+        // get dataset uuid from resolvr
+
+        /*
+        if (config('app.resolvr_url') != "") {
+            $url = config('app.resolvr_url') + 
+            $response = Http::get($url);
+            $reply = $response->json();
+            $data->uuid = 
+        }
+*/
         $dataset->save();
 
         $dataset->languages()->detach();
