@@ -91,6 +91,22 @@ class CollectionController extends Controller
 
     }
 
+
+    public function getbyid($id) {
+        $query = \App\Dataset::with('languages')->with('labels');
+        $query->where('available',1)->where('hidden',0);
+        $query->where(function($q) use($id) {$q->where("internalident",$id)->orWhere("uuid",$id); });
+        $result = $query->get()->first();
+        return $result;
+    }
+
+    public function all(Request $request) {
+        $this->authorize('search');
+        $query = \App\Dataset::with('languages')->with('labels')->where('hidden',0);
+        $result = $query->get()->all();
+        return $result;
+    }
+
     public function options(Request $request) {
         $this->authorize('search');
         $options = [];
