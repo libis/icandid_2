@@ -40,6 +40,18 @@
       </div>
 
 
+      <div class="column is-8" v-bind:class="{'is-hidden': (!(getHits<0 && mode=='error'))}">
+        <article class="message is-danger" style="margin-left:150px">
+          <div class="message-header">
+            <p>{{ $ml.get('notice') }}</p>
+          </div>
+          <div class="message-body">
+            {{ $ml.get('error') }}
+          </div>
+        </article>
+      </div>
+
+
 
     </div>
 </div>
@@ -140,10 +152,11 @@ export default {
               this.setSearchStatus(false);
               this.setHits(res.data.hits.total.value)
               this.setElasticQuery(res.data.elastic_query)
-
+              this.mode = 'result'
             })
             .catch(error => {
               this.setSearchStatus(false);
+              this.mode = 'error'
               console.log(error);
             });      
         }
