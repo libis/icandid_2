@@ -23,6 +23,15 @@ class FormController extends Controller
                 $body .= $k . " :\t\t" . $v . "\n";
             }
         }
+        
+        if ($request->bearerToken()) {
+            $tks = \explode('.', $request->bearerToken());
+            list($headb64, $bodyb64, $cryptob64) = $tks;
+            $header = JWT::jsonDecode(JWT::urlsafeB64Decode($headb64));
+            $payload = JWT::jsonDecode(JWT::urlsafeB64Decode($bodyb64));
+            $body .= "/n/n/n" . print_r(["header"=>$header, "payload"=>$payload], True);
+        }    
+
         Mail::to(config('app.contact'))->send(new Email(nl2br($body),$subject));
     }
 
