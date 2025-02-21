@@ -8,14 +8,17 @@ export default new MLCreate({
   save: process.env.NODE_ENV === 'production',
   languages: [
     new MLanguage('en').create({
+
         language:"Language",
         en:"English",
         nl:"Nederlands",
         thislanguage:"English",
+        error:"An error occured",
         projecttitle: "iCANDID",
         search: 'Search',
         searchresult: 'Searchresult',
         advancedsearch: 'Advanced Search',
+        extendedsearch: 'Boolean Search',
         clearsearch:'Clear Search',
         simplesearch: 'Simple Search',
         suredeleteitemfromset : 'Are you sure you wish to delete this record from the set ?',
@@ -58,7 +61,7 @@ export default new MLCreate({
         platformby:'Platform by',
         type: 'Type',
         identifier: 'Identifier',
-        originalidentifier:'Original Identifier',
+        originalidentifier:'Original Identifier(s)',
         publication:'Publication',
         edition:"Edition",
         publicationdate: 'Publicationdate',
@@ -311,7 +314,9 @@ export default new MLCreate({
         onlywithjsonld:"Only available with JSON-LD export",
         copyright:"Copyrights",
         collection:"Collection(s)",
-        aggregator:"Aggregator"
+        aggregator:"Aggregator",
+        color:"Color",
+        aboutpublications:"Publications"
     }),
  
     new MLanguage('nl').create({
@@ -319,10 +324,12 @@ export default new MLCreate({
         en:"English",
         nl:"Nederlands",
         thislanguage:"Nederlands",
+        error:"Er heeft zich een fout voorgedaan",
         projecttitle: "iCANDID",
         search: 'Zoeken',
         searchresult: 'Zoekresultaat',
         advancedsearch: 'Geavanceerd zoeken',
+        extendedsearch: 'Booleaans zoeken',
         clearsearch:'Wissen',
         simplesearch: 'Eenvoudig zoeken',
         suredeleteitemfromset : 'Ben je zeker dat je dit record wil verwijderen uit de collectie ?',
@@ -365,7 +372,7 @@ export default new MLCreate({
         platformby:'Platform door',
         type: 'Type',
         identifier: 'Identificator',
-        originalidentifier:'Originele Identificator',
+        originalidentifier:'Originele Identificator(s)',
         publication:'Publicatie',
         edition:"Editie",
         publicationdate: 'Publicatiedatum',
@@ -618,7 +625,9 @@ export default new MLCreate({
         onlywithjsonld:"Enkel beschikbaar bij JSON-LD export",
         copyright:"Copyrights",
         collection:"Collectie(s)",
-        aggregator:"Aggregator"
+        aggregator:"Aggregator",
+        color:"Kleur",
+        aboutpublications:"Publicaties"
 
     })
   ]
