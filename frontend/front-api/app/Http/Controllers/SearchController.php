@@ -9,6 +9,7 @@ use App\Helpers\CSV_Output as CSV_Output;
 use App\Helpers\TXT_Output as TXT_Output;
 use App\Helpers\Searcher;
 use App\Helpers\Flattener as Flattener;
+use App\Helpers\EdmMapper as EdmMapper;
 use App\Eshelf;
 use Illuminate\Support\Facades\Cache;
 use Config;
@@ -169,6 +170,19 @@ class SearchController extends Controller
 
         return response(json_encode($data->hits->hits[0]->_source, JSON_PRETTY_PRINT+JSON_UNESCAPED_SLASHES))->header('Content-Type', 'application/json');
     }
+
+    public function getedmrdfxml(Request $request) {
+        $this->authorize('search');
+        $req = (object)array("q" => $request->id, "searchtype" => "id");
+        $data = $this->searcher->query($req, $this->user->apikey);
+        if (!isset($data->hits->hits[0])) abort(404);
+
+        $edm = new EdmMapper($data->hits->hits[0]->_source);
+
+        return response($edm->export())->header('Content-Type', 'application/rdf+xml');
+
+    }
+
 
     private function setDisplay($data) {
         foreach ($data->hits->hits as $k => $v) {

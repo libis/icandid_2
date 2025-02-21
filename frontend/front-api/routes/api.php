@@ -31,6 +31,7 @@ Route::post('/query','QueryController@query');
 Route::post('/query/nocache','QueryController@cachelessquery');
 Route::get('/flush','QueryController@flush');
 Route::get('/json/{id}','SearchController@getjson');
+Route::get('/edm/rdfxml/{id}','SearchController@getedmrdfxml');
 Route::post('/search','SearchController@search');
 Route::post('/search/public','SearchController@search');
 Route::post('/search/query','SearchController@query');
@@ -94,8 +95,10 @@ Route::post('/admin/label', 'AdminController@labelsave');
 Route::get('/admin/content', 'ContentController@content');
 Route::post('/admin/content', 'ContentController@contentsave');
 
+Route::get('/collection/byid/{id}', 'CollectionController@getbyid');
 Route::get('/collection/options', 'CollectionController@options');
 Route::post('/collection/search', 'CollectionController@search');
+Route::get('/collection/all', 'CollectionController@all');
 
 Route::get('/access/{apikey}', 'UserController@access');
 
