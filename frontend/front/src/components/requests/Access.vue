@@ -185,8 +185,8 @@
     </div>
 </template>
 <script>
-import axios from "axios";
-import { mapGetters } from "vuex";
+import axios from "../../../node_modules/axios";
+import { mapGetters } from "../../../node_modules/vuex/dist/vuex.mjs";
 axios.defaults.withCredentials = true;
 export default {
     data() {
@@ -379,14 +379,14 @@ export default {
                 this.formdata.until = "";
                 this.formdata.media2 = "";
             }
-
+/*
             if (this.formdata.institution != 'KU Leuven') {
                 this.formdata.faculty = "";
                 this.formdata.number = "";
                 this.formdata.media1 = "";
                 this.formdata.function = "";
             }
-
+*/
             if (this.formdata.function != 'Student') {
                 this.formdata.promotor = "";
             }
