@@ -11,6 +11,11 @@
         <li v-bind:class="{'is-active': (selectedTab=='advanced')}">
           <a @click.prevent.stop="selectedTab='advanced'">{{ $ml.get('advancedsearch') }}</a>
         </li>
+        <li v-bind:class="{'is-active': (selectedTab=='extended')}">
+          <a @click.prevent.stop="selectedTab='extended'">{{ $ml.get('extendedsearch') }}</a>
+        </li>
+
+
       </ul>
     </div>
     <div class="content" v-bind:class="{'is-hidden': (selectedTab!='normal')}">
@@ -22,6 +27,10 @@
     <div class="content" v-bind:class="{'is-hidden': (selectedTab!='advanced')}">
         <AdvancedSearch ref="advanced"></AdvancedSearch>
     </div>
+    <div class="content" v-bind:class="{'is-hidden': (selectedTab!='extended')}">
+        <ExtendedSearch ref="extended"></ExtendedSearch>
+    </div>
+
     <div class="level">
       <div class="level-left">
         <a href="/#/page/aboutcitation" v-html="$ml.get('howtocite')"></a>
@@ -40,6 +49,7 @@
 import SimpleSearch from './SimpleSearch.vue'
 import NormalSearch from './NormalSearch.vue'
 import AdvancedSearch from './AdvancedSearch.vue'
+import ExtendedSearch from './ExtendedSearch.vue'
 import Dialog from '../helpers/Dialog.vue'
 import axios from 'axios'
 import { mapActions, mapGetters } from 'vuex';
@@ -53,6 +63,7 @@ export default {
       SimpleSearch,
       NormalSearch,
       AdvancedSearch,
+      ExtendedSearch,
       Dialog
   },
   methods: {
