@@ -63,10 +63,7 @@ class Export {
                 case 'shelfitem':
                     $output = new ShelfItem_Output($job->shelf,$this->user->id);
                 break;
-                case 'europeana':
-                    $output = new Europeana_Output();
-                break;
-
+               
             }
             
             // get first set ofo data
