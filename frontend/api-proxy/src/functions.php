@@ -76,12 +76,14 @@ function getResult($query, $request_uri) {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
     
+    writelog($config['elasticUrl'] . $request_uri);
+
     $result = curl_exec($ch);
     $result_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
     
     curl_close($ch);
 
-    writelog($config['elasticUrl'] . $request_uri);
+    
     writelog($query);
     writelog($result_code);
 

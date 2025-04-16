@@ -6,15 +6,21 @@ include('cache.php');
 
 init();
 
+$timeings = [];
+
+$timeings[] = microtime(True);
+
 $request_uri = $_SERVER["REQUEST_URI"];
+writelog($request_uri);
 
 $apikey = getallheaders()["APIKEY"];
+
 if ($apikey == "") {
         $apikey = getallheaders()["Apikey"];
 }
-$entityBody = json_decode(file_get_contents('php://input'));
-writelog($request_uri);
 writelog($apikey);
+$entityBody = json_decode(file_get_contents('php://input'));
+$timeings[] = microtime(True);
 
 if (isset($entityBody->scroll_id)) {
     $query = $entityBody;
@@ -27,16 +33,20 @@ if (isset($entityBody->scroll_id)) {
         http_response_code(401);
         exit();
     }
-
+    
     $query = adaptQuery($entityBody, $permissions->datasets);
-}
-writelog($query);
-list($result,$result_code) = getResult($query,$request_uri);
 
+}
+$timeings[] = microtime(True);
+list($result,$result_code) = getResult($query,$request_uri);
+$timeings[] = microtime(True);
 header('Content-Type:application/json');
 http_response_code($result_code);
 print $result;
 
-
-
+$s = "";
+for ($i = 1; $i<count($timeings); $i++) {
+    $s .= ($timeings[$i] - $timeings[$i-1]) . "  ";
+}
+writelog($s);
 ?>
