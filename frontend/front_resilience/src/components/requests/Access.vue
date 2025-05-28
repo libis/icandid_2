@@ -1,5 +1,8 @@
 <template>
     <div class="box">
+        <h1 class="title">{{ $ml.get('requestAccessTitle') }}</h1>
+        <p v-html="$ml.get('requestAccessInfo')"></p>
+        <br/>
         <div :class="step==1 ? '' : 'hidden'"> 
             <div class="field">
             <label class="label">{{ $ml.get('name') }}</label>
@@ -113,23 +116,23 @@
             <div class="field" v-if="formdata.institution == 'KU Leuven'">
             <label class="label">{{ $ml.get('personel_student_no') }}</label>
             <div class="control">
-                <input class="input" type="text" placeholder="" v-model="formdata.number">
+                <input class="input" type="text" placeholder="" v-model="formdata.loginname">
             </div>
-            <p class="help is-danger is-hidden" ref="number">{{ $ml.get('personel_student_no_warn') }}</p>
+            <p class="help is-danger is-hidden" ref="loginname">{{ $ml.get('personel_student_no_warn') }}</p>
             </div>            
 
 
             <div class="field">
-            <label class="label">{{ $ml.get('requestreason') }}</label>
-            <textarea class="textarea" v-model="formdata.reason"></textarea>
+            <label class="label" style="text-wrap:none">{{ $ml.get('requestreason') }}</label>
+            <textarea class="textarea" style="width:300px" v-model="formdata.reason"></textarea>
             <p class="help is-danger is-hidden" ref="reason">{{ $ml.get('requestreason_warn') }}</p>
             </div>
 
             <div class="field" v-if="formdata.institution != 'KU Leuven'">
             <label class="label">{{ $ml.get('requestduration') }}</label>
             <div class="control" style="flex-direction:inherit">
-                <span class="vertalign">{{ $ml.get('from') }} : </span><input type="date" class="input" style="width:150px" v-model="formdata.from" name="dp_fromdate" />
-                <span class="vertalign" style="margin-left:5px">{{ $ml.get('toandincluding') }} : </span><input type="date" class="input" style="width:150px" v-model="formdata.until" name="dp_untildate" />
+                <span class="vertalign">{{ $ml.get('from') }} : </span><input type="date" class="input" style="width:170px" v-model="formdata.from" name="dp_fromdate" />
+                <span class="vertalign" style="margin-left:5px">{{ $ml.get('toandincluding') }} : </span><input type="date" class="input" style="width:170px" v-model="formdata.until" name="dp_untildate" />
             </div>
             <p class="help is-danger is-hidden" ref="duration">{{ $ml.get('requestduration_warn') }}</p>
             </div>
@@ -157,11 +160,11 @@
         </div>
 
         <div :class="step==4 ? '' : 'hidden'"> 
-            <div class="field" v-html="$ml.get('requestanswerpos')"></div>
+            <div v-html="$ml.get('requestanswerpos')"></div>
         </div>
 
         <div :class="step==5 ? '' : 'hidden'"> 
-            <div class="field" v-html="$ml.get('requestanswerneg')">
+            <div v-html="$ml.get('requestanswerneg')">
                 
             </div>
         </div>
@@ -182,14 +185,15 @@
     </div>
 </template>
 <script>
-import axios from "axios";
-import { mapGetters } from "vuex";
+import axios from "../../../node_modules/axios";
+import { mapGetters } from "../../../node_modules/vuex/dist/vuex.mjs";
 axios.defaults.withCredentials = true;
 export default {
     data() {
         return {
             formdata:{
-                name:"",
+                firstname:"",
+                lastname:"",
                 email:"",
                 institution:"KU Leuven",
                 institutionname:"",
@@ -197,15 +201,11 @@ export default {
                 promotor:"",
                 faculty:"",
                 researchgroup:"",
-                number:"",
+                loginname:"",
                 reason:"",
                 from:"",
                 until:"",
-                //media1:"Nee",
-                //media2:"Nee",
-                //collectionregister:"Nee",
                 functionality:"",
-                //datasets:[],
                 termsofuse:false,
                 newsletter:true,
                 language:this.$ml.current            },
@@ -319,11 +319,11 @@ export default {
                 }
 
                 if (this.formdata.institution == "KU Leuven") {
-                    if (this.formdata.number.trim() == "" ) {
-                        this.$refs.number.classList.remove('is-hidden')
+                    if (this.formdata.loginname.trim() == "" ) {
+                        this.$refs.loginname.classList.remove('is-hidden')
                         error++
                     } else {
-                        this.$refs.number.classList.add('is-hidden')
+                        this.$refs.loginname.classList.add('is-hidden')
                     }
                 }
 
@@ -374,16 +374,16 @@ export default {
                 this.formdata.institutionname = "";
                 this.formdata.from = "";
                 this.formdata.until = "";
-                this.formdata.media2 = "";
+                //this.formdata.media2 = "";
             }
-
+/*
             if (this.formdata.institution != 'KU Leuven') {
                 this.formdata.faculty = "";
-                this.formdata.number = "";
+                this.formdata.loginname = "";
                 this.formdata.media1 = "";
                 this.formdata.function = "";
             }
-
+*/
             if (this.formdata.function != 'Student') {
                 this.formdata.promotor = "";
             }
@@ -397,8 +397,8 @@ export default {
                 .then(
                     this.step = 4
                 )
-                .catch(function() {
-                    //console.log(error)
+                .catch(error => {
+                    console.log(error)
                     this.step = 5
                 });
         }
@@ -411,12 +411,12 @@ export default {
                 this.formdata.firstname = res.data.payload.given_name;
                 this.formdata.lastname = res.data.payload.family_name;
                 this.formdata.email = res.data.payload.email;
-                this.formdata.number = res.data.payload.preferred_user;
+                this.formdata.loginname = res.data.payload.preferred_user;
             })
-            .catch(function() {
+            .catch(error => {
                 this.$cookies.set('wantsaccess',true,600);
                 window.location.href='/login';
-                //console.log(error)
+                console.log(error)
             });
 
 
@@ -425,7 +425,7 @@ export default {
             .then(res => {
                 this.datasets = res.data.aggregations;
             })
-            /*.catch(error => console.log(error))*/;
+            .catch(error => console.log(error));
     },
     computed: mapGetters(['getApiQueryUrl','getApiFormUrl','getApiUrl']),
 }
@@ -445,5 +445,16 @@ input[type=radio] {
 }
 .hidden {
     display:none;
+}
+.textarea {
+    min-width: 80%;
+    max-width:80%
+}
+.label {
+    padding-right:5px;
+    margin-top:5px
+}
+.radio {
+    margin-top:8px
 }
 </style>

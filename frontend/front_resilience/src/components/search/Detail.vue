@@ -146,7 +146,7 @@ export default {
           str = str["@value"]
         }
       }
-
+      str = String(str)
       if (idx === 'duration') {
         let duration = this.$moment.duration(str);
         let d = "";

@@ -148,6 +148,12 @@
                             <input class="input" type="text" v-model="activeuser.twitter_bearer_token" maxlength="127">
                         </div>
                     </div>
+                    <label class="label">{{ $ml.get("last_active_at") }}</label>
+                    <div class="field">
+                        <div class="control" style="color:Black">
+                            {{ show_last_active() }}
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -324,6 +330,42 @@ export default {
         },
         is_active(type){
             return ["has-text-danger","has-text-success"][type];
+        },
+        show_last_active(v = null) {
+            if (v == null) {
+                v = this.activeuser.last_active_at;
+            }
+
+
+
+            var start = new Date(v)
+            var now = new Date;
+            var endDate = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate() , now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+            var startDate = Date.UTC(start.getFullYear(),start.getMonth(), start.getDate() , start.getHours(), start.getMinutes(), start.getSeconds(), start.getMilliseconds());
+            // Calculate the time difference in milliseconds
+            const timeDifferenceMS = endDate - startDate;
+
+            if (start.valueOf() == 946681200000) { return this.$ml.get('no_data') }
+
+            // Calculate the elapsed time in seconds, minutes, hours, and days
+            const timeDifferenceSecs = Math.floor(timeDifferenceMS / 1000);
+            const timeDifferenceMins = Math.floor(timeDifferenceMS / 60000);
+            const timeDifferenceHours = Math.floor(timeDifferenceMS / 3600000);
+            const timeDifferenceDays = Math.floor(timeDifferenceMS / 86400000);
+
+            if (timeDifferenceDays > 0) {
+                return start.toLocaleDateString() + ' (' + timeDifferenceDays + ' ' + this.$ml.get('days_ago') + ')';
+            } else {
+                if (timeDifferenceHours > 0) {
+                    return start.toLocaleDateString() + ' (' + timeDifferenceHours + ' ' + this.$ml.get('hours_ago') + ')';
+                } else {
+                    if (timeDifferenceMins > 0) {
+                        return start.toLocaleDateString() + ' (' + timeDifferenceMins + ' ' + this.$ml.get('minutes_ago') + ')';
+                    } else {
+                        return start.toLocaleDateString() + ' (' + timeDifferenceSecs + ' ' + this.$ml.get('seconds_ago') + ')';
+                    }
+                }
+            }
         },
         updatevia() {
             if (this.options.resources != undefined) {

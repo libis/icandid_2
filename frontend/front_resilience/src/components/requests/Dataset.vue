@@ -28,11 +28,11 @@
             </div> 
         </div>
         <div :class="step==2 ? '' : 'hidden'"> 
-            <div class="field" v-html="$ml.get('requestanswerpos')"></div>
+            <div v-html="$ml.get('requestanswerpos')"></div>
         </div>
 
         <div :class="step==3 ? '' : 'hidden'"> 
-            <div class="field" v-html="$ml.get('requestanswerneg')">
+            <div v-html="$ml.get('requestanswerneg')">
                 
             </div>
         </div>
@@ -115,5 +115,13 @@ input[type=radio] {
 }
 .hidden {
     display:none;
+}
+.textarea {
+    min-width: 80%;
+    max-width:80%
+}
+.label {
+    padding-right:5px;
+    
 }
 </style>
