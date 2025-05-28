@@ -25,8 +25,16 @@
                     <td>{{ getUser.institution }}</td>
                 </tr>
                 <tr>
+                    <td class="has-text-weight-semibold">{{ $ml.get('faculty') }}</td>
+                    <td>{{ getUser.faculty }}</td>
+                </tr>
+                <tr>
                     <td class="has-text-weight-semibold">{{ $ml.get('researchgroup') }}</td>
                     <td>{{ getUser.researchgroup }}</td>
+                </tr>
+                <tr>
+                    <td class="has-text-weight-semibold">{{ $ml.get('function') }}</td>
+                    <td>{{ getUser.function }}</td>
                 </tr>
                 <tr>
                     <td class="has-text-weight-semibold">{{ $ml.get('validityperiod') }}</td>

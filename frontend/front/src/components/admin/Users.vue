@@ -37,7 +37,7 @@
                 </tr>
                 <tr v-for="(v,k) in userlist" :key="k">
                     <td><i class="fa fa-user" :class="is_active(v.active)"></i></td>
-                    <td>{{ v.firstname }} {{ v.lastname }} </td>
+                    <td>{{ v.firstname }} {{ v.lastname }}</td>
                     <td>{{ v.email }}</td>
                     <td>{{ v.institution }} </td>
                     <td>{{ v.researchgroup }} </td>
@@ -90,11 +90,33 @@
                         <p class="help is-danger is-hidden" ref="institutionwarn">{{ $ml.get('fieldrequired') }}</p>
                     </div>    
                     <div class="field">
+                        <label class="label">{{ $ml.get("faculty") }}</label>
+                        <div class="control">
+                            <input class="input" type="text" v-model="activeuser.faculty" maxlength="80">
+                        </div>
+                        <p class="help is-danger is-hidden" ref="facultywarn">{{ $ml.get('fieldrequired') }}</p>
+                    </div>
+                    <div class="field">
+                        <label class="label">{{ $ml.get("function") }}</label>
+                        <div class="control">
+                            <input class="input" type="text" v-model="activeuser.function" maxlength="30">
+                        </div>
+                        <p class="help is-danger is-hidden" ref="functionwarn">{{ $ml.get('fieldrequired') }}</p>
+                    </div>
+
+                    <div class="field">
                         <label class="label">{{ $ml.get("researchgroup") }}</label>
                         <div class="control">
                             <input class="input" type="text" v-model="activeuser.researchgroup" maxlength="150">
                         </div>
                         <p class="help is-danger is-hidden" ref="researchgroupwarn">{{ $ml.get('fieldrequired') }}</p>
+                    </div>
+                    <div class="field">
+                        <label class="label">{{ $ml.get("promotor") }}</label>
+                        <div class="control">
+                            <input class="input" type="text" v-model="activeuser.promotor" maxlength="80">
+                        </div>
+                        <p class="help is-danger is-hidden" ref="promotorwarn">{{ $ml.get('fieldrequired') }}</p>
                     </div>
                     <div class="field">
                         <label class="label">{{ $ml.get("validityperiod") }}</label>
@@ -110,11 +132,24 @@
                             <textarea class="textarea" v-model="activeuser.description" maxlength="450"></textarea>
                         </div>
                     </div>                    
+
+                    <div class="field">
+                        <label class="label">{{ $ml.get("language") }}</label>
+                        <div class="control">
+                            <select v-model="activeuser.language_id" style="border-radius:4px">
+                                <option v-for="(v,k) in options.languages" :key="k" :value="v.id">{{ v['name_'+$ml.current] }}</option>
+                            </select>
+                        </div>
+                    </div>                    
+
                     <div class="field">
                         <label class="label" for="checkbox">{{ $ml.get("active") }} <input type="checkbox" id="checkbox" v-model="activeuser.active"></label>
                     </div>
                     <div class="field">
                         <label class="label" for="checkbox">{{ $ml.get("newsletter") }} <input type="checkbox" id="checkbox" v-model="activeuser.newsletter"></label>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="checkbox">{{ $ml.get("tos") }} <input type="checkbox" id="checkbox" v-model="activeuser.termsofuse"></label>
                     </div>
 
                     <div class="field">
@@ -148,6 +183,13 @@
                             <input class="input" type="text" v-model="activeuser.twitter_bearer_token" maxlength="127">
                         </div>
                     </div>
+                    <label class="label">{{ $ml.get("last_active_at") }}</label>
+                    <div class="field">
+                        <div class="control" style="color:Black">
+                            {{ show_last_active() }}
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -272,8 +314,18 @@ export default {
             } else {
                 this.$refs.validityperiodwarn.classList.add('is-hidden')
             }
-
-
+            if (this.activeuser.function == undefined || this.activeuser.function.trim() == "") {
+                this.$refs.functionwarn.classList.remove('is-hidden')
+                error++
+            } else {
+                this.$refs.functionwarn.classList.add('is-hidden')
+            }
+            if (this.activeuser.faculty == undefined || this.activeuser.faculty.trim() == "") {
+                this.$refs.facultywarn.classList.remove('is-hidden')
+                error++
+            } else {
+                this.$refs.facultywarn.classList.add('is-hidden')
+            }
 
             if (error > 0) return false;
             axios
@@ -324,6 +376,42 @@ export default {
         },
         is_active(type){
             return ["has-text-danger","has-text-success"][type];
+        },
+        show_last_active(v = null) {
+            if (v == null) {
+                v = this.activeuser.last_active_at;
+            }
+
+
+
+            var start = new Date(v)
+            var now = new Date;
+            var endDate = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate() , now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+            var startDate = Date.UTC(start.getFullYear(),start.getMonth(), start.getDate() , start.getHours(), start.getMinutes(), start.getSeconds(), start.getMilliseconds());
+            // Calculate the time difference in milliseconds
+            const timeDifferenceMS = endDate - startDate;
+
+            if (start.valueOf() == 946681200000) { return this.$ml.get('no_data') }
+
+            // Calculate the elapsed time in seconds, minutes, hours, and days
+            const timeDifferenceSecs = Math.floor(timeDifferenceMS / 1000);
+            const timeDifferenceMins = Math.floor(timeDifferenceMS / 60000);
+            const timeDifferenceHours = Math.floor(timeDifferenceMS / 3600000);
+            const timeDifferenceDays = Math.floor(timeDifferenceMS / 86400000);
+
+            if (timeDifferenceDays > 0) {
+                return start.toLocaleDateString() + ' (' + timeDifferenceDays + ' ' + this.$ml.get('days_ago') + ')';
+            } else {
+                if (timeDifferenceHours > 0) {
+                    return start.toLocaleDateString() + ' (' + timeDifferenceHours + ' ' + this.$ml.get('hours_ago') + ')';
+                } else {
+                    if (timeDifferenceMins > 0) {
+                        return start.toLocaleDateString() + ' (' + timeDifferenceMins + ' ' + this.$ml.get('minutes_ago') + ')';
+                    } else {
+                        return start.toLocaleDateString() + ' (' + timeDifferenceSecs + ' ' + this.$ml.get('seconds_ago') + ')';
+                    }
+                }
+            }
         },
         updatevia() {
             if (this.options.resources != undefined) {
