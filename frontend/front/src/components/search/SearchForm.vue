@@ -70,9 +70,14 @@ export default {
       ...mapActions(['setQuery','setHits','setUser']),
       search() {
         var queryObj = this.$refs[this.selectedTab].queryObj();
+        var keywords = this.$refs[this.selectedTab].keywords();
+        //window._paq.push(['trackEvent','Search',this.selectedTab.charAt(0).toUpperCase() + this.selectedTab.slice(1) + "Search"])
+        console.log("Keywords : " + keywords)
+        window._paq.push(['trackSiteSearch',keywords,this.selectedTab.charAt(0).toUpperCase() + this.selectedTab.slice(1) + "Search"])
         this.setQuery(queryObj)
         this.$parent.mode='result'
         this.$parent.$refs.filters.resetFilterMore();
+        //window._paq.push(['trackEvent',eventCategory,eventAction,eventName])
       },
       clear() {
         this.$refs[this.selectedTab].clear();
@@ -84,6 +89,7 @@ export default {
         axios
           .post(this.getApiProfileUrl + '/query', this.getSearchRequest)
           .then(res => { 
+            window._paq.push(['trackEvent','Save',"QuerySave"])
             this.setUser(res.data);
             this.$refs.dialog.alert(this.$ml.get('info'),this.$ml.get('searchsaved'))
           })

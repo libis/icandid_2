@@ -54,6 +54,7 @@ export default {
           axios
             .post(url, request)
             .then(response => {
+                window._paq.push(['trackEvent','Export',"CreateExport"])
                 this.$refs.dialog.alert(this.$ml.get('info'),this.$ml.with('email', response.data.email).get('exportinprogress'))
           })
             .catch(error => {
@@ -61,6 +62,7 @@ export default {
           });
         },
         openvisualisation() {
+            window._paq.push(['trackEvent','Visualisation',"ShowVisualisation"])
             this.$parent.mode='visualisation'
         },
         closevisualisation() {

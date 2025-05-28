@@ -47,6 +47,7 @@ export default {
                     axios
                     .post(this.getApiProfileUrl + '/item', obj)
                     .then(res =>{
+                        window._paq.push(['trackEvent','Save',"RecordSave"])
                         this.setUser(res.data);
                         this.close(); 
                     })
@@ -59,6 +60,7 @@ export default {
                     axios
                         .post(url, request)
                         .then(res =>{
+                            window._paq.push(['trackEvent','Save',"RecordSave"])
                             console.log(res.data);
                             this.close(); 
                         })  
