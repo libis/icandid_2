@@ -45,6 +45,7 @@ import VueGtag from "vue-gtag"
 import VueCookies from 'vue-cookies'
 Vue.use(VueCookies)
 
+
 Vue.config.productionTip = false
 
 Vue.use(Vuex);
@@ -60,6 +61,11 @@ Vue.filter('stripHTML', function (value) {
   const text = div.textContent || div.innerText || ''
   return text
 });
+
+const MATOMO_DIMENSION_INSTITUTION = 1;
+const MATOMO_DIMENSION_FACULTY = 2;
+const MATOMO_DIMENSION_RESEARCHGROUP = 3;
+const MATOMO_DIMENSION_FUNCTION = 4;
 
 const store = new Vuex.Store(
   {
@@ -295,6 +301,10 @@ const store = new Vuex.Store(
       setUser: (state, user) => {
         if (user.authenticated) {
           state.user = user
+          window._paq.push(['setCustomDimension', MATOMO_DIMENSION_INSTITUTION, state.user.institution]);
+          window._paq.push(['setCustomDimension', MATOMO_DIMENSION_FACULTY, state.user.faculty]);
+          window._paq.push(['setCustomDimension', MATOMO_DIMENSION_RESEARCHGROUP, state.user.researchgroup]);
+          window._paq.push(['setCustomDimension', MATOMO_DIMENSION_FUNCTION, state.user.function]);
         } 
       },
       setHistory: (state, history) => {
@@ -499,6 +509,17 @@ Vue.use(VueGtag, {
 }, router);
 
 
+var MatomoSiteIds = {"localhost":0,
+  "icandid.t.libis.be":109,
+  "icandid.libis.be":115}
+  
+import VueMatomo from 'vue-matomo'
+Vue.use(VueMatomo, {
+  host: "https://matomo.libis.be",
+  siteId: MatomoSiteIds[window.location.hostname],
+  router: router  
+});
+
 import {func} from './func.js'
 
 Vue.prototype.$func = func
@@ -509,3 +530,4 @@ new Vue({
   render: h => h(App),
 }).$mount('#app')
 
+window._paq.push(['trackPageView']); //To track pageview
