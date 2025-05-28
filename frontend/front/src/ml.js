@@ -213,8 +213,9 @@ export default new MLCreate({
         requestfunctionality:"Which functionalities do you wish to access?",
         chooseone:"Choose at least one",
         termsofuse:"I accept the <a href=\"/#/eula\" target=\"_blank\">terms of use</a>",
-        requestanswerpos:": <p>Your request is being processed.<p> <br><p>iCANDID is run by a small team. Applications are usually processed within one month.<p><br><p>For additional questions, please contact <a href=\"mailto:icandid@kuleuven.be\">icandid@kuleuven.be</a> </p> ",
-        requestanswerneg:"<p class=\"has-text-danger\">Something went wrong with your request.<p> <br><p>Please contact <a href=\"mailto:icandid@kuleuven.be\">icandid@kuleuven.be</a></p>",
+        tos:"Terms of use",
+        requestanswerpos:": <p>Your request is being processed.<p> <br><p>iCANDID is run by a small team. Applications are usually processed within one month.</p><br><p>For additional questions, please contact <a href=\"mailto:icandid@kuleuven.be\">icandid@kuleuven.be</a> </p> ",
+        requestanswerneg:"<p class=\"has-text-danger\">Something went wrong with your request.</p> <br><p>Please contact <a href=\"mailto:icandid@kuleuven.be\">icandid@kuleuven.be</a></p>",
         back:"Back",
         next:"Next",
         sendrequest:"Send request",
@@ -244,7 +245,7 @@ export default new MLCreate({
         newgroup:"New group",
         newlabel:"New label",
         accessrights:"Accessrights",
-        function:"Functionality",
+        function:"Position",
         admin:"Admin",   
         media:"Media",
         collections:"Collection Registry",
@@ -316,7 +317,14 @@ export default new MLCreate({
         collection:"Collection(s)",
         aggregator:"Aggregator",
         color:"Color",
-        aboutpublications:"Publications"
+        aboutpublications:"Publications",
+        last_active_at:"Last active at",
+        days_ago:"day(s) ago",
+        hours_ago:"hour(s) ago",
+        minutes_ago:"minute(s) ago",
+        seconds_ago:"second(s) ago",
+        no_data:"No data available"
+
     }),
  
     new MLanguage('nl').create({
@@ -523,9 +531,10 @@ export default new MLCreate({
         requestfunctionality:"Tot welke functies wilt u toegang?",
         chooseone:"Keuze is verplicht",
         termsofuse:"Ik aanvaard de <a href=\"/#/eula\" target=\"_blank\">gebruikersvoorwaarden</a>",
+        tos:"Gebruiksvoorwaarden",
         requestnewsletter:"Wilt u op de hoogte blijven van nieuwe ontwikkelingen binnen iCANDID?",
-        requestanswerpos:"<p>Uw aanvraag wordt behandeld.<p> <br><p>iCANDID heeft een beperkt team. Aanvragen worden doorgaans binnen de maand verwerkt.<p><br><p>Bij bijkomende vragen kunt u contact opnemen met <a href=\"mailto:icandid@kuleuven.be\">icandid@kuleuven.be</a></p>",
-        requestanswerneg:"<p class=\"has-text-danger\">Er ging iets fout met uw aanvraag<p> <br><p>Gelieve contact op te nemen met <a href=\"mailto:icandid@kuleuven.be\">icandid@kuleuven.be</a></p>",
+        requestanswerpos:"<p>Uw aanvraag wordt behandeld.<p> <br><p>iCANDID heeft een beperkt team. Aanvragen worden doorgaans binnen de maand verwerkt.</p><br><p>Bij bijkomende vragen kunt u contact opnemen met <a href=\"mailto:icandid@kuleuven.be\">icandid@kuleuven.be</a></p>",
+        requestanswerneg:"<p class=\"has-text-danger\">Er ging iets fout met uw aanvraag</p> <br><p>Gelieve contact op te nemen met <a href=\"mailto:icandid@kuleuven.be\">icandid@kuleuven.be</a></p>",
         back:"Terug",
         next:"Verder",
         sendrequest:"Aanvraag indienen",
@@ -555,7 +564,7 @@ export default new MLCreate({
         newgroup:"Nieuwe groep",
         newlabel:"Nieuw label",
         accessrights:"Toegangsrechten",
-        function:"Functionaliteit",
+        function:"Positie",
         admin:'Beheer',   
         media:"Media",
         collections:"Collectieregister",
@@ -627,7 +636,13 @@ export default new MLCreate({
         collection:"Collectie(s)",
         aggregator:"Aggregator",
         color:"Kleur",
-        aboutpublications:"Publicaties"
+        aboutpublications:"Publicaties",
+        last_active_at:"Laatst actief",
+        days_ago:"dagen geleden",
+        hours_ago:"uren geleden",
+        minutes_ago:"minuten geleden",
+        seconds_ago:"seconden geleden",
+        no_data:"Geen informatie beschikbaar"
 
     })
   ]

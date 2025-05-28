@@ -207,8 +207,8 @@ export default new MLCreate({
         requestfunctionality:"Which functionalities do you wish to access?",
         chooseone:"Choose at least one",
         termsofuse:"I accept the <a href=\"/#/eula\" target=\"_blank\">terms of use</a>",
-        requestanswerpos:": <p>Your request is being processed.<p> <br><p>ReIReSearch is run by a small team. Applications are usually processed within one month.<p><br><p>For additional questions, please contact <a href=\"mailto:ReIReSearch@kuleuven.be\">ReIReSearch@kuleuven.be</a> </p> ",
-        requestanswerneg:"<p class=\"has-text-danger\">Something went wrong with your request.<p> <br><p>Please contact <a href=\"mailto:ReIReSearch@kuleuven.be\">ReIReSearch@kuleuven.be</a></p>",
+        requestanswerpos:": <p>Your request is being processed.</p> <br><p>ReIReSearch is run by a small team. Applications are usually processed within one month.</p><br><p>For additional questions, please contact <a href=\"mailto:ReIReSearch@kuleuven.be\">ReIReSearch@kuleuven.be</a> </p> ",
+        requestanswerneg:"<p class=\"has-text-danger\">Something went wrong with your request.</p> <br><p>Please contact <a href=\"mailto:ReIReSearch@kuleuven.be\">ReIReSearch@kuleuven.be</a></p>",
         back:"Back",
         next:"Next",
         sendrequest:"Send request",
@@ -353,6 +353,13 @@ export default new MLCreate({
         copytoclipboard:"Copy to clipboard",
         citationcopied:"Citation copied to clipboard",
         fullview:"Full view",
-        emailissent:"Your message has been sent"
+        emailissent:"Your message has been sent",
+        last_active_at:"Last active at",
+        days_ago:"day(s) ago",
+        hours_ago:"hour(s) ago",
+        minutes_ago:"minute(s) ago",
+        seconds_ago:"second(s) ago",
+        no_data:"No data available"
+
     }) ]
 })
