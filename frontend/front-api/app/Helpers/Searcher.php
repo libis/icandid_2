@@ -557,7 +557,8 @@ class Searcher {
                         {
                             "query_string": {
                                 "query": "",
-                                "default_operator": "AND"
+                                "default_operator": "AND",
+                                "fields": ["*_name", "*_headline", "*_articleBody", "*.name.*","*.alternateName.*","*_description","*_keywords", "*_text"]
                             }
                         }
                     ],
@@ -602,9 +603,7 @@ class Searcher {
             if (isset($to) && $to != "")  $filt->range->_datePublished->lte = date("Y-m-d", strtotime($to));
             $query->query->bool->filter[] = $filt;
         }
-        
         return $query;
-
     }
 
 
