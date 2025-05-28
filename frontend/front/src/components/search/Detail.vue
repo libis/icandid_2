@@ -91,6 +91,7 @@ export default {
       return strvar.replace(/\n/g, "<br />");
     },
     format(str,idx) {
+      str = String(str)
       if (idx === 'duration') {
         let duration = this.$moment.duration(str);
         let d = "";
