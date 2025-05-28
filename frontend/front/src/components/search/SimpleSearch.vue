@@ -16,6 +16,9 @@ export default {
         queryObj() {
             return {searchtype:"simple", q:this.searchterm}
         },
+        keywords(){
+            return this.searchterm
+        },
         clear() {
             this.searchterm = "";
             this.clearResultset()

@@ -213,6 +213,9 @@ export default {
       var qObj = { q: this.query, searchtype: "advanced", name: name }
       return qObj;
     },
+    keywords(){
+      return this.query.map((x) => x.query).join(" ")
+    },
     clear() {
       this.query = [{ operator: "blank", field: "any", condition: "contains", q: "" }],
       this.clearResultset();

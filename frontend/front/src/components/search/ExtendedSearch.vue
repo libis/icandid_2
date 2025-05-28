@@ -74,6 +74,9 @@ export default {
         datasets_fullname: datasets_full,
         name: this.searchterm };
     },
+    keywords(){
+      return this.searchterm
+    },
     clear() {
       this.searchterm = "";
       this.selectedPeriod = "";
