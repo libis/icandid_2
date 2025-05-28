@@ -7,7 +7,7 @@
           <button class="delete" aria-label="close" @click="no()"></button>
         </header>
         <section class="modal-card-body spaced">
-            {{ $ml.get('exportrecords').replace("#",getHits)  }}<br/><br/>
+            {{ $ml.get('exportrecords').replace("#",this.hits)  }}<br/><br/>
             <div class="columns">
                 <div class="column is-4" style="padding-bottom:0rem">
                     {{ $ml.get('format') }} : 
@@ -49,7 +49,9 @@
                 visible:false,
                 format:"",
                 formats:["json-ld","txt","csv","xlsx"],
-                selectedEnrichments:[]
+                selectedEnrichments:[],
+                hits:0,
+                shelf:false
             }
         },
         components:{
@@ -59,7 +61,9 @@
             close() {
                 this.visible = false;
             },
-            open() {
+            open(h, shelf=false) {
+                this.hits=h;
+                this.shelf=shelf
                 this.visible = true;
             },
             yes() {
@@ -79,10 +83,14 @@
         computed: {
             ...mapGetters(['getAggregations','getHits']),
             enrichments(){
-                if (this.getAggregations.ENRICHMENTS_PER_TYPE == undefined) {
-                    return []
+                if (this.shelf) {
+                    return this.$parent.getEnrichments()
+                } else {
+                    if (this.getAggregations.ENRICHMENTS_PER_TYPE == undefined) {
+                        return []
+                    }
+                    return this.getAggregations.ENRICHMENTS_PER_TYPE.ACTION_NAME.buckets.map(x => {return {"id":x.key,"name":x.key} })
                 }
-                return this.getAggregations.ENRICHMENTS_PER_TYPE.ACTION_NAME.buckets.map(x => {return {"id":x.key,"name":x.key} })
             }
         },
         watch : {

@@ -147,6 +147,29 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });      
+        },
+        getEnrichments() {
+            var enrichments = []
+            for (var idx in this.activeShelf) {
+
+                if (this.activeShelf[idx]["value"]["_source"]["prov:wasAttributedTo"] != undefined) {
+                    for (var jdx in this.activeShelf[idx]["value"]["_source"]["prov:wasAttributedTo"]) {
+                        if (this.activeShelf[idx]["value"]["_source"]["prov:wasAttributedTo"][jdx]["prov:wasAssociatedFor"] != undefined) {
+                            for (var kdx in this.activeShelf[idx]["value"]["_source"]["prov:wasAttributedTo"][jdx]["prov:wasAssociatedFor"]) {
+                                if (this.activeShelf[idx]["value"]["_source"]["prov:wasAttributedTo"][jdx]["prov:wasAssociatedFor"][kdx].name != undefined) {
+                                    enrichments.push(this.activeShelf[idx]["value"]["_source"]["prov:wasAttributedTo"][jdx]["prov:wasAssociatedFor"][kdx].name)
+                                }
+                            }
+                        }
+                    }
+                } 
+            }
+            var enrichments_sorted = [...new Set(enrichments.sort())];
+            var enrichments_obj = []
+            for (idx in enrichments_sorted){
+                enrichments_obj.push({id:enrichments_sorted[idx], name:enrichments_sorted[idx]})
+            }
+            return enrichments_obj
         }
     },
     created() {
