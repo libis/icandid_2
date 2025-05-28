@@ -69,6 +69,12 @@ class AdminController extends Controller
         $user->email = $rc->email;
         $user->institution = $rc->institution;
         $user->researchgroup = $rc->researchgroup;
+        $user->function = $rc->function;
+        $user->faculty = $rc->faculty;
+        $user->language_id = $rc->language_id;
+        $user->promotor = $rc->promotor;
+        if (isset($rc->termsofuse)) $user->termsofuse = $rc->termsofuse;
+
         if (isset($rc->description)) { $user->description = substr($rc->description,0,255); } 
 
         $d = new DateTime($rc->startdate);

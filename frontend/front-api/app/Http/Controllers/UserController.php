@@ -11,6 +11,7 @@ use App\Item;
 use App\Eshelf;
 use App\Queue;
 use App\Helpers\ESQuery;
+use App\Organisation;
 
 class UserController extends Controller
 {
@@ -221,5 +222,10 @@ class UserController extends Controller
             return array("datasets" => $data->access(), "api"=> (count(array_filter($data->getPermissions()["resources"], function($v, $k) { return $v->reference == "api"; },ARRAY_FILTER_USE_BOTH )) > 0));
         }
 
+    }
+
+
+    public function orgs() {
+        return Organisation::with('groups')->with('groups.faculty')->orderBy('name', 'asc')->get();
     }
 }

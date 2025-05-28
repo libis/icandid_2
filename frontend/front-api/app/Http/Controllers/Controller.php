@@ -82,6 +82,10 @@ class Controller extends BaseController
         }
     
         if ($this->user_authenticated) {
+            
+            $this->user->last_active_at = Carbon::now();
+            $this->user->save();
+
             Log::info($this->user_eppn . " authorized");
             $this->user_id = $this->user->id;
 
@@ -97,6 +101,7 @@ class Controller extends BaseController
         }
     }
 
+    
     private function parse_jwt($jwt) {
         JWT::$leeway = $this->leeway; // $leeway in seconds
         try 

@@ -107,3 +107,4 @@ Route::get('/content/{contentcode}', 'ContentController@get');
 Route::get('/jwt/validate','JWTController@validation');
 Route::get('/jwt/decode','JWTController@decode');
 
+Route::get('/orgs','UserController@orgs');
