@@ -46,6 +46,8 @@ export default {
     updateRecord() {
       this.queryObj.q = this.$route.params.id;
       this.$gtag.event('search', {'event_category' : 'engagement' , 'event_label': JSON.stringify(this.queryObj) })
+//      window._paq.push(['trackEvent','Search',"IdSearch"])
+      window._paq.push(['trackSiteSearch',this.$route.params.id,"IdSearch"])
       axios
         .post(this.getApiSearchUrl, this.queryObj)
         .then(res => {
