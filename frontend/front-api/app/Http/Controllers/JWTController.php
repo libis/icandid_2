@@ -58,7 +58,7 @@ class JWTController extends Controller
             if (config('app.env') == 'production') {
                 abort(403);
             } else {
-                return ["header"=>"", "payload"=>["preferred_user"=>"u0124029@kuleuven.be", "email"=>"peter.o@kuleuven.be", "given_name" => "Peter", "family_name" => "O"]];
+                return ["header"=>"", "payload"=>["OrganizationDisplayName"=>"KU Leuven / Associatie KU Leuven","preferred_user"=>"u0124029@kuleuven.be", "email"=>"peter.o@kuleuven.be", "given_name" => "Peter", "family_name" => "O"]];
             }
         }
     }
