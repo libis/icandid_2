@@ -1,23 +1,30 @@
 <template>
     <div class="box">
         <div :class="step==1 ? '' : 'hidden'"> 
-            <div class="field">
-                <label class="label">{{ $ml.get('namefirstname') }}</label>
-               {{ formdata.name }}         
-            </div>
-            <div class="field">
-                <label class="label">{{ $ml.get('email') }}</label>
-               {{ formdata.email }}         
-            </div>
-            <div class="field">
-                <label class="label">{{ $ml.get('datasets') }}</label>
-                {{ datasets }}
-            </div>
-            <div class="field">
-                <label class="label">{{ $ml.get('requestreason') }}</label>
-                <textarea class="textarea" v-model="formdata.reason"></textarea>
-                <p class="help is-danger is-hidden" ref="reason">{{ $ml.get('requestreason_warn') }}</p>
-            </div>
+            <table border="0" cellspacing="3" cellpadding="0" width="300px">
+                <tr>
+                    <td width="30%"><label class="label">{{ $ml.get('namefirstname') }} : </label></td>
+                    <td>{{ formdata.name }}</td>
+                </tr>
+                <tr>
+                    <td width="30%"><label class="label">{{ $ml.get('email') }} : </label></td>
+                    <td>{{ formdata.email }}</td>
+                </tr>
+                <tr>
+                    <td width="30%"><label class="label">{{ $ml.get('datasets') }} : </label></td>
+                    <td>{{ datasets }}</td>
+                </tr>
+                <tr>
+                    <td width="30%"><label class="label">{{ $ml.get('requestreason') }} : </label></td>
+                    <td>
+                        <textarea class="textarea" v-model="formdata.reason"></textarea>
+                        <p class="help is-danger is-hidden" ref="reason">{{ $ml.get('requestreason_warn') }}</p>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+        <div :class="step==1 ? '' : 'hidden'">     
             <div class="columns">
                 <div class="column is-half"></div>
                 <div class="column is-half">
@@ -28,11 +35,11 @@
             </div> 
         </div>
         <div :class="step==2 ? '' : 'hidden'"> 
-            <div class="field" v-html="$ml.get('requestanswerpos')"></div>
+            <div v-html="$ml.get('requestanswerpos')"></div>
         </div>
 
         <div :class="step==3 ? '' : 'hidden'"> 
-            <div class="field" v-html="$ml.get('requestanswerneg')">
+            <div v-html="$ml.get('requestanswerneg')">
                 
             </div>
         </div>
@@ -116,4 +123,16 @@ input[type=radio] {
 .hidden {
     display:none;
 }
+.textarea {
+    min-width: 80%;
+    max-width:80%
+}
+.label {
+    padding-right:5px;
+
+}
+table td {
+    border:0px
+}
+
 </style>
