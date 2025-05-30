@@ -16,10 +16,10 @@ class AddExtraUserFields extends Migration
         //
 
         Schema::table('users', function (Blueprint $table) {
-            $table->string("faculty",80);
-            $table->string("function",30);
+            $table->string("faculty",80)->default('');
+            $table->string("function",30)->default('');
             $table->unsignedInteger("language_id")->default(0);
-            $table->string("promotor",80);          
+            $table->string("promotor",80)->default('');          
             $table->boolean('termsofuse')->default(True);
         });
     }
