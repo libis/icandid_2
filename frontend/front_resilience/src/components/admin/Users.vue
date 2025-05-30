@@ -149,8 +149,8 @@
                         </div>
                     </div>
                     <label class="label">{{ $ml.get("last_active_at") }}</label>
-                    <div class="field">
-                        <div class="control" style="color:Black">
+                    <div class="field" v-if="this.activeuser.last_active_at != undefined">
+                        <div class="control" style="color:Black" v-if="this.activeuser.last_active_at != undefined">
                             {{ show_last_active() }}
                         </div>
                     </div>
