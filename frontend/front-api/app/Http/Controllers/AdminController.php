@@ -72,7 +72,7 @@ class AdminController extends Controller
         $user->function = $rc->function;
         $user->faculty = $rc->faculty;
         $user->language_id = $rc->language_id;
-        $user->promotor = $rc->promotor;
+        if (isset($rc->promotor)) $user->promotor = $rc->promotor;
         if (isset($rc->termsofuse)) $user->termsofuse = $rc->termsofuse;
 
         if (isset($rc->description)) { $user->description = substr($rc->description,0,255); } 
@@ -84,7 +84,7 @@ class AdminController extends Controller
         $user->enddate = $d->format('Y-m-d');
 
         $user->eppn = $rc->eppn;
-        $user->active = $rc->active;
+        if (isset($rc->active)) $user->active = $rc->active;
         if (isset($rc->newsletter)) $user->newsletter = $rc->newsletter;
         if (isset($rc->apikey)) $user->apikey = $rc->apikey;
 

@@ -58,7 +58,7 @@ class FormController extends Controller
                 $user->language_id = 0;
                 if ($r["language"] == "nl") $user->language_id = 1;
                 if ($r["language"] == "en") $user->language_id = 3;
-                $user->promotor = $r["promotor"];
+                if (isset($rc->promotor)) $user->promotor = $r["promotor"];
                 $user->termsofuse = ($r["termsofuse"]?1:0);
 
                 $user->save();
