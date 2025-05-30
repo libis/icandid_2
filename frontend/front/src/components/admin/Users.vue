@@ -183,8 +183,8 @@
                             <input class="input" type="text" v-model="activeuser.twitter_bearer_token" maxlength="127">
                         </div>
                     </div>
-                    <label class="label">{{ $ml.get("last_active_at") }}</label>
-                    <div class="field">
+                    <label class="label" v-if="this.activeuser.last_active_at != undefined">{{ $ml.get("last_active_at") }}</label>
+                    <div class="field" v-if="this.activeuser.last_active_at != undefined">
                         <div class="control" style="color:Black">
                             {{ show_last_active() }}
                         </div>
