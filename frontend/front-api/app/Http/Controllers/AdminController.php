@@ -69,8 +69,8 @@ class AdminController extends Controller
         $user->email = $rc->email;
         $user->institution = $rc->institution;
         $user->researchgroup = $rc->researchgroup;
-        $user->function = $rc->function;
-        $user->faculty = $rc->faculty;
+        if (isset($rc->function)) $user->function = $rc->function;
+        if (isset($rc->faculty)) $user->faculty = $rc->faculty;
         $user->language_id = $rc->language_id;
         if (isset($rc->promotor)) $user->promotor = $rc->promotor;
         if (isset($rc->termsofuse)) $user->termsofuse = $rc->termsofuse;
