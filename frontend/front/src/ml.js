@@ -323,7 +323,8 @@ export default new MLCreate({
         hours_ago:"hour(s) ago",
         minutes_ago:"minute(s) ago",
         seconds_ago:"second(s) ago",
-        no_data:"No data available"
+        no_data:"No data available",
+        locationCreated:"Publication place"
 
     }),
  
@@ -642,7 +643,8 @@ export default new MLCreate({
         hours_ago:"uren geleden",
         minutes_ago:"minuten geleden",
         seconds_ago:"seconden geleden",
-        no_data:"Geen informatie beschikbaar"
+        no_data:"Geen informatie beschikbaar",
+        locationCreated:"Publicatieplaats"
 
     })
   ]

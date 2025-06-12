@@ -29,6 +29,7 @@ export default {
         printEdition: this.$ml.get('edition'),
         articleSection: this.$ml.get('articlesection'),
         pagination: this.$ml.get('pagination'),
+        locationCreated: this.$ml.get('locationCreated'),
         datePublished:  this.$ml.get('publicationdate'),
         dateline: this.$ml.get('dateline'),
         headline: this.$ml.get('title'),
