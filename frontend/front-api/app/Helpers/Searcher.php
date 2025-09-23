@@ -209,7 +209,7 @@ class Searcher {
         ]
     ];
     private $source = [
-        "exclude" => ["*-*_*"]
+        "excludes" => ["*-*_*"]
     ];
 
     public function __construct($query = Null) {
@@ -558,7 +558,19 @@ class Searcher {
                             "query_string": {
                                 "query": "",
                                 "default_operator": "AND",
-                                "fields": ["*_name", "*_headline", "*_articleBody", "*.name.*","*.alternateName.*","*_description","*_keywords", "*_text"]
+                                "fields": [
+                                    "*.name",
+                                    "*.alternateName",
+                                    "*.description",
+                                    "*.text",
+                                    "*_name",
+                                    "*_headline",
+                                    "*_articleBody",
+                                    "*_alternateName",
+                                    "*_description",
+                                    "*_keywords",
+                                    "*_text"
+                               ]
                             }
                         }
                     ],
