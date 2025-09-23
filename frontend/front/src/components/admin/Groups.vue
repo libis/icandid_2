@@ -27,6 +27,8 @@
             <div class="columns">
                 <div class="column is-half">
                     <CheckboxList label="collections_" :options="options.datasets" :selected="activerole.datasets" @select="getDatasets"></CheckboxList>
+                    <br/>
+                    <List v-if="activerole.users != undefined" :options="getMembers()" label="members" @selectedId="send"></List>
                 </div>
                 <div class="column is-half">
                     <CheckboxList label="functions" :options="options.resources" :selected="activerole.resources" @select="getResources"></CheckboxList>
@@ -37,7 +39,6 @@
                             <textarea class="textarea" v-model="activerole.description" maxlength="255"></textarea>
                         </div>
                     </div>
-
                 </div>
             </div>
             <div class="columns">
@@ -63,10 +64,12 @@ import axios from "axios";
 import { mapGetters } from "vuex";
 axios.defaults.withCredentials = true;
 import CheckboxList from '../helpers/CheckboxList.vue'
+import List from '../helpers/List.vue'
 
 export default {
     components:{
-        CheckboxList
+        CheckboxList,
+        List
     },
     data() {
         return {
@@ -133,6 +136,29 @@ export default {
         },
         getResources(value) {
             this.activerole.resources = value
+        },
+        getMembers(){
+            var members = this.activerole.users.map(u => { 
+                    var member = {text:u.firstname + " " + u.lastname, id:u.id}
+                    return member
+                }).sort(
+                    (a,b) => {
+                        if (a.text < b.text) {
+                            return -1
+                        }
+                        if (a.text > b.text) {
+                            return -1
+                        }
+                        return 0
+                    }
+                );
+            return members 
+        },
+        send(id) {
+            this.$router.push('/admin/users');
+            window.setTimeout(() => {
+                this.$root.$emit("openUser",id);    
+            }, 500);
         }
     },
     computed: mapGetters(['getApiAdminUrl']),

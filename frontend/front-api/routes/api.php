@@ -78,6 +78,8 @@ Route::post('/admin/users/{type}', 'AdminController@usersearch');
 Route::post('/admin/user', 'AdminController@usersave');
 Route::delete('/admin/user/{id}', 'AdminController@userdelete');
 Route::get('/admin/user/export', 'AdminController@usersexport');
+Route::get('/admin/user/{id}', 'AdminController@userget');
+
 
 Route::post('/admin/datasets', 'AdminController@datasetsearch');
 Route::post('/admin/dataset', 'AdminController@datasetsave');

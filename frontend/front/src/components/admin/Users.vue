@@ -463,10 +463,23 @@ export default {
             .catch(error => {
               console.log(error);
           });
-      }              
+        }              
     },
-    computed: mapGetters(['getApiAdminUrl']),
-    
+    computed: mapGetters(['getApiAdminUrl']), 
+    mounted() {
+        this.$root.$on('openUser', (id) => {
+            this.activeuseridx=-1
+            this.activeuser=[]
+            this.userlist=[]
+            axios
+                .get(this.getApiAdminUrl + '/user/' + id)
+                .then(res => {
+                    this.userlist = res.data;
+                    this.edit(0)
+                })
+                .catch(error => console.log(error));
+    })
+  }    
 }
 </script>
 <style scoped>

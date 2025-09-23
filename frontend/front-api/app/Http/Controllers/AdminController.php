@@ -57,6 +57,13 @@ class AdminController extends Controller
         return $users;
     }
 
+    public function userget(Request $request, $id) {
+        $users = \App\User::where('id', $id)                  
+            ->with('roles')->with('resources')->with('datasets')->with('roles.resources')->with('roles.datasets')
+            ->get()->all();
+        return $users;
+    }
+
     public function usersave(Request $request) {
         $rc = json_decode($request->getContent());
         if ($rc->id == 0) {
@@ -124,10 +131,14 @@ class AdminController extends Controller
 
     public function usersexport() {
         $users = \App\User::get()->all();
+        
         $header = array_keys($users[0]->attributesToArray());
+        $header[] = "groups";
 
         $spreadsheet = new Spreadsheet();
+
         $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle("Users");
 
         $col = 0;
 
@@ -140,10 +151,51 @@ class AdminController extends Controller
         foreach($users as $k=>$user){
             $col = 0;
             foreach($header as $idx) {
-                $val = $user[$idx];
+                if ($idx == "groups") {
+                    $val = join(",",array_map(function($a){return $a->name; }, $user->roles->all()));
+                } else {
+                    $val = $user[$idx];
+                }
+                
                 $cell = chr(65+$col) . ($k+2);
                 $sheet->setCellValue($cell,$val);
                 $col++;
+            }
+
+        }
+
+        array_pop($header); // remove groups
+
+        $styleArray = ['font' => ['bold' => true]];
+
+        $sheet2 = $spreadsheet->createSheet();
+        $sheet2->setTitle("Users by group");
+
+        $col = 0;
+        foreach($header as $k=>$val) {
+            $cell = chr(65+$col) . "1";
+            $sheet2->setCellValue($cell,$val);
+            $col++;
+        }
+
+        $groups = \App\Role::with('users')->get()->all();
+        $row = 2;
+        foreach($groups as $group) {
+            $val = $group->name;
+            $col = 0;
+            $cell = chr(65+$col) . ($row);
+            $sheet2->setCellValue($cell,$val);
+            $sheet2->getStyle($cell)->applyFromArray($styleArray);
+            $row++;
+            foreach($group->users->all() as $user) {
+                $col = 0;
+                foreach($header as $idx) {
+                    $val = $user[$idx];
+                    $cell = chr(65+$col) . ($row);
+                    $sheet2->setCellValue($cell,$val);
+                    $col++;
+                }
+                $row++;
             }
         }
 
@@ -157,14 +209,6 @@ class AdminController extends Controller
 
     public function datasetsearch(Request $request) {
         $t = strtoupper($request->getContent());
-
-/*        $datasets = \App\Dataset::where('name','like','%'.$t.'%')
-            ->orWhere('internalident','like','%'.$t.'%')
-            ->orWhere('description','like','%'.$t.'%')
-            ->orWhere('requestor','like','%'.$t.'%')
-            ->orWhere('requestoremail','like','%'.$t.'%')
-            ->orWhere('query','like','%'.$t.'%')
-            ->orWhere('provider','like','%'.$t.'%') */
          $datasets = \App\Dataset::whereRaw("upper(name) like '%" .$t. "%'")
             ->orwhereRaw("upper(internalident) like '%" .$t. "%'")
             ->orwhereRaw("upper(description) like '%" .$t. "%'")
@@ -293,8 +337,7 @@ class AdminController extends Controller
     }
 
     public function groups(Request $request) {
-        $roles = \App\Role::orderBy('name')->with('resources')->with('datasets')->get()->all();
-
+        $roles = \App\Role::orderBy('name')->with('resources')->with('datasets')->with('users')->get()->all();
         return $roles;
     }
 

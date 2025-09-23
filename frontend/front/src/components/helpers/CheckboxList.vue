@@ -29,7 +29,9 @@ export default {
     },
     watch: {
         selectedList() {
-            this.$emit('select', this.options.filter(x => this.selectedList.includes(x.id) ))
+            if (this.options != undefined) {
+                this.$emit('select', this.options.filter(x => this.selectedList.includes(x.id) ))
+            }
         }
     },
     computed:{
