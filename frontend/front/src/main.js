@@ -28,7 +28,7 @@ import Datasets from './components/admin/Datasets.vue'
 import Groups from './components/admin/Groups.vue'
 import Labels from './components/admin/Labels.vue'
 import Status from './components/admin/Status.vue'
-import Content from './components/admin/Content.vue'
+import ContentHTML from './components/admin/ContentHTML.vue'
 
 import Record from './components/Record.vue' 
 import User from './components/User.vue'
@@ -454,11 +454,18 @@ const router = new VueRouter(
         beforeEnter: (to, from, next) => ( checkUserResource('search')?next():next(false) )        
       },
       {
+        path: '/admin/users/:id',
+        name: 'Users',
+        component: Users,
+        beforeEnter: (to, from, next) => ( checkUserResource('admin')?next():next(false) )
+      },
+      {
         path: '/admin/users',
         name: 'Users',
         component: Users,
         beforeEnter: (to, from, next) => ( checkUserResource('admin')?next():next(false) )
       },
+
       {
         path: '/admin/datasets',
         name: 'Datasets',
@@ -485,8 +492,8 @@ const router = new VueRouter(
       },
       {
         path: '/admin/content',
-        name: 'Content',
-        component: Content,
+        name: 'ContentHTML',
+        component: ContentHTML,
         beforeEnter: (to, from, next) => ( checkUserResource('content')?next():next(false) )
       },
       {
