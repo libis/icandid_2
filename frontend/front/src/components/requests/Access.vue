@@ -100,10 +100,10 @@
             </table>
 
             <div class="field">
-                <input type="checkbox" id="tos" v-model="formdata.termsofuse"><label for="tos" v-html="' ' + $ml.get('termsofuse')"></label>
+                <input type="checkbox" id="tos" v-model="formdata.termsofuse">&nbsp;<label for="tos" v-html="' ' + $ml.get('termsofuse')"></label>
             </div>
             <div class="field">
-                <input type="checkbox" id="news" v-model="formdata.newsletter"><label for="news"> {{ $ml.get('requestnewsletter') }}</label>
+                <input type="checkbox" id="news" v-model="formdata.newsletter">&nbsp;<label for="news"> {{ $ml.get('requestnewsletter') }}</label>
             </div>
             <div class="columns">
                 <div class="column is-half"></div>
