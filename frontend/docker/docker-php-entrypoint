@@ -1,0 +1,23 @@
+#!/bin/sh
+printenv > /etc/environment
+service cron start
+set -e
+
+if [ "${APP_ENV}" = "live" ];
+then
+    echo "It's alive !!"
+	ln -s -f /var/www/html/front/sitemap/sitemap.xml.live /var/www/html/front/sitemap/sitemap.xml
+	ln -s -f /var/www/html/front/robots.txt.live /var/www/html/front/robots.txt
+else
+	echo "Just for testing"
+	ln -s -f /var/www/html/front/sitemap/sitemap.xml.test /var/www/html/front/sitemap/sitemap.xml
+	ln -s -f /var/www/html/front/robots.txt.test /var/www/html/front/robots.txt
+fi
+
+
+# first arg is `-f` or `--some-option`
+if [ "${1#-}" != "$1" ]; then
+        set -- apache2-foreground "$@"
+fi
+
+exec "$@"

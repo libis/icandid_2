@@ -35,6 +35,7 @@ RUN chmod -R 777 /var/www/html/api/storage
 
 RUN sed -e "s/http:\/\/localhost:88//g" -i.backup /var/www/html/front/js/*.js
 
+COPY ./docker/docker-php-entrypoint /usr/local/bin/docker-php-entrypoint
 
 COPY ./docker/docker-php-ext-*.ini /usr/local/etc/php/conf.d/
 
@@ -45,5 +46,5 @@ RUN crontab -l -u root | { cat; echo "SHELL=/bin/bash"; } | crontab -u root -
 #RUN crontab -l -u root | { cat; echo "0 3 * * * cd /var/www/html/api/ && /usr/local/bin/php -d memory_limit=4G artisan cache:clear >> /dev/null 2>&1"; } | crontab -u root -
 RUN crontab -l -u root | { cat; echo "* * * * * cd /var/www/html/api/ && /usr/local/bin/php -d memory_limit=16G artisan schedule:run >> /dev/null 2>&1"; } | crontab -u root -
 
-RUN sed -i '2iservice cron start' /usr/local/bin/docker-php-entrypoint
-RUN sed -i '2iprintenv > /etc/environment' /usr/local/bin/docker-php-entrypoint
+#RUN sed -i '2iservice cron start' /usr/local/bin/docker-php-entrypoint
+#RUN sed -i '2iprintenv > /etc/environment' /usr/local/bin/docker-php-entrypoint
