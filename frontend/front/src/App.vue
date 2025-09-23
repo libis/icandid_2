@@ -11,19 +11,23 @@
     </transition>
     <footer class="footer">
       <div class="columns ">
-        <div class="column is-one-third">
+        <div class="column is-4">
           <p>
             <a href="http://www.libis.be" target="_blank"><img src="https://assets.libis.be/libis/libisnewkuljr.png" style="height:56px" valign="center"></a>
           </p>
         </div>
-        <div class="column has-one-third has-text-center">
+        <div class="column is-3 has-text-center">
           <a href="https://www.fwo.be/" target="_blank"><img src="/img/FWO_logo.png"></a>
         </div>
-        <div class="column has-on-third has-text-right">
+        <div class="column is-5 has-text-right">
           <a href="https://www.kuleuven.be" target="_blank"><img src="/img/KULeuven_logo.svg" style="margin-right:10px"></a>
-          <a href="https://soc.kuleuven.be/ims" target="_blank"><img src="/img/IMS-Logo-fullcolour.png" style="height:56px"></a>
+          <a href="https://soc.kuleuven.be/ims" target="_blank"><img src="/img/mediacultuur.png" style="height:56px"></a>
         </div>
       </div>
+          <p style="text-align:center">
+            <a href="/#/eula">{{ $ml.get('tos') }}</a>&nbsp;-&nbsp;<a href="https://admin.kuleuven.be/privacy/en/" target="_blank">{{ $ml.get('privacypolicy') }}</a>&nbsp;-&nbsp;<a href="/#/page/policy">{{ $ml.get('cookiepolicy') }}</a>
+          </p>
+      
     </footer>    
   </div>
 </template>
@@ -64,8 +68,9 @@ export default {
           {id:"42", name:this.$ml.get('aboutdatasets'), route:"/#/page/aboutdatasets", vis:"noauth"},
           {id:"43", name:this.$ml.get('aboutpublications'), route:"/#/page/aboutpublications", vis:"noauth"},
           {id:"44", name:this.$ml.get('eula'), route:"/#/eula", vis:"noauth"},
+          {id:"45", name:this.$ml.get('cookiepolicy'), route:"/#/page/policy", vis:"noauth"},
 //          {id:"44", name:this.$ml.get('aboutcitations'), route:"/#/citation", vis:"noauth"},
-          {id:"45", name:this.$ml.get('aboutcitations'), route:"/#/page/aboutcitation", vis:"noauth"},
+          {id:"46", name:this.$ml.get('aboutcitations'), route:"/#/page/aboutcitation", vis:"noauth"},
         ]},
 //        {id:"5", name:this.$ml.get('help'), route:"/#/help", vis:"noauth"},
 //        {id:"5", name:this.$ml.get('help'), route:"/#/page/help", vis:"noauth"},
