@@ -214,7 +214,7 @@ export default new MLCreate({
         chooseone:"Choose at least one",
         termsofuse:"I accept the <a href=\"/#/eula\" target=\"_blank\">terms of use</a>",
         tos:"Terms of use",
-        requestanswerpos:": <p>Your request is being processed.<p> <br><p>iCANDID is run by a small team. Applications are usually processed within one month.</p><br><p>For additional questions, please contact <a href=\"mailto:icandid@kuleuven.be\">icandid@kuleuven.be</a> </p> ",
+        requestanswerpos:"<p>Your request is being processed.<p> <br><p>iCANDID is run by a small team. Applications are usually processed within one month.</p><br><p>For additional questions, please contact <a href=\"mailto:icandid@kuleuven.be\">icandid@kuleuven.be</a> </p> ",
         requestanswerneg:"<p class=\"has-text-danger\">Something went wrong with your request.</p> <br><p>Please contact <a href=\"mailto:icandid@kuleuven.be\">icandid@kuleuven.be</a></p>",
         back:"Back",
         next:"Next",
@@ -324,7 +324,10 @@ export default new MLCreate({
         minutes_ago:"minute(s) ago",
         seconds_ago:"second(s) ago",
         no_data:"No data available",
-        locationCreated:"Publication place"
+        locationCreated:"Publication place",
+        cookiepolicy:"Cookie policy",
+        privacypolicy:"Privacy policy",
+        members:"Members"
 
     }),
  
@@ -644,7 +647,10 @@ export default new MLCreate({
         minutes_ago:"minuten geleden",
         seconds_ago:"seconden geleden",
         no_data:"Geen informatie beschikbaar",
-        locationCreated:"Publicatieplaats"
+        locationCreated:"Publicatieplaats",
+        cookiepolicy:"Cookiebeleid",
+        privacypolicy:"Privacybeleid",
+        members:"Leden"
 
     })
   ]
