@@ -68,9 +68,23 @@ class AdminController extends Controller
         $rc = json_decode($request->getContent());
         if ($rc->id == 0) {
             $user = new \App\User;
+            if (!$this->user->issuperadmin) { // if active user is not superadmin then new user cannot be admin
+                // direct
+                $rc->resources = array_filter($rc->resources, function($r) { return $r->reference != "admin"; } );
+                // via group/role
+                $rc->roles = array_filter($rc->roles, function($r) { return !in_array("admin", array_map(function($n) {return $n->reference; }, $r->resources)); } );
+            }
         } else {
             $user = \App\User::find($rc->id);
+            if ($user->issuperadmin && $this->user->issuperadmin) { // superadmin can only be edited by superadmin 
+                abort(403);
+            }
+            if ($user->isAdmin() && !$this->user->issuperadmin) { // if user is admin then only a superadmin can edit the user
+                abort(403);
+            }
         }
+
+
         $user->firstname = $rc->firstname;
         $user->lastname = $rc->lastname;
         $user->email = $rc->email;
@@ -123,6 +137,13 @@ class AdminController extends Controller
     public function userdelete($id) {
 
         $user = \App\User::find($id);
+
+        if ($user->issuperadmin) { // superadmin can never be deleted
+            abort(403);
+        }
+        if ($user->isAdmin() && !$this->user->issuperadmin) { // if user is admin then only a superadmin can delete the user
+            abort(403);
+        }
 
         $user->delete();
 
@@ -325,13 +346,40 @@ class AdminController extends Controller
     public function options(Request $request) {
         $options = [];
 
+        $options["resources"] = \App\Resource::get()->all(); 
+        foreach ($options["resources"] as $k => $v) {
+            $options["resources"][$k]["disabled"] = False;
+            if (!$this->user->issuperadmin && $v["reference"] == "admin") {
+                $options["resources"][$k]["disabled"] = True;
+            }
+        }
+
+        $options["roles"] = \App\Role::with('datasets')->with('resources')->get()->all();
+        foreach ($options["roles"] as $k => $v) {
+            $options["roles"][$k]["disabled"] = False;
+            $references = array_map(function($n) { return $n->reference ;}, $v["resources"]->all());
+            if (!$this->user->issuperadmin && in_array("admin", $references) ) {
+                $options["roles"][$k]["disabled"] = True;
+            }
+        }
+
         $options["languages"] = \App\Language::get()->all();
         $options["labels"] = \App\Label::get()->all();
-        $options["providers"] = DB::table('datasets')->select('provider')->distinct()->get();
-        $options["institutions"] = DB::table('users')->select('institution')->distinct()->get();
-        $options["resources"] = \App\Resource::get()->all(); 
         $options["datasets"] = \App\Dataset::where('available','1')->get()->all();
-        $options["roles"] = \App\Role::with('datasets')->with('resources')->get()->all();
+        foreach(array("languages","labels", "datasets") as $l => $w) {
+            foreach ($options[$w] as $k => $v) {
+                Log::info($w);
+                $options[$w][$k]["disabled"] = False;
+            }
+        }
+
+        $options["providers"] = DB::table('datasets')->select('provider')->distinct()->where('provider','!=', null)->get();
+        $options["institutions"] = DB::table('users')->select('institution')->distinct()->get();
+        foreach(array("providers", "institutions") as $l => $w) {
+            foreach ($options[$w] as $k => $v) {
+                $options[$w][$k]->disabled = False;
+            }
+        }
 
         return $options;
     }
@@ -345,9 +393,19 @@ class AdminController extends Controller
         $rc = json_decode($request->getContent());
         if ($rc->id == 0) {
             $group = new \App\Role;
+            if (!$this->user->issuperadmin) { // if active user is not superadmin then new group cannot have admin
+                $rc->resources = array_filter($rc->resources, function($r) { return $r->reference != "admin"; } );
+            }
         } else {
             $group = \App\Role::find($rc->id);
+            if (!$this->user->issuperadmin) { // if active user is not superadmin then new group admin resource cannot be changed
+                $rc->resources = array_filter($rc->resources, function($r) { return $r->reference != "admin"; } );
+                if ($group->hasAdmin()) {
+                    $rc->resources[] = \App\Resource::where('reference','admin')->first();
+                } 
+            }
         }
+
         $group->name = $rc->name;
         if (isset($rc->description)) { $group->description = substr($rc->description,0,255); }
 

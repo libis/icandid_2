@@ -198,11 +198,11 @@
                     
                 </div>
                 <div class="column is-one-quarter">
-                    <a class="button is-primary" style="color:White" @click="save()">{{ $ml.get('save') }}</a>&nbsp;
+                    <a class="button is-primary" style="color:White" @click="save()" :disabled="!caniedit()">{{ $ml.get('save') }}</a>&nbsp;
                     <a class="button" @click="edit(-1)">{{ $ml.get('cancel') }}</a>
                 </div>
                 <div class="column is-one-quarter">
-                    <a class="button is-danger" v-if="activeuser.id > 0" @click="del()">{{ $ml.get('delete') }}</a>
+                    <a class="button is-danger" v-if="activeuser.id > 0" @click="del()" :disabled="!caniedit()">{{ $ml.get('delete') }}</a>
                 </div>
             </div>            
 
@@ -232,7 +232,8 @@ export default {
             selectedroleidx:-1,
             options:[],
             triggerD:0,
-            triggerR:0
+            triggerR:0,
+            currentuser:[]
         }
     },
     methods: {
@@ -463,9 +464,27 @@ export default {
             .catch(error => {
               console.log(error);
           });
+        },
+        isadmin(u){
+            for (var i=0;i<u.resources.length;i++) {
+                if (u.resources[i].reference == 'admin') return true
+            }
+            for ( i=0;i<u.roles.length;i++) {
+                for (var j=0;j<u.roles[i].resources.length;j++){
+                    if (u.roles[i].resources[j].reference == 'admin') return true
+                }
+            }
+            return false
+        },
+        caniedit() {
+            if (this.activeuser.issuperadmin && !this.currentuser.issuperadmin) return false
+            if (this.isadmin(this.activeuser) && this.currentuser.issuperadmin) return true
+            if (!this.isadmin(this.activeuser)) return true
+            return false
+
         }              
     },
-    computed: mapGetters(['getApiAdminUrl']), 
+    computed: mapGetters(['getApiAdminUrl','getApiUserUrl']), 
     mounted() {
         this.$root.$on('openUser', (id) => {
             this.activeuseridx=-1
@@ -478,7 +497,13 @@ export default {
                     this.edit(0)
                 })
                 .catch(error => console.log(error));
-    })
+        })
+        axios
+            .get(this.getApiUserUrl)
+            .then(res => {
+                this.currentuser = res.data
+            })
+            .catch(error => console.log(error));
   }    
 }
 </script>

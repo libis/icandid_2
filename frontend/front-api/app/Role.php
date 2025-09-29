@@ -18,4 +18,8 @@ class Role extends Model
     public function datasets() {
         return $this->belongsToMany(Dataset::class, 'role_dataset');
     }
+
+    public function hasAdmin(){
+        return (count(array_filter( $this->resources->all() , function($r) { return $r->reference == 'admin' ; } )) > 0);
+    }
 }

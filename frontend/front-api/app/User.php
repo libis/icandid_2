@@ -41,6 +41,7 @@ class User extends Model
 
         static::creating(function ($model) {
             $model->apikey = sha1(uniqid());
+            $model->issuperadmin=False;
         });
 
         static::updating(function ($model) {
@@ -127,5 +128,9 @@ class User extends Model
 
         return $p;
     }
-        
+
+    public function isAdmin() {
+        $refs = array_map(function($n) { return $n->reference; }, $this->getPermissions()["resources"]);
+        return in_array('admin', $refs);
+    }
 }

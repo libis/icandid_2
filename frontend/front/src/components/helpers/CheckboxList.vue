@@ -2,14 +2,14 @@
     <div>
         <label class="lowlabel" v-html="labelText"></label>
         <div style="float:right">
-            <a v-if="selectedList.length == 0" @click.prevent.stop="selectAll()" style="font-size:12px">{{ $ml.get('selectevery')}}</a>
-            <a v-if="selectedList.length != 0" @click.prevent.stop="deselectAll()" style="font-size:12px">{{ $ml.get('selectnone')}}</a>
+            <a v-if="selectEvery()" @click.prevent.stop="selectAll()" style="font-size:12px">{{ $ml.get('selectevery')}}</a>
+            <a v-else @click.prevent.stop="deselectAll()" style="font-size:12px">{{ $ml.get('selectnone')}}</a>
         </div>
         <div class="scrollable" :style="'max-height:'+ this.height + 'px'">
             <div v-for="(v,k) in sortedOptions" :key="k">
-                <input v-if="v.via != undefined && v.via.length > 0" type="checkbox" class="checkbox" checked disabled style="" > 
-                <input v-else type="checkbox" class="checkbox" v-model="selectedList" :value="v.id" :id="label+v.id"> 
-                <label :class="{disabled: isDisabled}" :for="label+v.id"> {{ format(v) }}</label>
+                <input v-if="(v.via != undefined && v.via.length > 0)" type="checkbox" class="checkbox" checked disabled style="" > 
+                <input v-else type="checkbox" class="checkbox" v-model="selectedList" :value="v.id" :id="label+v.id" :disabled="v.disabled" > 
+                <label :class="{disabled: isDisabled || v.disabled}" :for="label+v.id"> {{ format(v) }}</label>
             </div>
         </div>
     </div>    
@@ -51,13 +51,31 @@ export default {
                 return this.$ml.get(this.label)
             }
         }                
+
     },
     methods: {
         selectAll() {
-            if (!this.isDisabled) this.selectedList = this.options.map(x => x.id)                
+            if (!this.isDisabled) { //this.selectedList = this.options.map(x => x.id)                
+                this.options.forEach(el => {
+                    if (!el.disabled) {
+                        this.selectedList.push(el.id)
+                    }
+                    let s = new Set(this.selectedList)
+                    this.selectedlist = [...s]
+                });
+            }
         },
         deselectAll() {
-            if (!this.isDisabled) this.selectedList = []
+            if (!this.isDisabled) { //this.selectedList = []
+                let l = this.selectedList.length -1;
+                for(var i = l;i>=0;i--){
+                    let obj = this.options.find(o => o.id == this.selectedList[i])
+                    if (!obj.disabled){
+                        this.selectedList.pop(i)
+                    }
+                }
+
+            }
         },
         format(v) {
             var f = v.name 
@@ -70,6 +88,14 @@ export default {
                 }
             }
             return f
+        },
+        selectEvery() {
+            if (this.options == undefined) { return false }
+            let c = 0
+            this.options.forEach(el => {
+                if (this.selectedList.includes(el.id) && !el.disabled) { c++ }
+            })
+            return c == 0
         }
     },
     created() {
@@ -90,6 +116,7 @@ export default {
 }
 .disabled {
     color:LightGray;
+    cursor: not-allowed;
 }
 input {
     margin-right:4px
