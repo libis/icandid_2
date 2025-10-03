@@ -359,7 +359,8 @@ export default new MLCreate({
         hours_ago:"hour(s) ago",
         minutes_ago:"minute(s) ago",
         seconds_ago:"second(s) ago",
-        no_data:"No data available"
+        no_data:"No data available",
+        members:"Members"
 
     }) ]
 })

@@ -37,7 +37,7 @@
                 </tr>
                 <tr v-for="(v,k) in userlist" :key="k">
                     <td><i class="fa fa-user" :class="is_active(v.active)"></i></td>
-                    <td>{{ v.firstname }} {{ v.lastname }} </td>
+                    <td>{{ v.firstname }} {{ v.lastname }}</td>
                     <td>{{ v.email }}</td>
                     <td>{{ v.institution }} </td>
                     <td>{{ v.researchgroup }} </td>
@@ -90,6 +90,21 @@
                         <p class="help is-danger is-hidden" ref="institutionwarn">{{ $ml.get('fieldrequired') }}</p>
                     </div>    
                     <div class="field">
+                        <label class="label">{{ $ml.get("faculty") }}</label>
+                        <div class="control">
+                            <input class="input" type="text" v-model="activeuser.faculty" maxlength="80">
+                        </div>
+                        <p class="help is-danger is-hidden" ref="facultywarn">{{ $ml.get('fieldrequired') }}</p>
+                    </div>
+                    <div class="field">
+                        <label class="label">{{ $ml.get("function") }}</label>
+                        <div class="control">
+                            <input class="input" type="text" v-model="activeuser.function" maxlength="30">
+                        </div>
+                        <p class="help is-danger is-hidden" ref="functionwarn">{{ $ml.get('fieldrequired') }}</p>
+                    </div>
+
+                    <div class="field">
                         <label class="label">{{ $ml.get("researchgroup") }}</label>
                         <div class="control">
                             <input class="input" type="text" v-model="activeuser.researchgroup" maxlength="150">
@@ -97,10 +112,17 @@
                         <p class="help is-danger is-hidden" ref="researchgroupwarn">{{ $ml.get('fieldrequired') }}</p>
                     </div>
                     <div class="field">
+                        <label class="label">{{ $ml.get("promotor") }}</label>
+                        <div class="control">
+                            <input class="input" type="text" v-model="activeuser.promotor" maxlength="80">
+                        </div>
+                        <p class="help is-danger is-hidden" ref="promotorwarn">{{ $ml.get('fieldrequired') }}</p>
+                    </div>
+                    <div class="field">
                         <label class="label">{{ $ml.get("validityperiod") }}</label>
                         <div class="control">
-                        <span class="vertalign">{{ $ml.get('from') }} : </span><input type="date" class="input" style="width:150px" v-model="activeuser.startdate" name="dp_fromdate" />
-                        <span class="vertalign" style="margin-left:5px">{{ $ml.get('toandincluding') }} : </span><input type="date" class="input" style="width:150px" v-model="activeuser.enddate" name="dp_untildate" />
+                        <span class="vertalign">{{ $ml.get('from') }} : </span><input type="date" class="input" style="width:170px" v-model="activeuser.startdate" name="dp_fromdate" />
+                        <span class="vertalign" style="margin-left:5px">{{ $ml.get('toandincluding') }} : </span><input type="date" class="input" style="width:170px" v-model="activeuser.enddate" name="dp_untildate" />
                         </div>
                         <p class="help is-danger is-hidden" ref="validityperiodwarn">{{ $ml.get('fieldrequired') }}</p>
                     </div>
@@ -110,11 +132,24 @@
                             <textarea class="textarea" v-model="activeuser.description" maxlength="450"></textarea>
                         </div>
                     </div>                    
+
+                    <div class="field">
+                        <label class="label">{{ $ml.get("language") }}</label>
+                        <div class="control">
+                            <select v-model="activeuser.language_id" style="border-radius:4px">
+                                <option v-for="(v,k) in options.languages" :key="k" :value="v.id">{{ v['name_'+$ml.current] }}</option>
+                            </select>
+                        </div>
+                    </div>                    
+
                     <div class="field">
                         <label class="label" for="checkbox">{{ $ml.get("active") }} <input type="checkbox" id="checkbox" v-model="activeuser.active"></label>
                     </div>
                     <div class="field">
                         <label class="label" for="checkbox">{{ $ml.get("newsletter") }} <input type="checkbox" id="checkbox" v-model="activeuser.newsletter"></label>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="checkbox">{{ $ml.get("tos") }} <input type="checkbox" id="checkbox" v-model="activeuser.termsofuse"></label>
                     </div>
 
                     <div class="field">
@@ -150,10 +185,11 @@
                     </div>
                     <label class="label" v-if="this.activeuser.last_active_at != undefined">{{ $ml.get("last_active_at") }}</label>
                     <div class="field" v-if="this.activeuser.last_active_at != undefined">
-                        <div class="control" style="color:Black" v-if="this.activeuser.last_active_at != undefined">
+                        <div class="control" style="color:Black">
                             {{ show_last_active() }}
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -162,11 +198,11 @@
                     
                 </div>
                 <div class="column is-one-quarter">
-                    <a class="button is-primary" @click="save()">{{ $ml.get('save') }}</a>&nbsp;
+                    <a class="button is-primary" style="color:White" @click="save()" :disabled="!caniedit()">{{ $ml.get('save') }}</a>&nbsp;
                     <a class="button" @click="edit(-1)">{{ $ml.get('cancel') }}</a>
                 </div>
                 <div class="column is-one-quarter">
-                    <a class="button is-danger" v-if="activeuser.id > 0" @click="del()">{{ $ml.get('delete') }}</a>
+                    <a class="button is-danger" v-if="activeuser.id > 0" @click="del()" :disabled="!caniedit()">{{ $ml.get('delete') }}</a>
                 </div>
             </div>            
 
@@ -196,7 +232,8 @@ export default {
             selectedroleidx:-1,
             options:[],
             triggerD:0,
-            triggerR:0
+            triggerR:0,
+            currentuser:[]
         }
     },
     methods: {
@@ -206,8 +243,8 @@ export default {
                     .post(this.getApiAdminUrl + '/users/' + this.selectedType, this.searchterm)
                     .then(res => {
                         this.userlist = res.data;
-                    });
-                    //.catch(error => console.log(error));
+                    })
+                    .catch(error => console.log(error));
             } else {
                 this.userlist = []
             }
@@ -231,8 +268,8 @@ export default {
                 .then(res => {
                     this.options = res.data;
                     this.updatevia()
-                });
-                //.catch(error => console.log(error));            
+                })
+                .catch(error => console.log(error));            
         },
         save() {
             var error = 0;
@@ -278,10 +315,18 @@ export default {
             } else {
                 this.$refs.validityperiodwarn.classList.add('is-hidden')
             }
-            if (this.activeuser.language_id == undefined) {
-                this.activeuser.language_id = 3;
+            if (this.activeuser.function == undefined || this.activeuser.function.trim() == "") {
+                this.$refs.functionwarn.classList.remove('is-hidden')
+                error++
+            } else {
+                this.$refs.functionwarn.classList.add('is-hidden')
             }
-
+            if (this.activeuser.faculty == undefined || this.activeuser.faculty.trim() == "") {
+                this.$refs.facultywarn.classList.remove('is-hidden')
+                error++
+            } else {
+                this.$refs.facultywarn.classList.add('is-hidden')
+            }
 
             if (error > 0) return false;
             axios
@@ -291,8 +336,8 @@ export default {
                     this.update();
                     this.edit(-1);
                     this.$root.$children[0].getUserInfo()
-                });
-                //.catch(error => console.log(error));
+                })
+                .catch(error => console.log(error));
         },
         checkExists() {
             if (this.activeuseridx == 0) {
@@ -303,7 +348,7 @@ export default {
                             if (res.data.length > 0) {
                                 this.$refs.dialog.alert(this.$ml.get('newuser'), this.$ml.get('userexists'));
                             }
-                        });
+                        })
                         //.catch(error => console.log(error));
                 }
             }
@@ -316,8 +361,8 @@ export default {
                         this.activeuser = res.data;
                         this.update();
                         this.edit(-1);
-                    });
-                    //.catch(error => console.log(error));
+                    })
+                    .catch(error => console.log(error));
             }
         },
         getRoles(value) {
@@ -419,19 +464,62 @@ export default {
             .catch(error => {
               console.log(error);
           });
-      }              
+        },
+        isadmin(u){
+            for (var i=0;i<u.resources.length;i++) {
+                if (u.resources[i].reference == 'admin') return true
+            }
+            for ( i=0;i<u.roles.length;i++) {
+                for (var j=0;j<u.roles[i].resources.length;j++){
+                    if (u.roles[i].resources[j].reference == 'admin') return true
+                }
+            }
+            return false
+        },
+        caniedit() {
+            if (this.activeuser.issuperadmin && !this.currentuser.issuperadmin) return false
+            if (this.isadmin(this.activeuser) && this.currentuser.issuperadmin) return true
+            if (!this.isadmin(this.activeuser)) return true
+            return false
+
+        }              
     },
-    computed: mapGetters(['getApiAdminUrl']),
-    
+    computed: mapGetters(['getApiAdminUrl','getApiUserUrl']), 
+    mounted() {
+        this.$root.$on('openUser', (id) => {
+            this.activeuseridx=-1
+            this.activeuser=[]
+            this.userlist=[]
+            axios
+                .get(this.getApiAdminUrl + '/user/' + id)
+                .then(res => {
+                    this.userlist = res.data;
+                    this.edit(0)
+                })
+                .catch(error => console.log(error));
+        })
+        axios
+            .get(this.getApiUserUrl)
+            .then(res => {
+                this.currentuser = res.data
+            })
+            .catch(error => console.log(error));
+  }    
 }
 </script>
 <style scoped>
 input[type=text] {
-    width:400px
+    width:400px;
+    border-radius: 4px
 }
 input[type=email] {
-    width:400px
+    width:400px;
+    border-radius: 4px
 }
+input[type=date] {
+    border-radius: 4px
+}
+
 input[type=radio] {
     margin-left:10px
 }
@@ -439,7 +527,8 @@ textarea {
     width:400px;
 }
 .field {
-    margin-bottom:20px
+    margin-bottom:20px;
+    display:block
 }
 .hidden {
     display:none;
@@ -448,4 +537,5 @@ textarea {
     color:Black;
     display:block
 }
+
 </style>

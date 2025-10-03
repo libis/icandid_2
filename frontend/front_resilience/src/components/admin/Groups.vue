@@ -27,6 +27,8 @@
             <div class="columns">
                 <div class="column is-half">
                     <CheckboxList label="collections_" :options="options.datasets" :selected="activerole.datasets" @select="getDatasets"></CheckboxList>
+                    <br/>
+                    <List v-if="activerole.users != undefined" :options="getMembers()" label="members" @selectedId="send"></List>
                 </div>
                 <div class="column is-half">
                     <CheckboxList label="functions" :options="options.resources" :selected="activerole.resources" @select="getResources"></CheckboxList>
@@ -37,7 +39,6 @@
                             <textarea class="textarea" v-model="activerole.description" maxlength="255"></textarea>
                         </div>
                     </div>
-
                 </div>
             </div>
             <div class="columns">
@@ -45,7 +46,7 @@
                     
                 </div>
                 <div class="column is-one-quarter">
-                    <a class="button is-primary" @click="save()">{{ $ml.get('save') }}</a>&nbsp;
+                    <a class="button is-primary" style="color:White" @click="save()">{{ $ml.get('save') }}</a>&nbsp;
                     <a class="button" @click="edit(-1)">{{ $ml.get('cancel') }}</a>
                 </div>
                 <div class="column is-one-quarter">
@@ -63,10 +64,12 @@ import axios from "axios";
 import { mapGetters } from "vuex";
 axios.defaults.withCredentials = true;
 import CheckboxList from '../helpers/CheckboxList.vue'
+import List from '../helpers/List.vue'
 
 export default {
     components:{
-        CheckboxList
+        CheckboxList,
+        List
     },
     data() {
         return {
@@ -84,8 +87,8 @@ export default {
                 .get(this.getApiAdminUrl + '/groups')
                 .then(res => {
                     this.roleslist = res.data;
-                });
-                //.catch(error => console.log(error));
+                })
+                .catch(error => console.log(error));
         },
         edit(idx) {
             this.activeidx = idx
@@ -106,8 +109,8 @@ export default {
                 .get(this.getApiAdminUrl + '/options')
                 .then(res => {
                     this.options = res.data;
-                });
-                //.catch(error => console.log(error));            
+                })
+                .catch(error => console.log(error));            
         },
         save() {
             var error = 0;
@@ -125,14 +128,37 @@ export default {
                     this.update();
                     this.edit(-1);
                     this.$root.$children[0].getUserInfo()
-                });
-                //.catch(error => console.log(error));
+                })
+                .catch(error => console.log(error));
         },
         getDatasets(value) {
             this.activerole.datasets = value
         },
         getResources(value) {
             this.activerole.resources = value
+        },
+        getMembers(){
+            var members = this.activerole.users.map(u => { 
+                    var member = {text:u.firstname + " " + u.lastname, id:u.id}
+                    return member
+                }).sort(
+                    (a,b) => {
+                        if (a.text < b.text) {
+                            return -1
+                        }
+                        if (a.text > b.text) {
+                            return -1
+                        }
+                        return 0
+                    }
+                );
+            return members 
+        },
+        send(id) {
+            this.$router.push('/admin/users');
+            window.setTimeout(() => {
+                this.$root.$emit("openUser",id);    
+            }, 500);
         }
     },
     computed: mapGetters(['getApiAdminUrl']),
@@ -144,7 +170,8 @@ export default {
 </script>
 <style scoped>
 input[type=text] {
-    width:400px
+    width:400px;
+    border-radius: 4px;
 }
 input[type=email] {
     width:400px
@@ -153,7 +180,8 @@ input[type=radio] {
     margin-left:10px
 }
 .field {
-    margin-bottom:20px
+    margin-bottom:20px;
+    display:block
 }
 textarea {
     width:540px;
