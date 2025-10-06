@@ -143,6 +143,7 @@ const store = new Vuex.Store(
       getApiSearchUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.search,
       getApiFormUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.form,
       getApiUserUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.user + "?r=" + Date.now(),
+      getApiUserPublicUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.user + "/public?r=" + Date.now(),
       getApiShelfUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.shelf,
       getApiShelvesUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.shelves,
       getApiProfileUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.profile,

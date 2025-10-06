@@ -46,7 +46,7 @@ export default {
       
     }
   },
-  computed: mapGetters(["getAuthenticated","getApiUserUrl","getUsername","getLandingpad","getUser","getPermissions","getDatasets"]),
+  computed: mapGetters(["getAuthenticated","getApiUserUrl","getApiUserPublicUrl","getUsername","getLandingpad","getUser","getPermissions","getDatasets"]),
   methods: {
     ...mapActions(["setUser","setHistory","setSearchStatus","addResults","clearResultset","setNav","setAggregations","clearLandingpad","setAuthentication","checkUserResource"]),
     updateMenu() {
@@ -125,7 +125,7 @@ export default {
         //console.log(error);
         if (error.response.status === 401) {
           axios
-            .get(this.getApiUserUrl + "/public")
+            .get(this.getApiUserPublicUrl)
             .then(res => {
               this.processData(res)
             })
