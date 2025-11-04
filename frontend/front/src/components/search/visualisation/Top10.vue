@@ -81,7 +81,7 @@ export default {
               "aggs": {
                 "ALL": {
                   "terms": {
-                    "field": "prov:wasAttributedTo.prov:wasAssociatedFor._generated.ALL.keyword",
+                    "field": "prov:wasAttributedTo.prov:wasAssociatedFor._generated.ALL",
                     "size": 10
                   }
                 }

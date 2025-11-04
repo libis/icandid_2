@@ -165,7 +165,7 @@ export default {
       for ( i = 0; i<this.data.publ.buckets.length; i++) {
         var xkey = this.data.publ.buckets[i].key
         for ( j = 0; j<this.data.publ.buckets[i].date.buckets.length; j++) {
-          var ykey = this.data.publ.buckets[i].date.buckets[j].key_as_string
+          var ykey = this.data.publ.buckets[i].date.buckets[j].key_as_string.split(" ")[0]
           var yvalue = this.data.publ.buckets[i].date.buckets[j].doc_count
 
           if (yvalue > this.options.plotOptions.heatmap.colorScale.max) this.options.plotOptions.heatmap.colorScale.max = yvalue
