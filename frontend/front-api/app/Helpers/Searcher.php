@@ -657,11 +657,11 @@ class Searcher {
             } else if ($v->field == 'retweet') {
                 $tmpq->query->bool = (object)[];
                 $tmpq->query->bool->filter = [];
-                if ($v->query == "only") {
-                    $tmpq->query->bool->filter[] = ["bool"=>["must"=>["terms"=>["identifier.name.keyword"=>array("retweeted_tweet_id")]]]];
+                if ($v->query == "only" || $v->query == "") {
+                    $tmpq->query->bool->filter[] = ["bool"=>["must"=>["terms"=>["identifier.name"=>array("retweeted_tweet_id")]]]];
                 }
                 if ($v->query == "no") {
-                    $tmpq->query->bool->filter[] = ["bool"=>["must_not"=>["terms"=>["identifier.name.keyword"=>array("retweeted_tweet_id")]]]];
+                    $tmpq->query->bool->filter[] = ["bool"=>["must_not"=>["terms"=>["identifier.name"=>array("retweeted_tweet_id")]]]];
                 }
             } else {
                 if ($v->field == 'originalidentifier') {
