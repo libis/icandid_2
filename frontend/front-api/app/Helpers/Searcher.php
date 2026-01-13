@@ -368,7 +368,14 @@ class Searcher {
         foreach ($result->hits->hits as $k => $v) {
             if (!isset($v->highlight) ) {
                 $result->hits->hits[$k]->highlight = (object)[];
-            } 
+            } else {
+                // remove properties ending with .url because we doe not need those highlighted (it causes trouble with hyperlinks)
+                foreach (get_object_vars($v->highlight) as $key => $value) {
+                    if (str_ends_with($key, ".url")) {
+                        unset($result->hits->hits[$k]->highlight->{$key});
+                    }
+                }
+            }
         }
         
         if (isset($result->aggregations->retweets)) {
