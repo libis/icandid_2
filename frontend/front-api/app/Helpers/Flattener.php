@@ -237,6 +237,7 @@ class Flattener {
                             return array($str);
                             break;
                         case "PerformanceRole":
+                            $str = "";
                             if (isset($data["characterName"])) {
                                 $str = "(" . $data["characterName"] . ")";
                             }
