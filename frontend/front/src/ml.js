@@ -112,9 +112,12 @@ export default new MLCreate({
         and:"and",
         or:"or",
         not:"not",
-        containsthewords:"contains the words",
+        containsthewords:"contains one of the words",
         containsexactphrase:"contains the exact phrase",
         startswith:"starts with",
+        containsthewordsnot:"contains none of the words",
+        containsexactphrasenot:"does not contain the exact phrase",
+        startswithnot:"does not start with",
         any:"Any",
         exportinprogress:"Your export is being prepared.<br><br>You will receive a message at <b>{email}</b> when it is ready for download.",
         searchsaved:"The search is saved.",
@@ -290,7 +293,7 @@ export default new MLCreate({
         lastname_warn:"Lastname is mandatory",
         userexists:"A user with this loginname already exists",
         legislationPassedBy:"Petitioner",
-        legislationType:"Documentype",
+        legislationType:"Documenttype",
         legislationResponsible:"Responsible minister",
         volume:"Volume",
         issue:"Issue",
@@ -327,8 +330,12 @@ export default new MLCreate({
         locationCreated:"Publication place",
         cookiepolicy:"Cookie policy",
         privacypolicy:"Privacy policy",
-        members:"Members"
-
+        members:"Members",
+        addrule:"Add rule",
+        insertrule:"Insert rule",
+        removerule:"Remove rule",
+        removegroup:"Remove group",
+        addgroup:"Add group"
     }),
  
     new MLanguage('nl').create({
@@ -435,9 +442,12 @@ export default new MLCreate({
         and:"en",
         or:"of",
         not:"niet",
-        containsthewords:"bevat de woorden",
+        containsthewords:"bevat één van de woorden",
         containsexactphrase:"bevat de exacte zin",
         startswith:"begint met",
+        containsthewordsnot:"bevat geen van de woorden",
+        containsexactphrasenot:"bevat de exacte zin niet",
+        startswithnot:"begint niet met",
         any:"Alle",
         exportinprogress:"Uw export wordt klaargemaakt.<br><br>U zal een email ontvangen via <b>{email}</b> als deze klaar is.",
         searchsaved:"De zoekopdracht is opgeslagen",
@@ -650,7 +660,12 @@ export default new MLCreate({
         locationCreated:"Publicatieplaats",
         cookiepolicy:"Cookiebeleid",
         privacypolicy:"Privacybeleid",
-        members:"Leden"
+        members:"Leden",
+        addrule:"Regel toevoegen",
+        insertrule:"Regel invoegen",
+        removerule:"Regel verwijderen",
+        removegroup:"Groep verwijderen",
+        addgroup:"Groep toevoegen"
 
     })
   ]
