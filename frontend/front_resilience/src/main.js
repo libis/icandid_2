@@ -5,7 +5,7 @@ import App from './App.vue'
 
 import Home from './components/Home.vue'
 import Search from './components/Search.vue'
-import Statistics from './components/Statistics.vue'
+//import Statistics from './components/Statistics.vue'
 //import About from './components/about/About.vue'
 //import AboutDatasets from './components/about/Datasets.vue'
 import EULA from './components/about/EULA.vue'
@@ -354,12 +354,12 @@ const router = new VueRouter(
           window.location.href = store.state.api_uri.baseurl + store.state.api_uri.paths.record + "/" + to.params.id;
         }
       },
-      {
+/*      {
         path: '/stats',
         name: 'Statistics',
         component: Statistics,
       },      
-/*      {
+      {
         path: '/about',
         name: 'About',
         component: About,

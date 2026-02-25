@@ -58,7 +58,7 @@ export default {
         // ]},
         {id:"2", name:this.$ml.get('search'), vis:"search", route:"/#/search"},
         {id:"1", name:this.$ml.get('collections'), route:"/#/collections", vis:"save"},
-        {id:"3", name:this.$ml.get('statistics'), route:"/#/stats", vis:"noauth"},        
+//        {id:"3", name:this.$ml.get('statistics'), route:"/#/stats", vis:"noauth"},        
         {id:"4", name:this.$ml.get('about'), submenu: [
 //          {id:"41", name:this.$ml.get('abouticandid'), route:"/#/about", vis:"noauth"},
 //          {id:"42", name:this.$ml.get('aboutdatasets'), route:"/#/datasets", vis:"noauth"},
