@@ -62,6 +62,80 @@ Vue.filter('stripHTML', function (value) {
   return text
 });
 
+
+function convertAdvancedToSuper(q) {
+  q.searchtype = 'super'
+  if (q.q.length == 1) {
+    if (q.q[0].operator == "NOT") {
+      q.q[0].condition += 'not';
+    }
+    var qout = {
+      "operator": "and",
+      "rules": [
+        {
+          "field": q.q[0].field,
+          "operator": q.q[0].condition,
+          "value": q.q[0].query,
+          "valueto": q.q[0].queryto,
+          "valuefrom": q.q[0].queryfrom
+        }
+      ]
+    }
+  } else if (q.q.length > 1) {
+    if (q.q[0].operator == "NOT") {
+      q.q[0].condition += 'not';
+      q.q[0].operator = "AND"
+    }
+    if (q.q[1].operator == "NOT") {
+      q.q[1].condition += 'not';
+      q.q[1].operator = "AND"
+    }
+    qout = {
+      "operator": q.q[1].operator.toLowerCase(),
+      "rules": [
+        {
+          "field": q.q[0].field,
+          "operator": q.q[0].condition,
+          "value": q.q[0].query,
+          "valueto": q.q[0].queryto,
+          "valuefrom": q.q[0].queryfrom
+        },
+        {
+          "field": q.q[1].field,
+          "operator": q.q[1].condition,
+          "value": q.q[1].query,
+          "valueto": q.q[1].queryto,
+          "valuefrom": q.q[1].queryfrom
+        }
+        
+      ]
+    }
+    if (q.q.length > 2) {
+      for (var i=2; i<q.q.length; i++) {
+        if (q.q[i].operator == "NOT") {
+          q.q[i].condition += 'not';
+          q.q[i].operator = "AND"
+        }
+        var tmp = {
+          "operator":q.q[i].operator.toLowerCase(),
+          "rules":[]
+        }
+        tmp.rules.push(qout);
+        tmp.rules.push({
+          "field": q.q[i].field,
+          "operator": q.q[i].condition,
+          "value": q.q[i].query,
+          "valueto": q.q[i].queryto,
+          "valuefrom": q.q[i].queryfrom
+        })
+        qout = tmp
+      }
+    }
+  }
+  q.q = qout
+  return q
+}
+
 const MATOMO_DIMENSION_INSTITUTION = 1;
 const MATOMO_DIMENSION_FACULTY = 2;
 const MATOMO_DIMENSION_RESEARCHGROUP = 3;
@@ -192,6 +266,13 @@ const store = new Vuex.Store(
         commit('setUsername', name)
       },
       setQuery( { commit }, q) {
+        // convert advanced searchquery to super searchquery
+        
+        if (q.searchtype == 'advanced') {
+          q = convertAdvancedToSuper(q)
+        }
+
+
         commit ('clearResultset')
         commit ('clearFilters')
         commit ('setQuery', q)

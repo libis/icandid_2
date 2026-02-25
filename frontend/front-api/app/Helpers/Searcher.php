@@ -17,18 +17,6 @@ class Searcher {
     private $scroll = "3000s";
     private $exportstep = 1000;
     private $fieldmapping = [
-/*        'any' => ["name.@value", "headline", "isBasedOn.provider.name.keyword",'isBasedOn.provider.alternateName.keyword', 
-                    "publisher.name.keyword", "articleBody", "creator.name",'author.name','sender.name','sender.alternateName', 
-                    "description","keywords.@value", "text"],
-        'title' => ["name.@value", "headline"],
-        'author' => ['creator.name','author.name','sender.name','sender.alternateName'],
-        'text' => ["articleBody", "description", "text"],
-        'publicationdate' => ['datePublished'],
-        'period' => ['period'],
-        'publisher' => ['publisher.name.keyword'],
-        'provider' => ['isBasedOn.provider.name.keyword','isBasedOn.provider.alternateName.keyword'],
-        'dataset' => ['isBasedOn.isPartOf.name.keyword','isBasedOn.isPartOf.@id'],
-        'type' => ['@type'] */
         'any' => ["@id","identifier.value","*_name", "*_headline", "isBasedOn.provider.name.keyword",'isBasedOn.provider.alternateName.keyword', 
             "publisher.name.keyword", "*_articleBody", "creator.name",'author.name','creator.alternateName','author.alternateName','sender.name','sender.alternateName', 'creator.name.@value','author.name.@value','creator.alternateName.@value','author.alternateName.@value',
             "*_description","*_keywords", "*_text"],
@@ -361,7 +349,6 @@ class Searcher {
         }
 
         $result = json_decode($response->getBody()->getContents());
-
         Log::info($response->getStatusCode() . " " . $response->getReasonPhrase()); // . " : " . count($r->hits->hits));                                    
         Log::info(print_r($result->hits->total,True));
 
@@ -698,6 +685,108 @@ class Searcher {
         return $esq;
     }
 
+    private function superRules($rules) {
+        $result = [];
+        
+        foreach($rules as $r) {
+            
+            if (isset($r->field)) {
+                if ($r->field == 'publicationdate') {
+                    $d = date("Y-m-d", strtotime($r->value));
+                    $tmpq = (object)["range"=>["datePublished_time_frame"=>["gte"=>$d, "lte"=>$d]]];
+                } else if ($r->field == 'period') {
+                    $tmpq = json_decode('{
+                        "range": {
+                            "_datePublished" : {
+                                "gte" : "1970-01-01",
+                                "lte": "2100-12-31"
+                            }
+                        }
+                    }');
+                    if (isset($r->valuefrom) && $r->valuefrom != "") $tmpq->range->_datePublished->gte = date("Y-m-d", strtotime($r->valuefrom));
+                    if (isset($r->valueto) && $r->valueto != "")  $tmpq->range->_datePublished->lte = date("Y-m-d", strtotime($r->valueto));
+                } else if ($r->field == 'label') {
+                    $tmpq = (object)[];
+                    $tmpq->bool = (object)[];
+                    $tmpq->bool->filter = [];
+                    $datasets = array_map(function($d) { return $d->internalident; },DB::table('datasets')->select('internalident')->join('dataset_label',"datasets.id", "=", "dataset_label.dataset_id")->where("dataset_label.label_id", "=", $r->value)->get()->all());
+                    $tmpq->bool->filter[] = ["terms"=>["isBasedOn.isPartOf.@id"=>$datasets]]; 
+                } else if ($r->field == 'retweet') {
+                    $tmpq = (object)[];
+                    $tmpq->bool = (object)[];
+                    $tmpq->bool->filter = [];
+                    if ($r->value == "only" || $r->value == "") {
+                        $tmpq->bool->filter[] = ["bool"=>["must"=>["terms"=>["identifier.name"=>array("retweeted_tweet_id")]]]];
+                    }
+                    if ($r->value == "no") {
+                        $tmpq->bool->filter[] = ["bool"=>["must_not"=>["terms"=>["identifier.name"=>array("retweeted_tweet_id")]]]];
+                    }   
+                } else {
+                    if ($r->field == 'originalidentifier') {
+                        $r->operator = 'phrase';
+                    }
+                    $tmpq = (object)[];
+                    if ($r->operator == 'contains') {
+                        $tmpq->query_string = (object)[];
+                        $tmpq->query_string->fields = $this->fieldmapping[$r->field];
+                        $tmpq->query_string->query = $r->value;
+                    } else if ($r->operator == 'starts') {
+                        $tmpq->query_string = (object)[];
+                        $tmpq->query_string->fields = $this->fieldmapping[$r->field];
+                        $tmpq->query_string->query = $r->value . "*";
+                    } else if ($r->operator == 'phrase') {
+                        $tmpq->query_string = (object)[];
+                        $tmpq->query_string->fields = $this->fieldmapping[$r->field];
+                        $tmpq->query_string->query = '"' . $r->value . '"';
+                    } else if ($r->operator == 'containsnot') {
+                        $tmpq->bool = (object)[];
+                        $tmpq->bool->must_not = (object)[];
+                        $tmpq->bool->must_not->query_string = (object)[];
+                        $tmpq->bool->must_not->query_string->fields = $this->fieldmapping[$r->field];
+                        $tmpq->bool->must_not->query_string->query = $r->value;
+                    } else if ($r->operator == 'startsnot') {
+                        $tmpq->bool = (object)[];
+                        $tmpq->bool->must_not = (object)[];
+                        $tmpq->bool->must_not->query_string = (object)[];
+                        $tmpq->bool->must_not->query_string->fields = $this->fieldmapping[$r->field];
+                        $tmpq->bool->must_not->query_string->query = $r->value . "*";
+                    } else if ($r->operator == 'phrasenot') {
+                        $tmpq->bool = (object)[];
+                        $tmpq->bool->must_not = (object)[];
+                        $tmpq->bool->must_not->query_string = (object)[];
+                        $tmpq->bool->must_not->query_string->fields = $this->fieldmapping[$r->field];
+                        $tmpq->bool->must_not->query_string->query = '"' . $r->value . '"';
+                    }
+                }
+                $result[] = $tmpq;
+            } else if (isset($r->operator)) {
+                if ($r->operator == "and") {
+                    $result[] = ["bool"=>["must"=>$this->superRules($r->rules)]];
+                }
+                if ($r->operator == "or") {
+                    $result[] = ["bool"=>["should"=>$this->superRules($r->rules)]];
+                }
+            }
+        }
+        return $result;
+    }
+
+    private function parseSuperRequest($req) {
+        $q = $req->q;
+        $esq = (object)[];
+        $esq->query = (object)[];
+        $esq->query->bool = (object)[];
+
+        if ($q->operator == "and") {
+            $esq->query->bool->must = $this->superRules($q->rules);
+        }
+        if ($q->operator == "or") {
+            $esq->query->bool->should = $this->superRules($q->rules);
+        }
+        return $esq;
+    }
+
+
 
     private function applyFilters($query, $filters) {
         $terms = [];
@@ -823,6 +912,9 @@ class Searcher {
             break;
             case "advanced":
                 $query = $this->parseAdvancedRequest($req);
+            break;
+            case "super":
+                $query = $this->parseSuperRequest($req);
             break;
             case "id":
                 $query = $this->parseIdRequest($req);

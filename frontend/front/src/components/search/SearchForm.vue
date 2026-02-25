@@ -8,25 +8,30 @@
         <!--<li v-bind:class="{'is-active': (selectedTab=='simple')}">
           <a @click.prevent.stop="selectedTab='simple'">{{ $ml.get('simplesearch') }}</a>
         </li>-->
-        <li v-bind:class="{'is-active': (selectedTab=='advanced')}">
+        <!-- <li v-bind:class="{'is-active': (selectedTab=='advanced')}">
           <a @click.prevent.stop="selectedTab='advanced'">{{ $ml.get('advancedsearch') }}</a>
+        </li> --> 
+        <li v-bind:class="{'is-active': (selectedTab=='super')}">
+          <a @click.prevent.stop="selectedTab='super'">{{ $ml.get('advancedsearch') }}</a>
         </li>
-        <li v-bind:class="{'is-active': (selectedTab=='extended')}">
+        <li v-if="getPermissions.includes('searchb')" v-bind:class="{'is-active': (selectedTab=='extended')}">
           <a @click.prevent.stop="selectedTab='extended'">{{ $ml.get('extendedsearch') }}</a>
         </li>
-
-
       </ul>
     </div>
     <div class="content" v-bind:class="{'is-hidden': (selectedTab!='normal')}">
         <NormalSearch ref="normal" :lang="$ml.current"></NormalSearch>
     </div>
-    <div class="content" v-bind:class="{'is-hidden': (selectedTab!='simple')}">
+    <!-- <div class="content" v-bind:class="{'is-hidden': (selectedTab!='simple')}">
         <SimpleSearch ref="simple"></SimpleSearch>
     </div>
     <div class="content" v-bind:class="{'is-hidden': (selectedTab!='advanced')}">
         <AdvancedSearch ref="advanced"></AdvancedSearch>
+    </div> -->
+    <div class="content" v-bind:class="{'is-hidden': (selectedTab!='super')}">
+        <SuperSearch ref="super"></SuperSearch>
     </div>
+
     <div class="content" v-bind:class="{'is-hidden': (selectedTab!='extended')}">
         <ExtendedSearch ref="extended"></ExtendedSearch>
     </div>
@@ -46,10 +51,11 @@
   </div>
 </template>
 <script>
-import SimpleSearch from './SimpleSearch.vue'
+//import SimpleSearch from './SimpleSearch.vue'
 import NormalSearch from './NormalSearch.vue'
-import AdvancedSearch from './AdvancedSearch.vue'
+//import AdvancedSearch from './AdvancedSearch.vue'
 import ExtendedSearch from './ExtendedSearch.vue'
+import SuperSearch from './SuperSearch.vue'
 import Dialog from '../helpers/Dialog.vue'
 import axios from 'axios'
 import { mapActions, mapGetters } from 'vuex';
@@ -60,10 +66,11 @@ export default {
     };
   },
   components: {
-      SimpleSearch,
+//      SimpleSearch,
       NormalSearch,
-      AdvancedSearch,
+//      AdvancedSearch,
       ExtendedSearch,
+      SuperSearch,
       Dialog
   },
   methods: {
@@ -96,7 +103,7 @@ export default {
           .catch(error => console.log(error));
       }
   },
-  computed: {...mapGetters(['getSearchStatus','getHits','getApiProfileUrl','getSearchRequest','getUser','getDatasets']), 
+  computed: {...mapGetters(['getSearchStatus','getHits','getApiProfileUrl','getSearchRequest','getUser','getDatasets','getPermissions']), 
     labels() {
       this.lang; // forces the labels list to be recomputed (and re-sorted !) on UI-language-change (weird I know)
 
