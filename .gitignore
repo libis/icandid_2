@@ -1,5 +1,8 @@
 .env.json
 .env2.json
+.env3.json
+.env4.json
 volumes/*
 notes.txt
 frontend/front/public/sitemap/*
+.vscode/settings.json
