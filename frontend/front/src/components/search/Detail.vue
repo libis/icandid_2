@@ -323,11 +323,13 @@ export default {
           }
 
           if (dat['@type'] == "Place" && dat["geo"] != undefined) {
+            var out2 = ""
             for (const g of dat["geo"]) {
               if (g["@type"] == "GeoCoordinates") {
-                out += ' <a style="font-size:10px" target="_blank" href="https://geohack.toolforge.org/geohack.php?pagename='+encodeURI(out)+'&params=' + g.longitude + ';' + g.latitude + '">' + g.longitude.toFixed(2) + ',' + g.latitude.toFixed(2) + '</a>';
+                out2 += ' <a style="font-size:11px" target="_blank" href="https://geohack.toolforge.org/geohack.php?pagename='+encodeURI(out.replace(/<[^>]*>?/gm, ''))+'&params=' + g.longitude + ';' + g.latitude + '">' + g.longitude + ',' + g.latitude + '</a>';
               }
             }
+            out += out2
           }
 
           if (dat['@type'] == "MediaObject" || dat['@type'] == "ImageObject") {
