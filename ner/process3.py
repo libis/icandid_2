@@ -1,13 +1,13 @@
 import spacy
 from spacy.cli.download import get_compatibility 
-import json
-import requests
-import datetime
-import random
-import os
-import fcntl
-import copy
-import sys
+import json 
+import requests 
+import datetime 
+import random 
+import os 
+import fcntl 
+import copy 
+import sys 
 from datetime import datetime
 
 requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
@@ -21,12 +21,13 @@ esquery={
     "description",
     "articleBody",
     "text",
+    "alternateName",
     "prov:wasAttributedTo",
     "inLanguage",
     "@context"    
   ],
   "sort": {
-    "sdDatePublished": {
+    "updatetime": {
       "order": "desc"
     }
   },
@@ -69,12 +70,13 @@ esquery2={
         "description",
         "articleBody",
         "text",
+        "alternateName",
         "prov:wasAttributedTo",
         "inLanguage",
         "@context"
     ],
     "sort": {
-        "sdDatePublished": {"order": "desc"}
+        "updatetime": {"order": "desc"}
     },
     "size": 1,
     "query": {
@@ -153,8 +155,7 @@ newblock2 = {
 }
 
 config_file = './' + sys.argv[1]
-print(datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Opening configuration " + config_file);
-config = json.load(open(config_file))
+print(datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Opening configuration " + config_file); config = json.load(open(config_file))
 
 
 models = config["models"]
@@ -162,13 +163,14 @@ elastic_url = config["elastic_url"] + config["elastic_index"] + '/_search?track_
 update_url = config["elastic_url"] + config["elastic_index"] + '/_update/'
 user = config["elastic_user"]
 passwd = config["elastic_password"]
+querydate = config["querydate"]
 esquery["size"] = config["querysize"]
 esquery2["size"] = config["querysize"]
 esquery2["query"]["bool"]["must_not"]["terms"]["prov:wasAttributedTo.version.keyword"] = [spacy.__version__] 
 
 headers = {"Content-Type":"application/json", "Accept":"application/json"}
 
-process_fields = ['headline','description','articleBody','text']
+process_fields = ['headline','description','articleBody','text','alternateName','name']
 
 fh=0
 def run_once():
@@ -200,32 +202,46 @@ if __name__ == '__main__':
     for model in models:
       mod = {"term":{"prov:wasAttributedTo.prov:wasAssociatedFor.@id":"spacy_ner_"+models[model]["@id"]}}
       esquery["query"]["bool"]["must_not"][0]["nested"]["query"]["bool"]["should"].append(mod)
-      for f in ["name","headline","description","articleBody","text"]:
-        esquery["query"]["bool"]["must"][0]["bool"]["should"].append({"term":{f+".@language.keyword":model}})
-        esquery2["query"]["bool"]["must"][1]["bool"]["should"].append({"term":{f+".@language.keyword":model}})
+#      for f in ["name","headline","description","articleBody","text"]:
+#        esquery["query"]["bool"]["must"][0]["bool"]["should"].append({"term":{f+".@language.keyword":model}})
+#        esquery2["query"]["bool"]["must"][1]["bool"]["should"].append({"term":{f+".@language.keyword":model}})
+      for f in process_fields:
+        esquery["query"]["bool"]["must"][0]["bool"]["should"].append({"exists": {"field": model+"_"+f}})
+        esquery2["query"]["bool"]["must"][1]["bool"]["should"].append({"exists": {"field": model+"_"+f}})
     for f in process_fields:
       esquery["query"]["bool"]["must"][1]["bool"]["should"].append({"exists":{"field":f}})
       esquery2["query"]["bool"]["must"][2]["bool"]["should"].append({"exists":{"field":f}})
 
 #    print(json.dumps(esquery, indent=4))
 
-    res = requests.post(elastic_url, auth=(user, passwd), data=json.dumps(esquery), verify=False, headers=headers)
 
+    print(datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Running query 1")
+    res = requests.post(elastic_url, auth=(user, passwd), data=json.dumps(esquery), verify=False, headers=headers)
+#    print (json.dumps(esquery))
+#    print(res.text)
 
     data = json.loads(res.text)
 #    print(json.dumps(data, indent=4, sort_keys=True))
     if (data["hits"]["total"]["value"] == 0):
-      print(json.dumps(esquery2, indent=4))
-      exit()
+#      print(json.dumps(esquery2, indent=4))
+      print(datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Running query 2")
       res = requests.post(elastic_url, auth=(user, passwd), data=json.dumps(esquery2), verify=False, headers=headers)  
       data = json.loads(res.text)
       if (data["hits"]["total"]["value"] == 0):
-        exit()
+        esquery["query"]["bool"]["must_not"][0]["nested"]["query"] = {"range": {"prov:wasAttributedTo.prov:wasAssociatedFor.prov:generatedAtTime": {"gte": querydate } } }
+        print(datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Running query 3")
+#        print(json.dumps(esquery, indent=4))
+        res = requests.post(elastic_url, auth=(user, passwd), data=json.dumps(esquery), verify=False, headers=headers)
+        data = json.loads(res.text)
+        if (data["hits"]["total"]["value"] == 0):
+            stoptime = datetime.now()
+            delta = stoptime - starttime
+            print(datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Runtime : " + '% 2d.%06d' %(delta.seconds,delta.microseconds))            
+            exit()
 
     for article in data["hits"]["hits"]:
         doc_id = article["_id"]
         print(datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "NER : " + doc_id)        
-
         texts = {}
 
         try:
@@ -242,16 +258,17 @@ if __name__ == '__main__':
                 del(euquery[i])
 
         for f in process_fields:
-
-            if f in article["_source"]:
+          if f in article["_source"]:
               if (isinstance(article["_source"][f], list)):
-                if article["_source"][f][0]["@language"] not in texts.keys():
-                    texts[article["_source"][f][0]["@language"]] = {}
-                texts[article["_source"][f][0]["@language"]][f] = article["_source"][f][0]["@value"].replace("\r\n", " ")                 
+                if (article["_source"][f][0] is not None):
+                  if article["_source"][f][0]["@language"] not in texts.keys():
+                      texts[article["_source"][f][0]["@language"]] = {}
+                  texts[article["_source"][f][0]["@language"]][f] = article["_source"][f][0]["@value"].replace("\r\n", " ")                 
               else:
-                if article["_source"][f]["@language"] not in texts.keys():
-                    texts[article["_source"][f]["@language"]] = {}
-                texts[article["_source"][f]["@language"]][f] = article["_source"][f]["@value"].replace("\r\n", " ") 
+                if (article["_source"][f] is not None):
+                  if article["_source"][f]["@language"] not in texts.keys():
+                      texts[article["_source"][f]["@language"]] = {}
+                  texts[article["_source"][f]["@language"]][f] = article["_source"][f]["@value"].replace("\r\n", " ") 
 
 
 #        print(json.dumps(texts, indent=4, sort_keys=True))
@@ -293,6 +310,7 @@ if __name__ == '__main__':
                         else: 
                             out[idx]["count"] += 1
 #                print(json.dumps(out, indent=4, sort_keys=True))
+                newblock2["prov:used"][0]["itemListElement"] = process_fields
                 newblock2["prov:used"][1]["name"] = models[lang]["name"] + " pipeline"
                 newblock2["prov:used"][1]["@id"] = models[lang]["@id"]
                 newblock2["prov:used"][1]["version"] = get_compatibility()[models[lang]["@id"]][0]
@@ -324,4 +342,4 @@ if __name__ == '__main__':
 
     stoptime = datetime.now()
     delta = stoptime - starttime
-    print(datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Runtime : " + '% 2d.%06d' %(delta.seconds,delta.microseconds))
+    print(datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Runtime : " + '% 2d.%06d' %(delta.seconds,delta.microseconds)) 
