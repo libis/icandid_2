@@ -506,7 +506,8 @@ if __name__ == '__main__':
   print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Done waiting")
   
 
-  stoptime = datetime.datetime.now()
-
+  delta = datetime.datetime.now() - starttime
+  runtime = str(datetime.timedelta(seconds=delta.seconds))
+  print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + f"Runtime : {runtime}")
 
 
