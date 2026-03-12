@@ -211,7 +211,7 @@ def selector(queue):
           stoptime = datetime.datetime.now()
           delta = stoptime - starttime
           print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Runtime : " + '% 2d.%06d' %(delta.seconds,delta.microseconds))            
-          exit()
+          return
 
   print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "# records to do : " + str(data["hits"]["total"]["value"]))
   
@@ -253,18 +253,28 @@ def selector(queue):
           if (article["_source"][f][0] is not None):
             if article["_source"][f][0]["@language"] not in texts.keys():
               texts[article["_source"][f][0]["@language"]] = {}
-            texts[article["_source"][f][0]["@language"]][f] = article["_source"][f][0]["@value"].replace("\r\n", " ")                 
+            try: 
+              texts[article["_source"][f][0]["@language"]][f] = article["_source"][f][0]["@value"].replace("\r\n", " ")                 
+            except KeyError:
+              pass
         else:
           if (article["_source"][f] is not None):
             if (isinstance(article["_source"][f]["@language"], list)):
                 for lang in article["_source"][f]["@language"]:
                     if lang not in texts.keys():
                         texts[lang] = {}
-                    texts[lang][f] = article["_source"][f]["@value"].replace("\r\n", " ")
+                    try:
+                      texts[lang][f] = article["_source"][f]["@value"].replace("\r\n", " ")
+                    except KeyError:
+                      pass
             else:
                 if article["_source"][f]["@language"] not in texts.keys():
                     texts[article["_source"][f]["@language"]] = {}
-                texts[article["_source"][f]["@language"]][f] = article["_source"][f]["@value"].replace("\r\n", " ") 
+                try:
+                  texts[article["_source"][f]["@language"]][f] = article["_source"][f]["@value"].replace("\r\n", " ") 
+                except KeyError:
+                  pass
+
 
 #    print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "NER : (A) " + doc_id)
     queue.put({"doc_id":doc_id,"texts":texts,"euquery":euquery,"newblock":newblock})
@@ -457,7 +467,8 @@ if __name__ == '__main__':
 
 
   # Create and start WorkerType1 threads
-  print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Create and start WorkerType1 threads")
+  if (config["stats"]):
+    print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Create and start WorkerType1 threads")
   workers_type1 = []
   for _ in range(NUM_WORKERS_TYPE1):
     t = threading.Thread(target=worker_type1)
@@ -467,12 +478,14 @@ if __name__ == '__main__':
   selector(queue1)
 
   # Add sentinel values for WorkerType1 threads to stop gracefully
-  print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Add sentinel values for WorkerType1 threads to stop gracefully")
+  if (config["stats"]):
+    print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Add sentinel values for WorkerType1 threads to stop gracefully")
   for _ in range(len(list(filter(lambda w: w.is_alive(), workers_type1)))):
     queue1.put(None)
 
   # Create and start WorkerType2 threads
-  print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Create and start WorkerType2 threads")
+  if (config["stats"]):
+    print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Create and start WorkerType2 threads")
   workers_type2 = []
   for _ in range(NUM_WORKERS_TYPE2):
     t = threading.Thread(target=worker_type2)
@@ -480,30 +493,36 @@ if __name__ == '__main__':
     workers_type2.append(t)
 
   # Wait for WorkerType1 to finish Queue1
-  print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Wait for WorkerType1 to finish Queue1")
+  if (config["stats"]):
+    print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Wait for WorkerType1 to finish Queue1")
   queue1.join()
  
 
   # Send sentinel to WorkerType2
-  print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Send sentinel to WorkerType2")
+  if (config["stats"]):
+    print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Send sentinel to WorkerType2")
   for _ in range(len(list(filter(lambda w: w.is_alive(), workers_type2)))):
     queue2.put(None)
   stats()
 
   # Wait for WorkerType2 to finish
-  print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Wait for WorkerType2 to finish")
+  if (config["stats"]):
+    print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Wait for WorkerType2 to finish")
   queue2.join()
 
   # Wait for all threads to exit
-  print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Wait for all threads (1) to exit")
+  if (config["stats"]):
+    print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Wait for all threads (1) to exit")
   for t in workers_type1:
     t.join()
 
-  print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Wait for all threads (2) to exit")
+  if (config["stats"]):
+    print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Wait for all threads (2) to exit")
   for t in workers_type2:
     t.join()
 
-  print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Done waiting")
+  if (config["stats"]):
+    print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Done waiting")
   
 
   delta = datetime.datetime.now() - starttime
