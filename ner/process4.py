@@ -12,9 +12,9 @@ import time
 requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
 
 config_file = './' + sys.argv[1]
-print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Opening configuration " + config_file)
-config = json.load(open(config_file))
-ner_service_url = config["ner_service_url"]
+print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Opening configuration " + config_file) 
+config = json.load(open(config_file)) 
+ner_service_url = config["ner_service_url"] 
 elastic_url = config["elastic_url"] + config["elastic_index"] + '/_search?track_total_hits=true'
 elastic_docurl = config["elastic_url"] + config["elastic_index"] + '/_doc/'
 update_url = config["elastic_url"] + config["elastic_index"] + '/_update/'
@@ -210,7 +210,7 @@ def selector(queue):
       if (data["hits"]["total"]["value"] == 0):
           stoptime = datetime.datetime.now()
           delta = stoptime - starttime
-          print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Runtime : " + '% 2d.%06d' %(delta.seconds,delta.microseconds))            
+          #print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Runtime : " + '% 2d.%06d' %(delta.seconds,delta.microseconds))            
           return
 
   print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "# records to do : " + str(data["hits"]["total"]["value"]))
@@ -250,13 +250,14 @@ def selector(queue):
 
       if f in article["_source"]:
         if (isinstance(article["_source"][f], list)):
-          if (article["_source"][f][0] is not None):
-            if article["_source"][f][0]["@language"] not in texts.keys():
-              texts[article["_source"][f][0]["@language"]] = {}
-            try: 
-              texts[article["_source"][f][0]["@language"]][f] = article["_source"][f][0]["@value"].replace("\r\n", " ")                 
-            except KeyError:
-              pass
+          for i in range(len(article["_source"][f])):
+              if (article["_source"][f][i] is not None):
+                if article["_source"][f][i]["@language"] not in texts.keys():
+                  texts[article["_source"][f][i]["@language"]] = {}
+                try: 
+                  texts[article["_source"][f][i]["@language"]][f] = article["_source"][f][i]["@value"].replace("\r\n", " ")                 
+                except KeyError:
+                  pass
         else:
           if (article["_source"][f] is not None):
             if (isinstance(article["_source"][f]["@language"], list)):
@@ -292,11 +293,9 @@ def worker_type1():
     doc_id = copy.deepcopy(item["doc_id"])
     print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "NER : " + doc_id + " " + str(len(json.dumps(item))))
     newblock = copy.deepcopy(item["newblock"])
-
     for lang,fields in item["texts"].items():
       fieldkeys = list(fields.keys())
       content = ""
-
       if lang in models.keys():
         for f in process_fields:
             if (f not in fields.keys()):
@@ -322,18 +321,16 @@ def worker_type1():
         else:
           try:
             res = requests.post(ner_service_url+"/entities",data=json.dumps({"text":content[0:1000000],"model":models[lang]["@id"]}),timeout=6000)
-            
           except:
             print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "NER : " + doc_id + " failed")
             #print(json.dumps({"text":content[0:1000000],"model":models[lang]["@id"]}))
             continue
-          
           try:
             ner_result = json.loads(res.text)
-          except json.JSONDecodeError:
+          except json.JSONDecodeError:  
             #print(ner_result.text)
-            continue  
-            
+            ner_result = []
+
         out = []
 
         for ent in ner_result:
@@ -528,5 +525,3 @@ if __name__ == '__main__':
   delta = datetime.datetime.now() - starttime
   runtime = str(datetime.timedelta(seconds=delta.seconds))
   print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + f"Runtime : {runtime}")
-
-
