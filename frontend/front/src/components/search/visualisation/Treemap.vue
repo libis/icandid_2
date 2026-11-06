@@ -111,7 +111,6 @@ export default {
           .post(this.getApiQueryUrl, es_query)
           .then(res => {
             this.data = res.data.aggregations;
-            console.log(this.data)
             this.calculateChartData();
             this.loading = false
           })
