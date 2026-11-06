@@ -43,7 +43,7 @@ $timeings[] = microtime(True);
 header('Content-Type:application/json');
 http_response_code($result_code);
 print $result;
-
+//writelog($result);
 $s = "";
 for ($i = 1; $i<count($timeings); $i++) {
     $s .= ($timeings[$i] - $timeings[$i-1]) . "  ";
