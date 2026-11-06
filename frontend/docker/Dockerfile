@@ -1,16 +1,13 @@
-#FROM php:7.4-apache
-FROM php:8.1-apache
+FROM amd64/php:8.5.12-apache
 
 RUN apt-get upgrade -y
-RUN apt-get update -y && \
-    apt-get install -y net-tools mailutils \
-    apt-utils default-mysql-client git zip unzip curl libzip-dev vim net-tools less libxml2 libxml2-dev cron sqlite3 \
-    libpq-dev libonig-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
-    && apt-get clean \
-    && docker-php-ext-install -j$(nproc) iconv \
+RUN apt-get update -y 
+RUN apt-get install -y net-tools mailutils apt-utils default-mysql-client git zip unzip curl libzip-dev vim net-tools less libxml2 libxml2-dev cron sqlite3 libpq-dev libonig-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev 
+RUN apt-get clean 
+RUN docker-php-ext-install -j$(nproc) iconv \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install mysqli pdo pdo_mysql mbstring ctype bcmath xml opcache pgsql pdo_pgsql 
+    && docker-php-ext-install mysqli pdo pdo_mysql mbstring ctype bcmath xml pgsql pdo_pgsql 
 
 RUN pecl install zip && docker-php-ext-enable zip
 

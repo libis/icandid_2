@@ -1,19 +1,26 @@
-#FROM php:7.4-apache
-FROM php:8.1-apache
+FROM amd64/php:8.5.12-apache
 
 RUN apt-get upgrade -y
+RUN apt-get update -y
+RUN apt-get install -y net-tools systemctl mailutils apt-utils default-mysql-client git zip unzip curl libzip-dev vim net-tools less libxml2 libxml2-dev cron sqlite3 libpq-dev libonig-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev 
+RUN apt-get clean 
 
-RUN apt-get update  && \
-    apt-get install -y net-tools systemctl mailutils \
-    apt-utils default-mysql-client git zip unzip curl libzip-dev vim net-tools less libxml2 libxml2-dev cron sqlite3 \
-    libpq-dev libonig-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
-    && apt-get clean \
-    && docker-php-ext-install -j$(nproc) iconv \
-    && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install mysqli pdo pdo_mysql mbstring ctype bcmath xml opcache pgsql pdo_pgsql 
+RUN docker-php-ext-install mysqli 
+RUN docker-php-ext-install pdo 
+RUN docker-php-ext-install pdo_mysql 
+RUN docker-php-ext-install mbstring 
+RUN docker-php-ext-install ctype 
+RUN docker-php-ext-install bcmath 
+RUN docker-php-ext-install xml
+#RUN docker-php-ext-install opcache
+RUN docker-php-ext-install pgsql 
+RUN docker-php-ext-install pdo_pgsql 
 
-RUN pecl install zip && docker-php-ext-enable zip
+RUN docker-php-ext-install -j$(nproc) iconv 
+RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ 
+RUN docker-php-ext-install -j$(nproc) gd 
+RUN pecl install zip 
+RUN docker-php-ext-enable zip
 
 RUN a2enmod rewrite
 
