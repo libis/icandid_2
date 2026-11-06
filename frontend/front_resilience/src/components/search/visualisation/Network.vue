@@ -9,6 +9,7 @@
 import D3Network from 'vue-d3-network'
 import Loader from '../../helpers/Loader.vue'
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import { mapGetters } from "vuex";
 
   

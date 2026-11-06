@@ -102,7 +102,7 @@ class CollectionController extends Controller
 
     public function all(Request $request) {
         $this->authorize('search');
-        $query = \App\Dataset::with('languages')->with('labels')->where('hidden',0);
+        $query = \App\Dataset::with('languages')->with('labels')->where('hidden',0)->where('available',1);
         $result = $query->get()->all();
         return $result;
     }

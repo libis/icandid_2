@@ -1,17 +1,17 @@
 <template>
   <div class="block">
     <div class="columns">
-      <div class="column is-2"></div>
+      <div class="column is-1"></div>
       <div class="is-divider-vertical" style="padding:0"></div>
-      <div class="column is-8">
-        <Detail :activeResult="this.record" ref="detail" :highlights="false"></Detail>
+      <div class="column is-10">
+        <Detail :data="record._source" ref="detail" v-if="record != ' '"></Detail>
         <div v-if="record == null">
           {{ $ml.get('recordnotfound')}}
         </div>
         <Loader v-if="record == ' '"></Loader>
       </div>
       <div class="is-divider-vertical" style="padding:0" ></div>
-      <div class="column is-2"></div>
+      <div class="column is-1"></div>
     </div>
 </div>
 </template>
@@ -44,30 +44,36 @@ export default {
   },
   methods:{
     updateRecord() {
-      this.queryObj.q = this.$route.params.id;
-      //this.$gtag.event('search', {'event_category' : 'engagement' , 'event_label': JSON.stringify(this.queryObj) })
-      axios
-        .post(this.getApiSearchUrl, this.queryObj)
-        .then(res => {
-          var data = res.data.hits.hits[0]
-          if (data != undefined) {
-            data.highlight = {}
-          }
-          this.record = data
-        })
-        .catch(error => {
-          if (error.response.status === 401) {
-            axios
-              .post(this.getApiSearchUrl+"/public", this.queryObj)
-              .then(res => {
-                var data = res.data.hits.hits[0]
-                if (data != undefined) {
-                  data.highlight = {}
-                }
-                this.record = data
-              })
-          }
-        });      
+      this.record = " "
+      this.$nextTick(() => {
+        this.queryObj.q = this.$route.params.id;
+        //this.$gtag.event('search', {'event_category' : 'engagement' , 'event_label': JSON.stringify(this.queryObj) })
+        axios
+          .post(this.getApiSearchUrl, this.queryObj)
+          .then(res => {
+            console.log(res.data)
+            var data = res.data.hits.hits[0]
+            if (data != undefined) {
+              data.highlight = {}
+            }
+            console.log("1", data)
+            this.record = data
+          })
+          .catch(error => {
+            if (error.response.status === 401) {
+              axios
+                .post(this.getApiSearchUrl+"/public", this.queryObj)
+                .then(res => {
+                  var data = res.data.hits.hits[0]
+                  if (data != undefined) {
+                    data.highlight = {}
+                  }
+                  console.log("2", data)
+                  this.record = data
+                })
+            }
+          });      
+        });
     }
   },
   watch: {

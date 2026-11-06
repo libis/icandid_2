@@ -5,21 +5,19 @@ import App from './App.vue'
 
 import Home from './components/Home.vue'
 import Search from './components/Search.vue'
-//import Statistics from './components/Statistics.vue'
-//import About from './components/about/About.vue'
-//import AboutDatasets from './components/about/Datasets.vue'
 import EULA from './components/about/EULA.vue'
-//import Help from './components/about/Help.vue'
-//import Citation from './components/about/Citation.vue'
 import Records from './components/Records.vue'
+import Favourites from './components/Favourites.vue'
+import Contact from './components/Contact.vue'
 import Searches from './components/Searches.vue'
 import SearchHistory from './components/SearchHistory.vue'
 import Collections from './components/Collections.vue'
+import CollectionsMore from './components/CollectionsMore.vue'
 import Page from './components/about/Page.vue'
 
-import AccessRequest from './components/requests/Access.vue'
+/*import AccessRequest from './components/requests/Access.vue'
 import NewDatasetRequest from './components/requests/Newdataset.vue'
-import DatasetRequest from './components/requests/Dataset.vue'
+import DatasetRequest from './components/requests/Dataset.vue' */
 
 import Users from './components/admin/Users.vue'
 import Datasets from './components/admin/Datasets.vue'
@@ -42,6 +40,11 @@ Vue.directive('linkified', linkify)
 
 import VueCookies from 'vue-cookies'
 Vue.use(VueCookies)
+
+import VueSocialSharing from 'vue-social-sharing'
+Vue.use(VueSocialSharing)
+
+
 
 Vue.config.productionTip = false
 
@@ -83,6 +86,7 @@ const store = new Vuex.Store(
           user:"/profile/user",
           shelf:"/profile/shelf",
           shelves:"/profile/shelves",
+          favourites:"/profile/favourites",
           profile:"/profile",
           ddlists:"/ddlists",
           stats:"/stats",
@@ -99,6 +103,17 @@ const store = new Vuex.Store(
           q:'',
           s:'relevance',
           f:[],
+          sf:{
+            type:[],
+            collection:[],
+            inlanguage:[],
+            datePublished_from:"",
+            datePublished_until:"",
+            author:[],
+            contributor:[],
+            publisher:[],
+            locationcreated:[]
+          },
           nav:'first'
         },
         resultset:[],
@@ -108,11 +123,14 @@ const store = new Vuex.Store(
         resultType:false,
         hits:-1,
         aggregations:[],
-        history: []
+        history: [],
+        page:1,
+        pagesize:15
       },
       landingpad : window.location.href.match(/\/#\/(record)\/(.+)/),
       elasticquery:'',
-      selectedDatasets:[]
+      selectedDatasets:[],
+      activeRecord:null
     },
     getters: {
       getAuthenticated: (state) => state.user.authenticated,
@@ -146,6 +164,7 @@ const store = new Vuex.Store(
       getApiUserPublicUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.user + "/public?r=" + Date.now(),
       getApiShelfUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.shelf,
       getApiShelvesUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.shelves,
+      getApiFavouritesUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.favourites,
       getApiProfileUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.profile,
       getApiDdlistsUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.ddlists,
       getApiStatsUrl: (state) => state.api_uri.baseurl + state.api_uri.paths.stats,
@@ -166,6 +185,11 @@ const store = new Vuex.Store(
       getHits: (state) => state.search.hits,
       getAggregations: (state) => state.search.aggregations,
       getFilters: (state) => state.search.queryObj.f,
+      getSelectedFilters: (state) => {
+        return state.search.queryObj.sf
+      },
+      getPage: (state) => state.search.page,
+      getPagesize: (state) => state.search.pagesize,
       getSavedQueries: (state) => state.user.queries,
       getSavedSets: (state) => {
         return state.eshelves.map(function(val) {
@@ -177,7 +201,8 @@ const store = new Vuex.Store(
       getSelectedResults: (state) => state.search.selectedResults,
       getLandingpad: (state) => state.landingpad,
       getElasticQuery: (state) => state.elasticquery,
-      getSelectedDatasets: (state) => state.selectedDatasets
+      getSelectedDatasets: (state) => state.selectedDatasets,
+      getActiveRecord:(state) => state.activeRecord
     },
     actions: {
       setAuthentication( { commit }, s) {
@@ -191,6 +216,11 @@ const store = new Vuex.Store(
         commit ('clearFilters')
         commit ('setQuery', q)
       },
+      resetQuery( { commit }, q) {
+        commit ('clearResultset')
+        commit ('resetQuery', q)
+      },
+    
       setSearchStatus( {commit} , s) {
         commit ('setSearchStatus', s)
       },
@@ -216,6 +246,9 @@ const store = new Vuex.Store(
       setNav( {commit}, n) {
         commit ('setNav', n)
       },
+      setPage( {commit}, n) {
+        commit ('setPage', n)
+      },
       setHits( {commit}, num) {
         commit('setHits', num)
       },
@@ -224,6 +257,9 @@ const store = new Vuex.Store(
       },
       setFilters( {commit}, filters) {
         commit('setFilters', filters)
+      },
+      setSelectedFilters( {commit}, filters) {
+        commit('setSelectedFilters', filters)
       },
       saveQuery( {commit}, msg ) {
         commit('saveQuery', msg)
@@ -242,6 +278,13 @@ const store = new Vuex.Store(
       clearLandingpad( { commit} ) {
         commit('clearLandingpad')
       },
+      clearPage( { commit} ) {
+        commit('clearPage')
+      },
+      clearFilters( { commit} ) {
+        commit('clearFilters')
+      },
+
       clearAggregations( { commit} ) {
         commit('clearAggregations')
       },
@@ -256,6 +299,9 @@ const store = new Vuex.Store(
       },
       addSavedShelf( { commit }, data) {
         commit('addSavedShelf', data);
+      },
+      setActiveRecord( { commit }, data) {
+        commit('setActiveRecord', data);
       }
 
     },
@@ -270,6 +316,7 @@ const store = new Vuex.Store(
         state.search.selectedResults = []
       },
       clearFilters: (state) => { state.search.queryObj.f = [] },
+      clearPage: (state) => { state.search.page = 1 },
       addResults: (state, data) => {
         data.forEach(
           function (value) {
@@ -281,19 +328,50 @@ const store = new Vuex.Store(
         state.search.queryObj = {q:'', s:'relevance', f:[], nav:'first'}
         state.search.queryObj = {...state.search.queryObj, ...q}
       },
+      resetQuery: (state, q) => {
+        state.search.queryObj = {q:'', s:'relevance', f:[], nav:'first'}
+        state.search.queryObj = {...state.search.queryObj, ...q}
+      },
       setSearchStatus: (state, s) => {state.search.loading = s},
       setActiveResultIdx: (state, idx) => { state.search.activeResultIdx = idx},
       setSorting: (state, s) => { 
         state.search.queryObj.s = s 
       },
       setNav: (state, n) => { state.search.queryObj.nav = n },
+      setPage: (state, n) => { state.search.page = n },
       setHits: (state, num) => { state.search.hits = num },
       setAggregations: (state, aggs) => { 
         if (state.search.aggregations.length == 0) {
           state.search.aggregations = aggs 
         } 
       },
-      setFilters: (state, filters) => { state.search.queryObj.f = filters },
+      setFilters: (state, filters) => { 
+        state.search.queryObj.f = filters 
+      },
+      setSelectedFilters: (state, filters) => { 
+        state.search.queryObj.sf = filters 
+        let fArr = []
+        let range = ""
+        for (const [filtername, items] of Object.entries(filters)) {
+          if (Array.isArray(items)) {
+            items.forEach((item) => {
+              fArr.push(filtername+":"+item)
+            })
+          }
+        }
+
+        if ( filters['datePublished_from'] != null && filters['datePublished_from'] != "") {
+          range = range + filters['datePublished_from'] + "-01-01"
+        }
+        if ( filters['datePublished_until'] != null && filters['datePublished_until'] != "") {
+          range = range + " " + filters['datePublished_until'] + "-12-31"
+        }
+        if (range != "") {
+          fArr.push("publicationdaterange:" + range)
+        }
+        state.search.queryObj.f = fArr
+      },
+
       setUser: (state, user) => {
         if (user.authenticated) {
           state.user = user
@@ -313,7 +391,8 @@ const store = new Vuex.Store(
           state.eshelves.filter(e => e.id == data.shelfid)[0].items = []
         }
         state.eshelves.filter(e => e.id == data.shelfid)[0].items = state.eshelves.filter(e => e.id == data.shelfid)[0].items.concat(data.items)
-      }
+      },
+      setActiveRecord: (state, selected) => { state.activeRecord = selected },
     }
   }
 );
@@ -336,7 +415,7 @@ const router = new VueRouter(
         path: '/search',
         name: 'Search',
         component: Search,
-        beforeEnter: (to, from, next) => ( checkUserResource('search')?next():next(false) )
+        //beforeEnter: (to, from, next) => ( checkUserResource('search')?next():next(false) )
       },
 
       {
@@ -354,21 +433,6 @@ const router = new VueRouter(
           window.location.href = store.state.api_uri.baseurl + store.state.api_uri.paths.record + "/" + to.params.id;
         }
       },
-/*      {
-        path: '/stats',
-        name: 'Statistics',
-        component: Statistics,
-      },      
-      {
-        path: '/about',
-        name: 'About',
-        component: About,
-      },
-      {
-        path: '/datasets',
-        name: 'AboutDatasets',
-        component: AboutDatasets,
-      },*/
       {
         path: '/page/:page',
         name: 'Page',
@@ -379,16 +443,11 @@ const router = new VueRouter(
         name: 'EULA',
         component: EULA,
       },
-/*      {
-        path: '/citation',
-        name: 'AboutCitations',
-        component: Citation,
-      },
       {
-        path: '/help',
-        name: 'Help',
-        component: Help,
-      },*/
+        path: '/contact',
+        name: 'Contact',
+        component: Contact,
+      },
       {
         path: '/profile/records',
         name: 'Records',
@@ -396,16 +455,23 @@ const router = new VueRouter(
         beforeEnter: (to, from, next) => ( checkUserResource('search')?next():next(false) )
       },
       {
+        path: '/profile/favourites',
+        name: 'Favourites',
+        component: Favourites,
+        beforeEnter: (to, from, next) => ( checkUserResource('save')?next():next(false) )
+      },      
+      {
         path: '/profile/searches',
         name: 'Searches',
         component: Searches,
         beforeEnter: (to, from, next) => ( checkUserResource('search')?next():next(false) )
       },
+
       {
         path: '/profile/history',
         name: 'SearchHistory',
         component: SearchHistory,
-        beforeEnter: (to, from, next) => ( checkUserResource('search')?next():next(false) )
+        beforeEnter: (to, from, next) => ( checkUserResource('save')?next():next(false) )
       },
       {
         path: '/profile/user',
@@ -413,22 +479,6 @@ const router = new VueRouter(
         component: User,
         beforeEnter: (to, from, next) => ( checkUserResource('search')?next():next(false) )
       }, 
-      {
-        path: '/request/access',
-        name: 'Access',
-        component: AccessRequest
-      },
-      {
-        path: '/request/dataset',
-        name: 'Dataset',
-        component: DatasetRequest
-      },
-      {
-        path: '/request/newdataset',
-        name: 'Newdataset',
-        component: NewDatasetRequest,
-        beforeEnter: (to, from, next) => ( checkUserResource('search')?next():next(false) )        
-      },
       {
         path: '/admin/users',
         name: 'Users',
@@ -466,9 +516,14 @@ const router = new VueRouter(
         beforeEnter: (to, from, next) => ( checkUserResource('content')?next():next(false) )
       },
       {
+        path: '/collectionsregistry',
+        name: 'CollectionsRegistry',
+        component: Collections
+      }      ,
+      {
         path: '/collections',
         name: 'Collections',
-        component: Collections
+        component: CollectionsMore
       }
     ]
   }

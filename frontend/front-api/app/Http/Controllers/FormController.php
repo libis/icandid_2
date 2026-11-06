@@ -74,6 +74,15 @@ class FormController extends Controller
         Mail::to($m->to)->send(new Email(nl2br($m->body),$m->subject));
     }
 
+    public function contact(Request $request) {
+        $m = json_decode($request->getContent());
+
+        $body = "Sender :" . $m->formdata->name . "\n";
+        $body = "Email :" . $m->formdata->email . "\n";
+        $body = "About :" . $m->formdata->option . "\n";
+        $body = "\n\n" . $m->formdata->message;
+        Mail::to(config('app.contact'))->send(new Email(nl2br($body),$m->subject . ":" . $m->formdata->option));
+    }
 
     private function label($k) {
         $l = array(

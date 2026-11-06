@@ -60,6 +60,7 @@ class Controller extends BaseController
             }
         } else {
             $this->user_eppn = "u0124029@kuleuven.be";
+            //$this->user_eppn = "";
         }
 
         if ($this->user_eppn == "" || $this->user_eppn == Null) {
@@ -78,8 +79,29 @@ class Controller extends BaseController
                 ->firstOrFail();
             $this->user_authenticated = true;
         } catch (ModelNotFoundException $e) {
-            $this->user_authenticated = false;
+            if (config('app.autousercreate')) {  // for resilience, if a user comes in and is unknown to the app,just create the user
+                $defval = config('app.autousercreate');
+                $user = new \App\User;
+                $user->eppn = $this->user_eppn;
+                $user->active = 1;
+                $user->language_id = $defval['language_id'];;
+                $user->startdate = Carbon::now();
+                $user->enddate = Carbon::now()->addYears(50);
+                $user->save();
+                $user->roles()->attach($defval['role_id']);
+                $user->save();
+
+                $this->user = \App\User::where('eppn',$this->user_eppn)
+                    ->where('active',1)
+                    ->whereDate('startdate', '<=', Carbon::now())
+                    ->whereDate('enddate', '>=', Carbon::now())
+                    ->firstOrFail();
+                $this->user_authenticated = true;
+            } else {
+                $this->user_authenticated = false;
+            }
         }
+    
     
         if ($this->user_authenticated) {
             

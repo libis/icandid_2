@@ -1,44 +1,58 @@
 <template>
-  <div id="app" class="container">
+  <div id="app" class="container" >
     <div class="block">
       <NavBar :auth="getAuthenticated" :menu="navmenu" :lang="$ml.current" ref="navbar"></NavBar>
     </div>
     <Message ref="popupwarnmessage"></Message>
-    <transition name="fade" mode="out-in">
+    <transition name="fade" mode="out-in" >
       <keep-alive>
         <router-view />
       </keep-alive>
     </transition>
     <footer class="footer">
-      <div class="columns" >
-        <div class="column is-2">
-          <p><br>
-            {{ $ml.get('platformby') }}<br/><a href="http://www.libis.be" target="_blank"><img src="/img/libis.png" width=85 valign="center"></a>
-          </p>
+      
+      <div class="columns" >        
+        <div class="column is-half">
+          <img src="https://assets.libis.be/reiresearch/footer_logo.png" width="209">
+          <p>{{ $ml.get('footer_text') }}</p>
+          <div class="columns" style="padding-top:20px">
+            <div class="column is-3"><a class="link" href="/#/page/tos">{{ $ml.get('tos') }}</a></div>
+            <div class="column is-3"><a class="link" href="/#/page/privacy">{{ $ml.get('privacy') }}</a></div>
+            <div class="column is-3"><a class="link" href="/#/page/cookies">{{ $ml.get('cookies') }}</a></div>
+            <div class="column is-3"></div>
+          </div>
+
         </div>
-        <div class="column is-5">
-          <a href="https://www.resilience-ri.eu/" target="_blank"><img src="/img/Logo_ReIReSearch.png" valign="center" style="height:100px;max-width:400px;z-index:10"></a>
-        </div>
-        <div class="column is-5">
-          <span>
-            <br>
-          <img src="/img/EN_FundedbytheEU_RGB_POS.png" style="height:68px;vertical-align:top;margin-right:8px">
-          </span>
+        <div class="column is-half" style="display: grid; align-items: center; justify-items: center;">
+          <div style="display:flex;gap:40px">
+            <img src="https://assets.libis.be/reiresearch/eu_funded_logo_white.png" style="height:32px" >
+            <img src="https://assets.libis.be/Logos/KU-Leuven-LIBIS-white-small.webp" style="height:32px" >
+            <img src="https://assets.libis.be/reiresearch/resilience_logo_white.png" style="height:32px" >
+          </div>
         </div>
       </div>
+      
     </footer>    
+    <div class="subfooter">
+      <p>{{ $ml.get('subfooter') }}</p>
+    </div>
+    <TermsConsent
+      @accepted="onTermsAccepted"
+    />
   </div>
 </template>
 <script>
 import NavBar from './components/helpers/NavBar.vue'
 import Message from './components/helpers/Message.vue'
+import TermsConsent from './components/TermsConsent.vue'
 import { mapGetters, mapActions } from "vuex";
 import axios from 'axios';
 export default {
   name: 'App',
   components: {
     NavBar,
-    Message
+    Message,
+    TermsConsent
   },
   data() {
     return {
@@ -52,29 +66,12 @@ export default {
     updateMenu() {
       this.navmenu = [];
       this.navmenu = [
-        // {id:"2", name:this.$ml.get('search'), vis:"search", submenu:[
-        //   {id:"21", name:this.$ml.get('collections'), route:"/#/search/collection", vis:"search_collections"},
-        //   {id:"22", name:this.$ml.get('media'), route:"/#/search/media", vis:"search_media"}
-        // ]},
-        {id:"2", name:this.$ml.get('search'), vis:"search", route:"/#/search"},
-        {id:"1", name:this.$ml.get('collections'), route:"/#/collections", vis:"save"},
-//        {id:"3", name:this.$ml.get('statistics'), route:"/#/stats", vis:"noauth"},        
-        {id:"4", name:this.$ml.get('about'), submenu: [
-//          {id:"41", name:this.$ml.get('abouticandid'), route:"/#/about", vis:"noauth"},
-//          {id:"42", name:this.$ml.get('aboutdatasets'), route:"/#/datasets", vis:"noauth"},
-          {id:"41", name:this.$ml.get('aboutresilience'), route:"/#/page/aboutresilience", vis:"noauth"},
-          {id:"42", name:this.$ml.get('aboutdatasets'), route:"/#/page/aboutdatasets", vis:"noauth"},
-          {id:"43", name:this.$ml.get('eula'), route:"/#/eula", vis:"noauth"},
-//          {id:"44", name:this.$ml.get('aboutcitations'), route:"/#/citation", vis:"noauth"},
-//          {id:"44", name:this.$ml.get('aboutcitations'), route:"/#/page/aboutcitation", vis:"noauth"},
-        ]},
-//        {id:"5", name:this.$ml.get('help'), route:"/#/help", vis:"noauth"},
-//        {id:"5", name:this.$ml.get('help'), route:"/#/page/help", vis:"noauth"},
+        /*{id:"2", name:this.$ml.get('search'), vis:"novis", route:"/#/search"}, */
+        {id:"3", name:this.$ml.get('home'), vis:"noauth", route:"/#/"},
+        {id:"1", name:this.$ml.get('collections'), route:"/#/collections", vis:"noauth"},
+        {id:"4", name:this.$ml.get('about'), route:"/#/page/about", vis:"noauth"},
         {id:"5", name:this.$ml.get('help'), route:"https://reiresearch.helpdocs.com/", vis:"noauth"},
-/*        {id:"7", name:this.$ml.get('requests'), submenu:[
-          {id:"71", name:this.$ml.get('access'), "route":"/#/request/access", vis:"unauth"},
-          {id:"72", name:this.$ml.get('dataset_on_demand'), "route":"/#/request/dataset", vis:"auth"}
-        ],}, */
+        {id:"6", name:this.$ml.get('contact'), route:"/#/contact", vis:"noauth"},
         {id:"7", name:this.$ml.get('admin'), submenu:[
           {id:"71", name:this.$ml.get('users'), route:"/#/admin/users", vis:"admin"},
           {id:"72", name:this.$ml.get('groups'), route:"/#/admin/groups", vis:"admin"},
@@ -83,15 +80,15 @@ export default {
           {id:"75", name:this.$ml.get('message'), route:"/#/admin/message", vis:"content"},
           {id:"76", name:this.$ml.get('texts'), route:"/#/admin/content", vis:"content"},
         ]},
-        {id:"6", name:this.$ml.get('profile'), submenu: [
+/*        {id:"6", name:this.$ml.get('profile'), submenu: [
           {id:"61", name:this.$ml.get('savedsearches'), route:"/#/profile/searches", vis:"save"},
           {id:"62", name:this.$ml.get('savedrecords'), route:"/#/profile/records", vis:"save"},
           {id:"63", name:this.$ml.get('searchhistory'), route:"/#/profile/history", vis:"search"},
           {id:"64", name:"Divider", vis:"save"},
           {id:"60", name:this.getUsername, route:"/#/profile/user", vis:"save"},
-        ]},
-        {id:"8", name:this.$ml.get('logout'), "route":"/logout", vis:"logout"},
-        {id:"9", name:this.$ml.get('login'), "route":"/login", vis:"login"}
+        ]}, */
+        //{id:"8", name:this.$ml.get('logout'), "route":"/logout", vis:"logout"},
+        //{id:"9", name:this.$ml.get('login'), "route":"/login", vis:"login"}
       ]
 
       for (var i=0; i<this.navmenu.length; i++) {
@@ -165,7 +162,10 @@ export default {
 
         })
         .catch(error => console.log(error));          
-    }    
+    }, 
+    onTermsAccepted() {
+      console.log('Terms accepted');
+    }   
   },
   mounted(){
     /*
@@ -191,6 +191,11 @@ export default {
         clp()
       }, 1000,this.getLandingpad, this.$router, this.clearLandingpad);
     }
+    this.unsubscribe ==
+      this.$store.subscribe((mutation) => {
+        if (mutation.type == "setSelectedResults")
+          console.log("Mutation", mutation)
+      });
   }
 }
 </script>
@@ -205,6 +210,23 @@ export default {
 .fade-enter,
 .fade-leave-active {
   opacity: 0
+}
+.subfooter {
+  background-color:#000E52;
+  color:White;
+  padding: 10px 50px 10px 50px;
+  font-size: 12px;
+  
+}
+a.link {
+  color:White;
+  text-decoration: underline;
+
+}
+a:hover.link {
+  color:White;
+  text-decoration: underline;
+
 }
 
 </style>

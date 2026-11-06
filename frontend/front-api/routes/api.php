@@ -35,12 +35,15 @@ Route::get('/edm/rdfxml/{id}','SearchController@getedmrdfxml');
 Route::post('/search','SearchController@search');
 Route::post('/search/public','SearchController@search');
 Route::post('/search/query','SearchController@query');
+Route::get('/search/field/{fieldname?}', "SearchController@fields");
 
 Route::get('/profile/user', "UserController@profile");
 Route::get('/profile/user/public', "UserController@profile");
 Route::get('/profile/shelves', "UserController@getshelves");
 Route::get('/profile/shelf/{id}/{start}', "UserController@getshelf");
+Route::get('/profile/favourites', "UserController@getfavourites");
 
+Route::post('/profile/shelf', "UserController@renameShelf");
 
 Route::post('/profile/item', "UserController@storeItem");
 Route::post('/profile/query', "UserController@storeQuery");
@@ -73,6 +76,7 @@ Route::post('/stats/ner','StatisticsController@ner');
 Route::post('/form', 'FormController@form');
 //Route::get('/form/jwt','JWTController@decode');
 Route::post('/form/mail','FormController@mail');
+Route::post('/form/contact','FormController@contact');
 
 Route::post('/admin/users/{type}', 'AdminController@usersearch');
 Route::post('/admin/user', 'AdminController@usersave');

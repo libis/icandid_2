@@ -43,7 +43,6 @@ class Searcher {
         'genre' => ['genre.@value.keyword'],
         'identifier' => ['@id'],
         'originalidentifier' => ['identifier.value']
-
     ];
     private $sortmapping = [
         'relevance' => ["_score"=>"desc"],
@@ -166,7 +165,6 @@ class Searcher {
         ],
         "min_datePublished" => [
             "min" => [
-                //"field"=>"datePublished_time_frame_from"
                 "field"=>"_datePublished"
             ]
         ],
@@ -205,8 +203,39 @@ class Searcher {
         $this->username = config('elastic.user');
         $this->password = config('elastic.password');
         $this->highlight = json_decode(config('elastic.highlight'));
+
+        $searchsetup = new SearchSetup();
+        $this->fieldmapping = $searchsetup->merge($this->fieldmapping, 'fieldmapping');
+        $this->sortmapping = $searchsetup->merge($this->sortmapping, 'sortmapping');        
+        $this->filtermapping = $searchsetup->merge($this->filtermapping, 'filtermapping');        
+        $this->aggs = $searchsetup->merge($this->aggs, 'aggs');        
+
+        Log::info("construct");
+        Log::info(print_r($query,True));
         if ($query) $this->buildQuery($query);
     }
+
+    public function getfield($fieldname) {
+        switch ($fieldname) {
+            case "fieldmapping":
+                return $this->fieldmapping;
+                break;
+            case "sortmapping":
+                return $this->sortmapping; 
+                break;
+            case "filtermapping":
+                return $this->filtermapping; 
+                break;
+            case "aggs":
+            case "aggregations":
+                return $this->aggs; 
+                break;
+            default:
+                return ["fieldmapping" => $this->fieldmapping, "sortmapping"=>$this->sortmapping, "filtermapping"=>$this->filtermapping, "aggs"=>$this->aggs ];
+                break;
+        }
+    }
+
 
     public function first($apikey) {
         $client = new Client();
@@ -215,7 +244,7 @@ class Searcher {
 //        $this->esquery->sort['datePublished'] = 'asc';
         Log::info("POST " . $this->url . "&scroll=" . $this->scroll . "s");
         Log::info(json_encode($this->esquery, JSON_PRETTY_PRINT));
-        Log::info("==========================================");
+        //Log::info("==========================================");
         $response = $client->request(   'POST', 
                                         $this->url . "&scroll=". $this->scroll, 
                                         [
@@ -294,16 +323,8 @@ class Searcher {
 
 
     public function query($request, $apikey) {
+        Log::info("query");
         $this->buildQuery($request);
-/*
-        $this->esquery->highlight = (object)[
-            "max_analyzer_offset" => 200000,
-            "pre_tags" => ["<span class='highlighted'>"],
-            "post_tags" => ["</span>"],
-            "fields" => (object)["*" => (object)["number_of_fragments"=> 0]],
-            "require_field_match" => false
-        ];
-*/
 
         $this->esquery->highlight = $this->highlight;
 
@@ -323,9 +344,17 @@ class Searcher {
         $this->esquery->from = $this->from;
         $this->esquery->size = $this->step;
 
+        // added to allow for pagination in project resilience
+        if (isset($request->from)) {
+            $this->esquery->from = $request->from;
+        }
+        if (isset($request->pagesize)) {
+            $this->esquery->size = $request->pagesize;
+        }
+
         Log::info("POST " . $this->url);
         Log::info(json_encode($this->esquery, JSON_PRETTY_PRINT));
-        //$client = new Client(['http_errors' => false]);
+
         $client = new Client();
         try {
             $response = $client->request(   'POST', 
@@ -350,8 +379,7 @@ class Searcher {
 
         $result = json_decode($response->getBody()->getContents());
         Log::info($response->getStatusCode() . " " . $response->getReasonPhrase()); // . " : " . count($r->hits->hits));                                    
-        Log::info(print_r($result->hits->total,True));
-
+        //Log::info(print_r($result, true));
         foreach ($result->hits->hits as $k => $v) {
             if (!isset($v->highlight) ) {
                 $result->hits->hits[$k]->highlight = (object)[];
@@ -364,7 +392,7 @@ class Searcher {
                 }
             }
         }
-        
+
         if (isset($result->aggregations->retweets)) {
             $tweet_count = 0;
             
@@ -409,7 +437,9 @@ class Searcher {
     }
 
     private function parseSimpleRequest($req) {
-        $query = json_decode('{
+        Log::info("parseSimpleRequest");
+        Log::info(print_r($req, True));
+/*        $query = json_decode('{
             "query": {
                 "query_string" : {
                     "query" : "",
@@ -417,11 +447,51 @@ class Searcher {
                 }
             }
         }');
+        if ($req->q == "") { $req->q = "*"; }
         $query->query->query_string->query = ltrim($req->q, "-");
         $query->query->query_string->fields = $this->fieldmapping['any'];
-
-
         return $query;
+        */
+        $query = json_decode('{
+            "query": {
+                "bool": {
+                    "must": [ 
+                        {
+                            "multi_match": {
+                                "query": "",
+                                "fields": []
+                            }
+                        }
+                    ],
+                    "should": [],
+                    "filter": []
+                }
+            }
+        }');
+
+        $query->query->bool->must[0]->multi_match->query = ltrim($req->q, "-");
+        $query->query->bool->must[0]->multi_match->fields = $this->fieldmapping['any'];  
+        if (isset($req->type) && $req->type != "") {
+            if ($req->type == 'all') $query->query->bool->must[0]->multi_match->operator = "and";
+            if ($req->type == 'one') $query->query->bool->must[0]->multi_match->operator = "or";
+            if ($req->type == 'phrase') $query->query->bool->must[0]->multi_match->type = "phrase";
+        } else {
+            $query->query->bool->must[0]->multi_match->operator = "or";
+        }
+
+        if ($req->q == "") {
+            unset($query->query->bool->must);
+        }
+        // added to allow for selected download in resilience
+        if (isset($req->sids) && count($req->sids) > 0) {
+            $query->query->bool->must[] = [
+                "terms" => [
+                    "@id" => $req->sids
+                ]
+            ];
+        }
+
+        return $query;        
     }
 
     private function parseSitemapRequest($req) {
@@ -434,17 +504,7 @@ class Searcher {
         return $query;
     }
 
-
-
     private function parseIdRequest($req) {
-/*        $query = json_decode('{
-            "query": {
-                "match": {
-                    "_id": ""
-                }
-            }
-        }'); */
-
         $query = json_decode('{
             "query": {
               "bool": {
@@ -465,7 +525,8 @@ class Searcher {
           }');
         $query->query->bool->should[0]->match = ["@id" => $req->q];
         $query->query->bool->should[1]->match = ["@uuid" => $req->q];
-        return $query;
+        return $query; 
+       
     }
 
     private function parseNormalRequest($req) {
@@ -496,6 +557,15 @@ class Searcher {
         if ($req->type == 'all') $query->query->bool->must[0]->multi_match->operator = "and";
         if ($req->type == 'one') $query->query->bool->must[0]->multi_match->operator = "or";
         if ($req->type == 'phrase') $query->query->bool->must[0]->multi_match->type = "phrase";
+
+        // added to allow for selected download in resilience
+        if (isset($req->sids) && count($req->sids) > 0) {
+            $query->query->bool->must[] = [
+                "terms" => [
+                    "@id" => $req->sids
+                ]
+            ];
+        }
 
         if (isset($req->types) && count($req->types) > 0) {
             $query->query->bool->filter[] = ["terms"=>["@type"=>$req->types]];
@@ -579,6 +649,15 @@ class Searcher {
             $req->q = "";                   // make it so no results are returned
         }
         $query->query->bool->must[0]->query_string->query = str_replace(array("\n", "\r"), ' ', $req->q);
+
+        // added to allow for selected download in resilience
+        if (isset($req->sids) && count($req->sids) > 0) {
+            $query->query->bool->must[] = [
+                "terms" => [
+                    "@id" => $req->sids
+                ]
+            ];
+        }
 
         if (isset($req->types) && count($req->types) > 0) {
             $query->query->bool->filter[] = ["terms"=>["@type"=>$req->types]];
@@ -682,6 +761,23 @@ class Searcher {
         $esq = (object)[];
         $esq->query = $parser->generateQuery();
 
+
+        if (!isset($esq->query->bool->must)) {
+            $tmpq = json_decode('
+                {"bool":{"must":[]}}
+            ');
+            $tmpq->bool->must[] = $esq->query;
+            $esq->query = $tmpq;
+        }
+        // added to allow for selected download in resilience
+        if (isset($req->sids) && count($req->sids) > 0) {
+            $esq->query->bool->must[] = [
+                "terms" => [
+                    "@id" => $req->sids
+                ]
+            ];
+
+        }
         return $esq;
     }
 
@@ -786,8 +882,6 @@ class Searcher {
         return $esq;
     }
 
-
-
     private function applyFilters($query, $filters) {
         $terms = [];
         $retweet_terms = [];
@@ -828,9 +922,14 @@ class Searcher {
                         break;
                 }
             } else if($part[0] == 'publicationdaterange') {
-                list($from,$until) = explode(" ", $part[1]);
-                $pdr_term = ["range"=>["datePublished_time_frame"=>["gte"=>$from, "lte"=>$until]]];
+                list($from,$until) = explode(" ", $part[1]." ");
+                $pdr_term = ["range"=>["datePublished_time_frame"=>[]]];
+                if(trim($from) != "") $pdr_term["range"]["datePublished_time_frame"]["gte"] = $from;
+                if(trim($until) != "") $pdr_term["range"]["datePublished_time_frame"]["lte"] = $until;
             } else {
+                Log::info(print_r($terms, True));
+                Log::info(print_r($this->filtermapping, True));
+                Log::info(print_r($part, True));
                 if (isset($terms[$this->filtermapping[$part[0]]]))  {
                     $terms[$this->filtermapping[$part[0]]][] = $part[1];
                 } else {
@@ -899,6 +998,8 @@ class Searcher {
     }
 
     private function buildQuery($req, $size = 1000) {
+        Log::info("buildQuery");
+        Log::info(print_r($req, True));
         if (isset($req->q)) $req->q = $this->escapeRequest($req->q);
         switch ($req->searchtype) {
             case "simple":

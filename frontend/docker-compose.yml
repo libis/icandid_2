@@ -16,3 +16,16 @@ services:
     ports:
       - "4201:4201"
       - "4202:4202"
+  resilience_front_stable:
+    build: 
+        context: .
+        dockerfile: docker/Dockerfile_resilience_stable
+    ports:
+      - "4201:4201"
+      - "4202:4202"
+  esapi:
+    build: 
+        context: .
+        dockerfile: api-proxy/Dockerfile
+    ports:
+      - "4203:80"

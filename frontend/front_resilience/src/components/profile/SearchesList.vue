@@ -25,6 +25,7 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import Dialog from '../helpers/Dialog.vue'
 export default {
   data() {

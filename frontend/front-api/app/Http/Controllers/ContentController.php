@@ -14,8 +14,14 @@ class ContentController extends Controller
     }
 
     public function get($contentcode) {
-        $content = DB::table('content')->where('code',$contentcode)->get()->first();
-        return $this->removeCarriageReturn($content);
+        if (str_contains($contentcode, '*')) {
+            $contentcode = str_replace("*","%",$contentcode);
+            $content = DB::table('content')->where('code','like',$contentcode)->orderBy('code')->get()->all();
+            return array_map(function($el){ return $el->code; } , $content);
+        } else {
+            $content = DB::table('content')->where('code',$contentcode)->get()->first();
+            return $this->removeCarriageReturn($content);
+        }
     }
 
 

@@ -76,6 +76,38 @@ class UserController extends Controller
         $eshelves = Eshelf::where("user_id","=",$this->user_id)->withCount('items')->get()->all();
         return $eshelves;
     }
+
+    public function getfavourites(Request $request) {
+        $this->authorize('save');
+        $eshelves = Eshelf::where("user_id","=",$this->user_id)->with('items')->get()->all();
+
+        foreach($eshelves as $k => $shelf) {
+            $lookup = [];
+            foreach($shelf->items as $l => $item) {
+                if (is_string($item->value)) {
+                    $lookup[] = $item->value;
+                }
+            }
+            if (count($lookup) > 0) {
+                $q = json_decode('{"query": {"terms": { "_id": [] } },"size": 200}');
+                $q->query->terms->_id = $lookup;
+                $query = new ESQuery($q, $this->user->apikey);
+                $response = $query->exec();
+                $data = json_decode((string)$response->getBody());
+                foreach ( $data->hits->hits as $hitsvalue) {
+                    for ($i=0; $i<count($shelf->items); $i++) {
+                        if ($eshelves[$k]->items[$i]->value == $hitsvalue->_id) {
+                            $eshelves[$k]->items[$i]->value = $hitsvalue;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $eshelves;
+    }
+
+
     public function getshelf(Request $request) {
         $this->authorize('save');
 
@@ -143,6 +175,25 @@ class UserController extends Controller
         }
         return $this->profile($request);
     }
+
+    public function renameShelf(Request $request) {
+        $this->authorize('save');
+        $data = json_decode($request->getContent(), true);
+
+        if ($data["id"] == 0) {
+            $shelf = new Eshelf;
+            $shelf->user_id = $this->user_id;
+        } else { 
+            $shelf = Eshelf::where("id", $data["id"])->where("user_id", $this->user_id)->first();
+        }
+        if (!$shelf) {
+            abort(501);
+        }
+        $shelf->name = $data["name"];
+        $shelf->save();
+        return $this->getfavourites($request);
+    }
+
 
     public function storeQuery(Request $request) {
         $this->authorize('save');

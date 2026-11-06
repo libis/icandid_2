@@ -1,0 +1,123 @@
+{
+    "aggs": {
+        "additionaltype": {
+            "terms": { "field": "additionalType.keyword", "size": 3000 }
+        },
+        "collection": {
+            "terms": {
+                "field": "isBasedOn.isPartOf.name.keyword",
+                "size": 3000
+            }
+        },
+        "author" :{
+            "terms": {
+                "field": "author.name.@value.keyword",
+                "size": 3000
+            }            
+        },
+        "contributor":{
+            "terms": {
+                "field": "contributor.name.@value.keyword",
+                "size": 3000
+            }            
+        },
+        "publisher":{
+            "terms": {
+                "field": "publisher.name.@value.keyword",
+                "size": 3000
+            }            
+        },
+        "locationcreated":{
+            "terms": {
+                "field": "locationCreated.name.keyword",
+                "size": 3000
+            }            
+
+        },
+        "inlanguage": {
+            "terms": {
+                "field": "inLanguage.name",
+                "size": 3000
+            }
+        }
+    },
+    "fieldmapping": {
+        "any": [
+            "@id",
+            "identifier.value",
+            "name_index.*",
+            "headline_index.*",
+            "keywords_index.*",
+            "text_index.*",
+            "articleBody_index.*",
+            "description_index.*",
+            "isBasedOn.provider.name.keyword",
+            "isBasedOn.provider.alternateName.keyword",
+            "publisher.name.keyword",
+            "creator.name",
+            "author.name",
+            "creator.alternateName",
+            "author.alternateName",
+            "sender.name",
+            "sender.alternateName",
+            "creator.name.@value",
+            "author.name.@value",
+            "creator.alternateName.@value",
+            "author.alternateName.@value"
+        ],
+        "title": ["name_index.*", "headline_index.*"],
+        "author": [
+            "creator.name",
+            "author.name",
+            "creator.alternateName",
+            "author.alternateName",
+            "creator.name.@value",
+            "author.name.@value",
+            "creator.alternateName.@value",
+            "author.alternateName.@value"
+        ],
+        "sender": ["sender.name", "sender.alternateName"],
+        "text": ["articleBody_index.*", "description_index.*", "text_index.*"],
+        "publicationdate": ["_datePublished"],
+        "period": ["period"],
+        "publisher": ["publisher.name.keyword"],
+        "publisher_ft": ["publisher.name"],
+        "provider": [
+            "isBasedOn.provider.name.keyword",
+            "isBasedOn.provider.alternateName.keyword"
+        ],
+        "dataset": [
+            "isBasedOn.isPartOf.name.keyword",
+            "isBasedOn.isPartOf.@id"
+        ],
+        "edition": ["printEdition.keyword"],
+        "type": ["@type"],
+        "legislationType": ["legislationType.keyword"],
+        "language": ["inLanguage.name.keyword"],
+        "volume": ["volumeNumber"],
+        "issue": ["issueNumber"],
+        "subject": ["keywords.@value"],
+        "isbn": ["isbn"],
+        "issn": ["issn"],
+        "locationcreated": ["locationCreated.name"],
+        "genre": ["genre.@value.keyword"],
+        "identifier": ["@id"],
+        "originalidentifier": ["identifier.value"],
+        "collection": [
+            "isBasedOn.isPartOf.name.keyword",
+            "isBasedOn.isPartOf.@id"
+        ]
+    },
+    "filtermapping": {
+        "collection": "isBasedOn.isPartOf.name.keyword",
+        "author":"author.name.@value.keyword",
+        "contributor":"contributor.name.@value.keyword",
+        "publisher":"publisher.name.@value.keyword",
+        "inlanguage": "inLanguage.name"
+    },
+    "sortmapping" :{
+        "author":{"author.name.@value.keyword":"asc"},
+        "title":{"name_sort":"asc"}
+    },
+    "csvexport":["id","type","identifier","legislationType","author","author_alternateName","creator","creator_alternateName","name","genre","description","articleBody","text","director","editor","producer","productionCompany","actor","contributor","musicBy","trailerName","trailerDescription","printEdition","articleSection","sender","sender_alternateName","recipient","recipient_alternateName","legislationPassedBy","legislationResponsible","retweet","datePublished","url","provider","publisher","link","pagination","review","keywords","mentions","duration","contentUrl","about","inLanguage","contentLocation","associatedMedia","sdDatePublished","updatetime"]
+}

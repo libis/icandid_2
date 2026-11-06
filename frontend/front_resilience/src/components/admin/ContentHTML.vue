@@ -15,7 +15,7 @@
         
         </div>
         <div v-if="mode=='editor'" class="box">
-            <div class="tabs is-boxed">
+            <div class="tabs is-boxed" style="display:none">
             <ul>
                 <li v-bind:class="{'is-active': (language=='nl')}" ><a @click.prevent.stop="language='nl'">{{ $ml.get('nl')}}</a></li>
                 <li v-bind:class="{'is-active': (language=='en')}" ><a @click.prevent.stop="language='en'">{{ $ml.get('en')}}</a></li>
@@ -97,7 +97,7 @@ export default {
             content:[],
             mode:"list",
             preview:false,
-            language:"nl"
+            language:"en"
         }
     },
     methods: {
@@ -118,7 +118,7 @@ export default {
             this.active.id = this.content[idx].id
             if (!this.isHTML(this.active.content_nl)) this.active.content_nl = this.myMarkDown(this.active.content_nl)
             if (!this.isHTML(this.active.content_en)) this.active.content_en = this.myMarkDown(this.active.content_en)
-            this.language='nl'
+            this.language='en'
             this.mode='editor'
           
         },

@@ -1,152 +1,80 @@
 <template>
   <div>
-    <button class="button is-rounded is-pulled-right" style="margin-top:10px" :title="$ml.get('savequery')"  @click="$parent.saveQuery()" v-if="getHits>0 && this.getPermissions.indexOf('save')>=0"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
-    <div class="columns">
-      <div class="column">
-        <table class="table is-narrow" xstyle="table-layout: auto;">
+    
+        <table>
           <tr v-for="(advancedQ,index) in query" :key="index">
-            <td>
-              <div class="select" v-if="advancedQ.operator!='blank'">
-                <select v-model="advancedQ.operator">
-                  <option value="AND">{{ $ml.get('and').toUpperCase() }}</option>
-                  <option value="OR">{{ $ml.get('or').toUpperCase() }}</option>
-                  <option value="NOT">{{ $ml.get('not').toUpperCase() }}</option>
-                </select>
-              </div>
-            </td>
-            <td>
-              <div class="select">
-                <select v-model="advancedQ.field" @change="advancedQ.query=''">
+            <td width="230" style="padding: 0px 8px 8px 0px;" >
+              <select class="selectinput"  v-model="advancedQ.field" @change="advancedQ.query=''">
                   <option value="any">{{ $ml.get('any') }}</option>
                   <option value="title">{{ $ml.get('title') }}</option>
                   <option value="author">{{ $ml.get('author') }}</option>
-                  <!-- <option value="sender">{{ $ml.get('sender') }}</option> -->
-                  <!-- <option value="text">{{ $ml.get('text') }}</option> -->
-                  <!-- <option value="period">{{ $ml.get('period') }}</option> -->
                   <option value="subject">{{ $ml.get('subject') }}</option>
                   <option value="isbn">{{ $ml.get('isbn') }}</option>
                   <option value="issn">{{ $ml.get('issn') }}</option>
                   <option value="publicationdate">{{ $ml.get('publicationdate') }}</option>
                   <option value="locationcreated">{{ $ml.get('locationcreated') }}</option>                  
                   <option value="publisher_ft">{{ $ml.get('publisher') }}</option>
-                  <option value="provider">{{ $ml.get('provider') }}</option>
+<!--                  <option value="provider">{{ $ml.get('provider') }}</option>
                   <option value="dataset">{{ $ml.get('dataset') }}</option>
-                  <option value="type">{{ $ml.get('type') }}</option>
-                  <!--<option value="edition">{{ $ml.get('edition') }}</option>
-                  <option value="volume">{{ $ml.get('volume') }}</option>
-                  <option value="issue">{{ $ml.get('issue') }}</option>
-                  <option value="retweet">{{ $ml.get('retweet') }}</option>
-                  <option value="language">{{ $ml.get('language') }}</option>
-                  <option value="label">{{ $ml.get('label') }}</option>
-                  <option value="legislationType">{{ $ml.get('legislationType') }}</option> -->
-                  
+                  <option value="type">{{ $ml.get('type') }}</option>  -->
                 </select>
-              </div>
             </td>
-            <td>
-              <div class="select" v-if="!['period', 'publicationdate','type','provider','publisher','dataset','edition','language','label','retweet','legislationType'].includes(advancedQ.field) ">
-                <select v-model="advancedQ.condition">
+            <td v-if="!['publicationdate','type','provider','dataset'].includes(advancedQ.field) "  style="padding: 0px 8px 8px 0px;">
+                <select class="selectinput" v-model="advancedQ.condition">
                   <option value="contains">{{ $ml.get('containsthewords') }}</option>
                   <option value="phrase">{{ $ml.get('containsexactphrase') }}</option>
                   <option value="starts">{{ $ml.get('startswith') }}</option>
                 </select>
-              </div>
-              &nbsp;
+            </td>
+            <td v-if="!['publicationdate','type','provider','dataset'].includes(advancedQ.field) "   style="padding: 0px 8px 8px 0px;">
               <input
-                class="input"
+                class="textinputshort"
                 type="text"
                 v-model="advancedQ.query"
-                v-on:keyup.enter="search()"
-                style="width:50%;height:3em"
-                v-if="!['period', 'publicationdate','provider','type','publisher','dataset','edition','language','label','retweet','legislationType'].includes(advancedQ.field)" />
-              <!-- <datepicker class="input" style="width:130px" :format="dateformat" input-class="noborder" :language="nl" v-model="advancedQ.query" name="dp_pubdate" v-if="advancedQ.field == 'publicationdate'"></datepicker>                -->
-              <input type="date" class="input" style="width:150px" v-model="advancedQ.query" v-if="advancedQ.field == 'publicationdate'" name="dp_pubdate" />
-<!--              <div v-if="advancedQ.field == 'period'" >
-                <span class="vertalign">{{ $ml.get('from') }} : </span><datepicker class="input" style="width:130px" :format="dateformat" input-class="noborder" :language="nl" v-model="advancedQ.queryfrom" name="dp_fromdate" ></datepicker>&nbsp;
-                <span class="vertalign">{{ $ml.get('toandincluding') }} : </span><datepicker class="input" style="width:130px" :format="dateformat" input-class="noborder" :language="nl" v-model="advancedQ.queryto" name="dp_todate" ></datepicker>
-              </div> -->
-              <div v-if="advancedQ.field == 'period'" >
-                <span class="vertalign">{{ $ml.get('from') }} : </span><input type="date" class="input" style="width:150px" v-model="advancedQ.queryfrom" name="dp_fromdate" />&nbsp;
-                <span class="vertalign">{{ $ml.get('toandincluding') }} : </span><input type="date" class="input" style="width:150px" v-model="advancedQ.queryto" name="dp_todate" />
-              </div>
-
-              <div class="select" v-if="advancedQ.field == 'type'">
-              <select style="width:315px" v-model="advancedQ.query" >
+                 />              
+            </td>
+            <td colspan="2" v-if="advancedQ.field == 'publicationdate'"  style="padding: 0px 8px 8px 0px;width:688px">
+              <input type="date" class="dateinput" v-model="advancedQ.query"  name="dp_pubdate" />
+            </td>
+            <td colspan="2" v-if="advancedQ.field == 'type'"  style="padding: 0px 8px 8px 0px;width:688px">
+              <select class="selectinput" style="width:560px" v-model="advancedQ.query" >
                   <option v-for="item in ddlists.types" :value="item" :key="item">{{ splitWritten(item) }}</option>
               </select>
-              </div>
-
-              <div class="select" v-if="advancedQ.field == 'provider'">
-              <select style="width:315px" v-model="advancedQ.query" >
+            </td>
+            <td colspan="2" v-if="advancedQ.field == 'provider'"  style="padding: 0px 8px 8px 0px;width:688px">
+              <select class="selectinput" style="width:560px" v-model="advancedQ.query" >
                   <option v-for="item in ddlists.providers" :value="item" :key="item">{{ item }}</option>
               </select>
-              </div>
-
-              <div class="select" v-if="advancedQ.field == 'publisher'">
-              <select style="width:315px" v-model="advancedQ.query" >
-                  <option v-for="item in ddlists.publishers" :value="item" :key="item">{{ item }}</option>
-              </select>
-              </div>
-
-              <div class="select" v-if="advancedQ.field == 'dataset'">
-              <select style="width:315px" v-model="advancedQ.query" >
+            </td>
+            <td colspan="2" v-if="advancedQ.field == 'dataset'"  style="padding: 0px 8px 8px 0px;width:688px">
+              <select class="selectinput" style="width:560px" v-model="advancedQ.query" >
                   <option v-for="item in $parent.datasets" :value="item.internalident" :key="'ds_' + item.id">{{ item.name }}</option>
               </select>
-              </div>
-              <div class="select" v-if="advancedQ.field == 'edition'" style="width: 315px; max-width: 100%;">
-              <select style="width:315px" v-model="advancedQ.query" >
-                  <option v-for="item in ddlists.editions" :value="item" :key="item">{{ item }}</option>
-              </select>
-              </div>
-              
-<!-- 
-              <div class="select" v-if="advancedQ.field == 'retweet'">
-              <select style="width:315px" v-model="advancedQ.query" >
-                  <option value="only">{{ $ml.get('onlyretweet') }}</option>
-                  <option value="no">{{ $ml.get('noretweet') }}</option>
-              </select>
-              </div>
- -->
-              <div class="select" v-if="advancedQ.field == 'language'">
-              <select style="width:315px" v-model="advancedQ.query" >
-                  <!-- <option v-for="item in $parent.languages" :value="item.id" :key="'lang_' + item.id">{{ item['name_'+$ml.current] }}</option> -->
-                  <option v-for="item in ddlists.languages" :value="item" :key="'lang_' + item">{{ item }}</option>
-
-              </select>
-              </div>
-
-              <div class="select" v-if="advancedQ.field == 'label'">
-              <select style="width:315px" v-model="advancedQ.query" >
-                  <option v-for="item in $parent.labels" :value="item.id" :key="'lbl_' + item.id">{{ item['name_'+$ml.current] }}</option>
-              </select>
-              </div>
-              
-              <div class="select" v-if="advancedQ.field == 'legislationType'">
-              <select style="width:315px" v-model="advancedQ.query" >
-                  <option v-for="item in ddlists.legislationTypes" :value="item" :key="item">{{ item }}</option>
-              </select>
-              </div>
-
             </td>
-            <td v-if="query.length > 1">
-              <button class="button" @click="removeLine(index)">-</button>
+
+            <td style="padding: 0px 8px 8px 0px;">
+               <button v-if="index==0 && query.length == 1" class="actionbutton" @click="addNewLine">+</button> 
+               <button v-if="query.length > 1" class="actionbutton" @click="removeLine(index)">-</button>
+            </td>
+
+            <td v-if="index == 0" style="padding: 0px 0px 8px 0px;">
+              <button class="searchbutton"  @click="$parent.clearsearch()" v-html="buttonAni"></button>
             </td>
           </tr>
           <tr>
-            <td colspan="4"></td>
-            <td>
-              <button class="button" @click="addNewLine">+</button>
+            <td colspan="3" style="padding: 0px 8px 8px 0px;"></td>
+            <td style="padding: 0px 8px 8px 0px;">
+              <button v-if="query.length > 1" class="actionbutton" @click="addNewLine">+</button> 
             </td>
           </tr>
-        </table>
-      </div>
-      
-    </div>
+
+        </table>        
   </div>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import axios from "axios";
+axios.defaults.withCredentials = true;
 export default {
   data() {
     return {
@@ -200,13 +128,13 @@ export default {
               break;
           }
           if (line.condition == "contains") {
-              name += line.field+':'+lq
+              name += line.field+' contains:'+lq
           }
           if (line.condition == "starts") {
-              name += line.field+':'+lq+'*'
+              name += line.field+' starts with:'+lq
           }
           if (line.condition == "phrase") {
-              name += line.field+':"'+lq+'"'
+              name += line.field+' contains exactly:'+lq
           }
         }
       }
@@ -234,7 +162,13 @@ export default {
       return arr.join(" ")
     }    
   },
-  computed: {...mapGetters(['getHits','getApiDdlistsUrl','getUser','getDatasets','getPermissions']), 
+  computed: {...mapGetters(['getHits','getApiDdlistsUrl','getUser','getDatasets','getPermissions','getSearchStatus']), 
+        buttonAni() {
+            if (this.getSearchStatus) {
+                return '<div class="spinner"></div>'
+            }
+            return this.$ml.get('search')
+        }
   },
   created() {
     this.unsubscribe ==
@@ -259,13 +193,14 @@ export default {
       })
   },
   beforeDestroy() {
-    this.unsubscribe();
+    if (this.unsubscribe != undefined) {
+      this.unsubscribe();
+    }
   },  
 };
 </script>
 <style>
-input.noborder { border: 0px; width:116px }
-input.noborder:focus { outline:none; }
+
 .vertalign {
   display: inline-block;
   vertical-align: middle;
@@ -273,15 +208,77 @@ input.noborder:focus { outline:none; }
   padding-top:9px;
   padding-right:3px
 }
-option {
-  /* wrap text in compatible browsers */
-  -moz-white-space: pre-wrap;
-  -o-white-space: pre-wrap;
-  white-space: pre-wrap;
-  /* hide text that can't wrap with an ellipsis */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  /* add border after every option */
-  border-bottom: 1px solid #DDD;
+
+.textinputshort {
+    width:680px;
+    height:40px;
+    border:1px solid Black;
+    font-size: 20px;
+    padding-left:10px
+
 }
+.dateinput {
+    height:40px;
+    width:190px;
+    border-radius: 5px;
+    font-size:20px;
+    padding-left:10px;
+    padding-right:10px;
+    border:1px solid Black;
+  
+}
+.selectinput {
+    width:220px;
+    height:40px;
+    border:1px;
+    border-color: #ebeff3;
+    border-radius: 5px;
+    font-size:20px;
+    padding-left:10px;
+    padding-right:10px;
+    color:Black;
+    background-color: #ebeff3;
+
+}
+.searchbutton {
+    height:40px;
+    border-radius: 5px;
+    border:0px;
+    background-color:#0625ac;
+    font-size:16px;
+    color:White;
+    width:100px;
+    cursor:pointer
+}
+
+button.actionbutton {
+    height:40px;
+    width:40px;
+    border-radius: 5px;
+    border:0px;
+    background-color:#ebeff3;
+    font-size:24px;
+    color:#535F6B;
+    cursor:pointer
+}
+
+button:hover.actionbutton {
+  background-color:#C0C4C7;
+}
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left:36px
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 </style>

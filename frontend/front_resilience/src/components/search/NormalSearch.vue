@@ -309,7 +309,9 @@ export default {
     this.clear();  
   },
   beforeDestroy() {
-    this.unsubscribe();
+    if (this.unsubscribe != undefined) {
+      this.unsubscribe();
+    }
   },
   computed: {...mapGetters(['getApiQueryUrl','getHits','getApiDdlistsUrl','getPermissions']),
     

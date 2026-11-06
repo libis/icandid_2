@@ -7,6 +7,10 @@ class CSV_Output {
     public static $header = array("id","type","identifier","legislationType","author","author_alternateName","creator","creator_alternateName","name","genre","description","articleBody","text","director","editor","producer","productionCompany","actor","contributor","musicBy","trailerName","trailerDescription","printEdition","articleSection","sender","sender_alternateName","recipient","recipient_alternateName","legislationPassedBy","legislationResponsible","retweet","datePublished","url","provider","publisher","link","pagination","review","keywords","mentions","duration","contentUrl","about","inLanguage","contentLocation","associatedMedia","sdDatePublished","updatetime");
 
     public function __construct() {
+        $searchsetup = new SearchSetup()
+        if ($searchsetup->has('csvexport')) {
+            $this->header = $searchsetup->get('csvexport');
+        }
         $this->tmpname = tempnam(storage_path('app/export'),'');
         unlink($this->tmpname);
         mkdir($this->tmpname);

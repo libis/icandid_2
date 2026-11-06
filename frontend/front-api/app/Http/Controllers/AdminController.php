@@ -285,8 +285,10 @@ class AdminController extends Controller
         }
         $dataset->name = $rc->name;
         $dataset->internalident = $rc->internalident;
-        if (isset($rc->description)) $dataset->description = substr($rc->description,0,255);
+        if (isset($rc->description)) $dataset->description = substr($rc->description,0,1024);
         if (isset($rc->license)) $dataset->license = $rc->license;
+        if (isset($rc->imageurl)) $dataset->imageurl = $rc->imageurl;
+        if (isset($rc->dataseturl)) $dataset->dataseturl = $rc->dataseturl;
         if (isset($rc->requestor)) $dataset->requestor = $rc->requestor;
         if (isset($rc->requestoremail)) $dataset->requestoremail = $rc->requestoremail;
         if (isset($rc->from)) {
@@ -300,6 +302,7 @@ class AdminController extends Controller
         }
         if (isset($rc->query)) $dataset->query = $rc->query;
         if (isset($rc->provider)) $dataset->provider = $rc->provider;
+        if (isset($rc->providerurl)) $dataset->providerurl = $rc->providerurl;
         if (isset($rc->available)) $dataset->available = $rc->available;
         if (isset($rc->hidden)) $dataset->hidden = $rc->hidden;
         // if (isset($rc->ismedia))$dataset->ismedia = $rc->ismedia;
@@ -368,7 +371,6 @@ class AdminController extends Controller
         $options["datasets"] = \App\Dataset::where('available','1')->get()->all();
         foreach(array("languages","labels", "datasets") as $l => $w) {
             foreach ($options[$w] as $k => $v) {
-                Log::info($w);
                 $options[$w][$k]["disabled"] = False;
             }
         }

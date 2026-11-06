@@ -3,6 +3,8 @@
 // Import a Google Font
 //@import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 // Set your brand colors
 $purple: #8A4D76;
 $pink: #FA7C91;
@@ -22,7 +24,8 @@ $beige-lighter: #EFF0EB;
 
 // Update Bulma's global variables
 //$family-sans-serif: "Nunito", sans-serif;
-$family-sans-serif: "Corbel", "Verdana", "Bitstream Vera Sans", sans-serif;
+//$family-sans-serif: "Corbel", "Verdana", "Bitstream Vera Sans", sans-serif;
+$family-sans-serif: "Inter", "Verdana", "Bitstream Vera Sans", sans-serif;
 $body-font-size: 1.2em;
 $grey-dark: $brown;
 $grey-light: $beige-light;

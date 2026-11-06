@@ -20,19 +20,17 @@ class SearchController extends Controller
 
     public function __construct()
     {
-
         $this->searcher = new Searcher();
     }
 
     public function search(Request $request) {
         $this->authorize('search');
-
         $req = json_decode($request->getContent());
         $data = $this->searcher->query($req, $this->user->apikey);
-
         $data->hits->step = $this->searcher->getStep();       
         $data->hits->from = session('from');
         $data->elastic_query = $this->searcher->getQuery();
+        $data->allAggregations = $this->filters();
         
         $history = session('history',[]);
 
@@ -43,7 +41,7 @@ class SearchController extends Controller
             $history[] = $hist;
             session(['history' => $history]);
         }
-
+/*
         // ervoor zorgen dat ook de keywords gehighlight worden
         foreach($data->hits->hits as $k => $v) {
             // neem alle gehighlite keywords en stop ze al in de keywords lijst
@@ -90,8 +88,10 @@ class SearchController extends Controller
                 unset($data->hits->hits[$k]->highlight->keywords);
             }
         }
+*/
         $result = $data;
         $result->history = $history;
+
         return json_encode($result, JSON_UNESCAPED_SLASHES);
     }
 
@@ -260,6 +260,14 @@ class SearchController extends Controller
         return $lists;
     }
 
+    private function filters(){
+        $this->authorize('search');
+        $req = (object)["q"=>"", "s"=>"relevance", "f" => [], "nav" => [], "searchtype" => "simple"];
+        $data = $this->searcher->query($req, $this->user->apikey); 
+        $allowed = ["type","additionaltype","provider","dataset","collection"];
+        return $data->aggregations;
+    }
+
     public function ping() {
         $this->authorize('search');
         $status = DB::table('status')->distinct()->get();
@@ -267,6 +275,15 @@ class SearchController extends Controller
         $r = $this->searcher->ping($this->user->apikey);
         if (!$r->hits) abort(500);
         return ["OK"];
+    }
+
+    public function fields(Request $request){
+        $this->authorize('search');
+        if ($request->fieldname != "" && !(is_null($request->fieldname))) {
+            return $this->searcher->getfield($request->fieldname);
+        } else {
+            return $this->searcher->getfield("");
+        }
     }
 
 }

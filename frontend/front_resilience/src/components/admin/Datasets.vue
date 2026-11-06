@@ -44,10 +44,21 @@
                     <div class="field">
                         <label class="label">{{ $ml.get("description") }}</label>
                         <div class="control">
-                            <textarea class="textarea" v-model="activeset.description" maxlength="255"></textarea>
+                            <textarea class="textarea" v-model="activeset.description" maxlength="1024"></textarea>
                         </div>
                     </div>
-
+                    <div class="field">
+                        <label class="label">{{ $ml.get("dataseturl") }}</label>
+                        <div class="control">
+                            <input class="input" type="text" v-model="activeset.dataseturl" maxlength="255">
+                        </div>
+                    </div>                    
+                    <div class="field">
+                        <label class="label">{{ $ml.get("imageurl") }}</label>
+                        <div class="control">
+                            <input class="input" type="text" v-model="activeset.imageurl" maxlength="255">
+                        </div>
+                    </div>                    
                     <div class="columns">
                         <div class="column is-4">
                             <div class="field"><CheckboxList label="talen" :options="options.languages" :selected="activeset.languages" @select="getLanguages"></CheckboxList></div>
@@ -80,12 +91,22 @@
                     <div class="field">
                         <label class="label">{{ $ml.get("provider") }}</label>
                         <div class="control">
-                            <input class="input" type="text" v-model="activeset.provider" list="providers" maxlength="45">
+                            <input class="input" type="text" v-model="activeset.provider" list="providers" maxlength="255">
                             <datalist id="providers">
                                 <option v-for="(v,i) in options.providers" :value="v.provider" :key="i" />
                             </datalist>
                         </div>
                     </div>
+
+                    <div class="field">
+                        <label class="label">{{ $ml.get("providerurl") }}</label>
+                        <div class="control">
+                            <input class="input" type="text" v-model="activeset.providerurl" maxlength="255">
+                        </div>
+                    </div>                    
+                    
+
+
                     <div class="field">
                         <label class="label">{{ $ml.get("license") }}</label>
                         <div class="control">
@@ -187,7 +208,7 @@ export default {
     },
     methods: {
         update() {
-            if (this.searchterm.length >= 3) {
+            if (this.searchterm.length >= 2 || this.searchterm.length == 0) {
                 axios
                     .post(this.getApiAdminUrl + '/datasets', this.searchterm)
                     .then(res => {
@@ -258,6 +279,14 @@ export default {
         }
     },
     computed: mapGetters(['getApiAdminUrl']),
+    mounted() {
+        axios
+            .post(this.getApiAdminUrl + '/datasets', "")
+            .then(res => {
+                this.setlist = res.data;
+            })
+            .catch(error => console.log(error));
+    }
 
     
 }

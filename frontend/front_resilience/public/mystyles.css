@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 @keyframes spinAround {
   from {
     transform: rotate(0deg); }
@@ -260,7 +262,7 @@ th {
     text-align: left; }
 
 html {
-  background-color: #EFF0EB;
+  background-color: #FFFFFF;
   font-size: 16px;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -284,7 +286,7 @@ button,
 input,
 select,
 textarea {
-  font-family: "Corbel", "Verdana", "Bitstream Vera Sans", sans-serif; }
+  font-family: "Inter", "Verdana", "Bitstream Vera Sans", sans-serif; }
 
 code,
 pre {
@@ -299,13 +301,13 @@ body {
   line-height: 1.5; }
 
 a {
-  color: #F1B434;
+  color: #202F3E;
   cursor: pointer;
-  text-decoration: none; }
+  text-decoration: underline; }
   a strong {
     color: currentColor; }
   a:hover {
-    color: #363636; }
+    }
 
 code {
   background-color: whitesmoke;
@@ -779,13 +781,13 @@ a.has-text-danger:hover, a.has-text-danger:focus {
   font-weight: 700 !important; }
 
 .is-family-primary {
-  font-family: "Corbel", "Verdana", "Bitstream Vera Sans", sans-serif !important; }
+  font-family: "Inter", "Verdana", "Bitstream Vera Sans", sans-serif !important; }
 
 .is-family-secondary {
-  font-family: "Corbel", "Verdana", "Bitstream Vera Sans", sans-serif !important; }
+  font-family: "Inter", "Verdana", "Bitstream Vera Sans", sans-serif !important; }
 
 .is-family-sans-serif {
-  font-family: "Corbel", "Verdana", "Bitstream Vera Sans", sans-serif !important; }
+  font-family: "Inter", "Verdana", "Bitstream Vera Sans", sans-serif !important; }
 
 .is-family-monospace {
   font-family: monospace !important; }
@@ -1950,10 +1952,10 @@ a.box:active {
       max-width: 960px; } }
   @media screen and (max-width: 1215px) {
     .container.is-widescreen {
-      max-width: 1152px; } }
+      max-width: 1296px; } }
   @media screen and (min-width: 1216px) {
     .container {
-      max-width: 1152px; } }
+      max-width: 1296px; } }
 
 .content li + li {
   margin-top: 0.25em; }
@@ -2068,8 +2070,6 @@ a.box:active {
   width: 100%; }
   .content table td,
   .content table th {
-    border: 1px solid #dbdbdb;
-    border-width: 0 0 1px;
     padding: 0.5em 0.75em;
     vertical-align: top; }
   .content table th {
@@ -5207,20 +5207,28 @@ label.panel-block {
     border-bottom-color: #dbdbdb;
     border-bottom-style: solid;
     border-bottom-width: 1px;
-    color: #000000;
+    font-weight: Bold;
+    font-size: larger;
+    color: #D3DCE4;
     display: flex;
     justify-content: center;
     margin-bottom: -1px;
     padding: 0.5em 1em;
     vertical-align: top; }
     .tabs a:hover {
-      border-bottom-color: #363636;
-      color: #363636; }
+      /*border-bottom-color: #363636;
+      color: #363636; */}
   .tabs li {
-    display: block; }
+    display: block; 
+    }
     .tabs li.is-active a {
-      border-bottom-color: #F1B434;
-      color: #F1B434; }
+      /*border-bottom-color: #F1B434;
+      color: #F1B434; */
+      border-bottom-color: #0625AC;
+      border-bottom-width: 2px;
+      
+      color: #0625AC;
+    }
   .tabs ul {
     align-items: center;
     border-bottom-color: #dbdbdb;
@@ -5815,8 +5823,12 @@ label.panel-block {
       padding: 18rem 1.5rem; } }
 
 .footer {
-  background-color: #fafafa;
-  padding: 3rem 1.5rem 6rem; }
+  background-color: #001A72;
+  padding: 50px 50px 20px 50px;
+  color:White;
+  font-size:12px;
+  
+}
 
 .column {
   display: block;
