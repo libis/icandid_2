@@ -5,4 +5,6 @@
 volumes/*
 notes.txt
 frontend/front/public/sitemap/*
+frontend/front_resilience_stable
 .vscode/settings.json
+frontend/docker/Dockerfile_resilience_stable
