@@ -214,6 +214,7 @@ def selector(queue):
           return
 
   print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "# records to do : " + str(data["hits"]["total"]["value"]))
+  print(datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ") + "Processing " + len(data["hits"]["hits"]) + " records")
   
   for article_id in data["hits"]["hits"]:
     res4 = requests.get(elastic_docurl + article_id["_id"], auth=(user,passwd), verify=False, headers=headers, timeout=360)
