@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Helpers\Export;
 use App\Helpers\DocCounter;
+use App\Helpers\LogRotate;
 use App\Helpers\StorageMonitor;
 use App\Helpers\PeriodUpdater;
 use App\Helpers\Sitemap;
@@ -62,7 +63,7 @@ class Kernel extends ConsoleKernel
                 $pu = new PeriodUpdater;
                 $pu->exec();
             }
-        })->daily();
+        })->dailyAt('05:00');
 
         $schedule->call(function() {
             $sm = new StorageMonitor;  // calculate how much storage every user is using and report this
@@ -78,6 +79,11 @@ class Kernel extends ConsoleKernel
                 if ($site != Null) $site->exec() ;
             }
          })->hourlyAt(15);
+
+        $schedule->call(function() {
+            $rotate = new LogRotate();
+            $rotate->exec();
+        })->weekly();
 
     }
 
