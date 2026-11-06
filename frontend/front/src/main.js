@@ -439,7 +439,6 @@ const router = new VueRouter(
         name: 'JSON',
         component: Record,
         beforeEnter(to) {
-          console.log(to.params.id)
           window.location.href = store.state.api_uri.baseurl + store.state.api_uri.paths.record + "/" + to.params.id;
         }
       },
