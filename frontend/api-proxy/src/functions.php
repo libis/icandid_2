@@ -24,11 +24,11 @@ function getPermissions($apikey) {
     global $config;
     $permissions = get_cache($apikey);
     if (!$permissions) {
-        $ch = curl_init($config['icandidApiUrl'] . "/" . $apikey); 
+        $ch = curl_init($config['icandidApiUrl'] . "/" . $apikey);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
         
         $output = curl_exec($ch);
-    
+
         if (curl_getinfo($ch, CURLINFO_RESPONSE_CODE) == 200) {
             $permissions = json_decode($output);
             save_cache($permissions, $apikey, $config['cacheTimeout']);
@@ -37,6 +37,7 @@ function getPermissions($apikey) {
             exit;
         }
     }
+
     return $permissions;
 
 }
@@ -80,11 +81,8 @@ function getResult($query, $request_uri) {
 
     $result = curl_exec($ch);
     $result_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-    
-    curl_close($ch);
-
-    
-    writelog($query);
+        
+    //writelog($query);
     writelog($result_code);
 
     /*
@@ -101,8 +99,7 @@ function getResult($query, $request_uri) {
         
         $result2 = curl_exec($ch);
         $result_code2 = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-        
-        curl_close($ch);
+    
     
         writelog($config['elasticUrl'] . $request_uri);
         writelog($query);
